@@ -1,0 +1,72 @@
+\chapter{Multi-Agent Systems and Agentic AI: Foundations}
+\label{chap:background_mas}
+
+\section{Introduction}
+
+This chapter establishes the conceptual vocabulary used throughout the thesis. We first define agents and multi-agent systems, then review the coordination mechanisms most relevant to distributed surveillance---in particular task allocation by auction---and finally introduce the recent paradigm of \emph{agentic AI}, in which large language models act as reasoning engines inside agent architectures.
+
+\section{Agents and Multi-Agent Systems}
+
+\subsection{The Agent Abstraction}
+
+Following Wooldridge \cite{wooldridge2009introduction}, an \textbf{agent} is a computer system situated in an environment, capable of \emph{autonomous action} in that environment in order to meet its design objectives. Four properties are commonly required:
+
+\begin{itemize}
+    \item \textbf{Autonomy}: the agent operates without direct external control of its internal state and decisions;
+    \item \textbf{Reactivity}: it perceives its environment and responds in a timely fashion to changes;
+    \item \textbf{Pro-activeness}: it exhibits goal-directed behavior, taking initiative rather than only reacting;
+    \item \textbf{Social ability}: it interacts with other agents through some communication language or protocol.
+\end{itemize}
+
+In AURA-MAS, a camera perception agent exemplifies all four: it autonomously processes its own video stream (autonomy), emits events when zone rules fire (reactivity), continuously maintains tracking state and dwell-time counters (pro-activeness), and bids on verification tasks announced by a coordinator (social ability).
+
+\subsection{Agent Architectures}
+
+Classical agent architectures span a spectrum from purely \emph{reactive} (stimulus--response rules, subsumption) to \emph{deliberative} (symbolic planning over explicit world models), with the influential Belief--Desire--Intention (\gls{bdi}) model \cite{rao1995bdi} occupying a pragmatic middle ground: agents maintain \emph{beliefs} about the world, adopt \emph{desires} (goals), and commit to \emph{intentions} (plans). Hybrid layered architectures combine a fast reactive layer with a slower deliberative layer---a pattern that AURA-MAS mirrors at the system level: edge agents are predominantly reactive (frame-rate perception loops), while the coordination layer deliberates over aggregated hypotheses at a slower cadence, and the agentic explanation layer performs the slowest, most expensive reasoning only when justified.
+
+\subsection{Multi-Agent Systems}
+
+A \textbf{multi-agent system} (\gls{mas}) is a collection of interacting agents that jointly solve problems beyond the capability or knowledge of any individual agent \cite{wooldridge2009introduction}. \gls{mas} are attractive for surveillance for several structural reasons:
+
+\begin{itemize}
+    \item \textbf{Natural distribution}: sensors are physically distributed; assigning one agent per sensor matches the problem topology and keeps raw data local.
+    \item \textbf{Scalability}: adding a camera means adding an agent, not re-dimensioning a central server.
+    \item \textbf{Robustness}: the failure of one agent degrades coverage locally instead of collapsing the whole system.
+    \item \textbf{Heterogeneity}: video, audio, and higher-level reasoning agents can coexist behind a common message interface.
+\end{itemize}
+
+Interaction is standardized by agent communication languages; the \gls{fipa} \gls{acl} defines performatives (\texttt{inform}, \texttt{request}, \texttt{cfp}, \texttt{propose}, \texttt{accept-proposal}, \ldots) whose semantics underpin most practical coordination protocols. AURA-MAS adopts the \emph{spirit} of \gls{fipa} interaction protocols while using lightweight \gls{json} messages over \gls{mqtt} topics, a common engineering compromise in modern \gls{iot}-oriented deployments \cite{light2017mosquitto}.
+
+\section{Coordination and Task Allocation}
+
+\subsection{The Coordination Problem}
+
+Coordination is the process of managing dependencies between agents' activities. In distributed surveillance the canonical dependency is \emph{verification}: when one sensor produces an uncertain detection, which other sensor should spend resources to confirm or refute it? This is an instance of the \emph{multi-robot/multi-agent task allocation} problem, for which three broad families of solutions exist.
+
+\subsection{The Contract Net Protocol and Auctions}
+
+The Contract Net Protocol (\gls{cnp}) introduced by Smith \cite{smith1980contract} structures task allocation as a negotiation: a \emph{manager} announces a task (call for proposals), \emph{contractors} evaluate it against their local capabilities and submit \emph{bids}, and the manager awards the task to the best bidder. Market-based extensions formalize bids as utilities and prove strong properties for single-item auctions \cite{parker2002alliance}: allocation quality equals the best available bid, communication cost is linear in the number of bidders, and the mechanism degrades gracefully when agents fail to respond.
+
+Auctions are particularly well suited to camera verification tasks because a camera's utility for verifying an event is inherently \emph{local, private knowledge}---its field-of-view overlap with the event zone, its current processing load, whether it originated the initial detection---which the bidder can compute cheaply and truthfully summarize as a scalar bid. AURA-MAS therefore adopts a single-round, sealed-bid auction (Section~\ref{sec:design_coordination}) with a fixed bidding window, and retains a round-robin scheduler as an ablation baseline.
+
+\subsection{Alternative Approaches}
+
+Two alternatives deserve mention. \emph{Centralized optimization} (e.g., Hungarian assignment over a global utility matrix) yields optimal allocations but requires the center to know all utilities, reintroducing the communication and single-point-of-failure costs that \gls{mas} avoid; recent work explores submodular optimization for multi-camera collaborative perception \cite{liu2026submodular}. \emph{Multi-agent reinforcement learning} (\gls{marl}) learns coordination policies end-to-end, with algorithms such as QMIX \cite{rashid2018qmix} and MADDPG \cite{lowe2017multiagent} demonstrating strong results in simulated cooperative sensing and patrolling \cite{zheng2026multiuav, yang2025multiagent}; standardized environments (PettingZoo \cite{terry2021pettingzoo}) and scalable training stacks (RLlib \cite{liang2018rllib}) exist. However, \gls{marl} policies are data-hungry, hard to certify, and opaque---undesirable properties for a safety- and legally-sensitive system. We therefore position \gls{marl}-based active sensing as future work (Chapter~\ref{chap:conclusion}) and keep the deployed coordination mechanism auditable.
+
+\section{Agentic AI}
+
+\subsection{From Language Models to Agents}
+
+Large language models exhibit emergent capabilities for planning, tool use, and multi-step reasoning. The \emph{agentic AI} paradigm operationalizes these capabilities: an \gls{llm} is embedded in a control loop where it observes state, reasons (often via explicit ``thought'' traces as in ReAct \cite{yao2023react}), invokes tools, and iterates. Sapkota et al.\ \cite{sapkota2025ai} distinguish \emph{AI agents}---single-model, tool-using systems---from \emph{agentic AI}: orchestrated ensembles of specialized agents with shared memory and explicit coordination, which is precisely the regime of interest for surveillance, where perception specialists must feed reasoning specialists.
+
+\subsection{Orchestration Frameworks}
+
+A rich ecosystem of frameworks now supports multi-agent \gls{llm} orchestration: AutoGen structures multi-agent conversations \cite{wu2023autogen}; LangGraph models agent workflows as typed state graphs with explicit nodes, edges, and checkpointing \cite{langgraph2024}; CrewAI emphasizes role-based teams. For vision-centric pipelines, research systems such as VideoAgent \cite{fan2024videoagent} and Hawk \cite{cheng2025hawk} demonstrate \gls{llm}-orchestrated video understanding, while \gls{vlm}s such as GPT-4V \cite{openai2023gpt4}, Gemini \cite{google2023gemini}, Qwen-VL \cite{alibaba2023qwenvl}, and LLaVA \cite{liu2023visual} provide the underlying multimodal perception-to-language capability.
+
+\subsection{Reliability and Guardrails}
+
+The central obstacle to deploying generative models in safety-critical loops is \emph{hallucination}: fluent but unfounded output. Guardrail frameworks such as NeMo Guardrails \cite{rebedea2023nemo} interpose programmable checks between the model and the application. The design stance adopted in this thesis is stricter and architectural: the agentic layer is \emph{decision-decoupled}---it runs only after a deterministic policy engine has already made the alert decision---and \emph{evidence-grounded}---every evidence identifier cited in a generated report is mechanically checked against the event log, with automatic fallback to a template on violation. This turns the \gls{llm} from a potential safety liability into a strictly additive usability layer, a pattern we consider one of the transferable lessons of this work.
+
+\section{Conclusion}
+
+This chapter defined the agent abstraction, motivated the \gls{mas} architecture for distributed surveillance, selected auction-based task allocation as the coordination mechanism on grounds of efficiency and auditability, and framed agentic AI as a rule-guarded explanation layer rather than a decision maker. The next chapter reviews the perception techniques that edge agents rely upon.

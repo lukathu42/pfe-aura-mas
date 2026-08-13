@@ -1,0 +1,34 @@
+\chapter{Conclusion and Future Work}
+\label{chap:conclusion}
+
+\section{Summary of the Work}
+
+This thesis set out to reorganize intelligent surveillance around two converging paradigms---multi-agent systems and agentic AI---under explicit privacy and governance constraints. Starting from the observation that centralized video analytics concentrates bandwidth, risk, and operator overload while modern perception has become commoditized, we designed, implemented, and evaluated \textbf{AURA-MAS}: a hierarchical multi-agent architecture in which edge perception agents (YOLO11 + ByteTrack + zone rules + \gls{clip} zero-shot anomaly scoring for video; \gls{sed} or \gls{dsp} scoring for audio) publish structured events on a lightweight \gls{mqtt}/Redis substrate; a fusion agent forms spatio-temporal incident hypotheses under a monotone noisy-OR confidence model; a coordinator agent resolves uncertain hypotheses through sealed-bid verification auctions derived from the Contract Net Protocol; a deterministic policy agent holds exclusive alerting authority with full audit; and a rule-guarded \gls{llm} explanation agent produces evidence-checked natural-language incident reports strictly downstream of the decision.
+
+The complete prototype---approximately 2{,}500 lines of tested Python with graceful degradation paths and single-process testability---was evaluated through a four-way architectural ablation on replayable multi-sensor scenarios. The results answer the research questions posed in Chapter~\ref{chap:introduction}: agent concurrency reduced mean time-to-alert by $\approx$36\% relative to an equivalent centralized pipeline (RQ1); auction-based coordination halved false alerts per hour relative to uncoordinated operation and outperformed round-robin assignment, at a cost of ten messages and $0.5$~s per scenario (RQ2); audio-visual fusion contributed incidents invisible to video alone (RQ3); the guarded explanation layer produced zero uncaught hallucinated citations while adding zero decision latency (RQ4); and the privacy pipeline---edge-local processing, fail-closed anonymization, immutable audit---held structurally throughout (RQ5).
+
+\section{Contributions Revisited}
+
+The five contributions announced in Chapter~\ref{chap:introduction} were delivered as follows: \textbf{C1}, the three-layer architecture with seven agent roles and formal message schemas (Chapter~\ref{chap:design}); \textbf{C2}, the auction-based active verification protocol with its round-robin and no-coordination ablation baselines (Chapters~\ref{chap:design}--\ref{chap:evaluation}); \textbf{C3}, the reliability-weighted noisy-OR fusion with corroboration bonuses and its monotonicity guarantee (Chapter~\ref{chap:design}); \textbf{C4}, the decision-decoupled, evidence-grounded agentic explanation pattern with mechanical guardrails (Chapter~\ref{chap:implementation}); and \textbf{C5}, the replayable system-level evaluation methodology and ablation results (Chapter~\ref{chap:evaluation}). Beyond the artifacts themselves, we believe the two architectural patterns---\emph{market-based uncertainty resolution} and \emph{guarded generativity}---are transferable to other safety-sensitive agentic systems, from industrial monitoring to autonomous inspection.
+
+\section{Limitations}
+
+The honest boundaries of this work are those detailed in Section~7.4 of Chapter~\ref{chap:evaluation}: demonstrator-scale scenarios (two cameras, one microphone, sixty seconds), a perception ceiling set by small pretrained models on public footage, a single site topology exercising single-item auctions only, and groundedness---but not yet operator-perceived usefulness---as the evaluated property of explanations. None of these limitations is architectural; each defines a concrete axis of extension.
+
+\section{Future Work}
+
+Five directions follow naturally.
+
+\textbf{Scale and realism.} Extend the scenario library with VIRAT/MEVA-derived manifests and synthetic scenario generation, moving from one scripted scenario to statistically meaningful multi-scenario campaigns with confidence intervals; deploy agents on physical single-board devices to measure true edge resource envelopes.
+
+\textbf{Learned coordination.} Replace or hybridize the hand-crafted bid function with \gls{marl}-learned policies (QMIX, MADDPG) trained in simulation on the replay infrastructure, using the auction as a safe fallback---combining learned efficiency with auditable guarantees, and testing whether learned coordination preserves the precision gains at larger camera counts.
+
+\textbf{Active sensing.} Extend verification actions beyond re-analysis to physical actuation---pan-tilt-zoom re-pointing, drone repositioning---turning the verification auction into a full active-perception market with multi-item and combinatorial variants.
+
+\textbf{Richer agentic reasoning.} Allow the explanation agent to correlate incidents across time (``third loitering event at this entry this week''), query historical audit streams through retrieval-augmented generation, and draft structured handover reports---while preserving the decision-decoupling invariant; evaluate usefulness with operator studies and LLM-as-judge protocols.
+
+\textbf{Certification pathway.} Formalize the audit stream and policy engine against the concrete documentation and logging requirements of the EU AI Act for high-risk systems, producing a compliance-artifact generator---a step toward surveillance AI that is not merely capable, but certifiable.
+
+\section{Closing Remarks}
+
+The trajectory of surveillance AI is often framed as a race toward ever-stronger perception. This thesis argues---and demonstrates at prototype scale---that the more consequential frontier is \emph{organizational}: how distributed perception is coordinated, how uncertainty is resolved before it reaches a human, how generative intelligence is confined to roles where it helps without harming, and how privacy and accountability are made structural rather than aspirational. Multi-agent architectures, market-based coordination, and guarded agentic explanation together offer a template for surveillance systems---and safety-critical AI systems generally---that are faster, more precise, and more trustworthy than the centralized pipelines they replace.

@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Understand-Anything / Claude tooling caches
+.ua/
+
+# LaTeX build artifacts (keep the compiled main.pdf, ignore the rest)
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.acn
+*.acr
+*.alg
+*.glg
+*.glo
+*.gls
+*.ist
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.run.xml
+*-blx.bib
+main-blx.bib
+
+# Stale/duplicate root-level failed LaTeX build (real one is in AURA-MAS_Thesis_LaTeX/)
+/main.tex
+/main.pdf
+/chapter1.tex
+/chapter2.tex
+/chapter3.tex
+/chapter4.tex
+/chapter5.tex
+/chapter6.tex
+/chapter7.tex
+/chapter_sota.tex
+
+# Large delivery-bundle zips (frozen snapshots of tracked content, not source)
+*.zip
+
+# Large reference PDFs not authored in this repo
+/engineerthesis/
+/masterthesis.zip
+
+# Streamlit / misc caches
+.streamlit/
+
+# OS
+.DS_Store

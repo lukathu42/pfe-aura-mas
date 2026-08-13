@@ -1,0 +1,41 @@
+flowchart TB
+    subgraph L1["Layer 1 - Edge Perception"]
+        direction LR
+        CAM1["CameraAgent cam_01<br/>YOLO11n + ByteTrack<br/>zone rules + CLIP anomaly"]
+        CAM2["CameraAgent cam_02<br/>YOLO11n + ByteTrack<br/>zone rules"]
+        MIC1["AudioAgent mic_01<br/>YAMNet / DSP anomaly"]
+    end
+
+    subgraph BUS["Event Bus"]
+        MQTT["MQTT<br/>events, tasks, bids"]
+        REDIS["Redis Streams<br/>durable alerts + audit"]
+    end
+
+    subgraph L2["Layer 2 - Site Coordination"]
+        FUS["FusionAgent<br/>spatio-temporal late fusion<br/>noisy-OR confidence"]
+        COORD["CoordinatorAgent<br/>auction-based<br/>task allocation"]
+        POL["PolicyAgent<br/>deterministic rules<br/>thresholds + cooldown"]
+        EXP["ExplanationAgent<br/>rule-guarded VLM/LLM<br/>incident reports"]
+    end
+
+    subgraph L3["Layer 3 - Governance & Operator"]
+        DASH["Operator Console<br/>Streamlit"]
+        AUDIT["Audit Log"]
+        EVID["Anonymized<br/>Evidence Store"]
+    end
+
+    CAM1 -- "events (QoS 1)" --> MQTT
+    CAM2 -- "events" --> MQTT
+    MIC1 -- "audio events" --> MQTT
+    MQTT --> FUS
+    FUS -- "hypotheses" --> POL
+    POL <-- "verify gray-zone" --> COORD
+    COORD -- "announce / award" --> MQTT
+    MQTT -- "bids / verifications" --> COORD
+    POL -- "alert + evidence" --> EXP
+    EXP -- "explained alert" --> REDIS
+    POL -- "decisions" --> AUDIT
+    REDIS --> DASH
+    DASH -- "ack / dismiss" --> AUDIT
+    CAM1 -. "anonymized crops only" .-> EVID
+    EVID --> DASH

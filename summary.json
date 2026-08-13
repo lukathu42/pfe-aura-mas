@@ -1,0 +1,74 @@
+[
+  {
+    "subtopic": "Video anomaly detection",
+    "file": "/home/ubuntu/pfe/research/01_video_anomaly_detection.md",
+    "key_findings": "Recent advancements in Weakly Supervised Video Anomaly Detection (WSVAD) have been driven by Vision-Language Models (VLMs) like CLIP, which provide strong cross-modal alignment for understanding complex scenes. Models such as VadCLIP and CLIP-TSA have achieved state-of-the-art performance on benchmarks like UCF-Crime and XD-Violence by leveraging these VLMs. For edge deployment, lightweight architectures like the one proposed by Wang et al. (2025) and real-time approaches by Karim et al. (2024) offer significant reductions in parameters and latency. Implementing these models requires balancing performance with hardware constraints, often utilizing TensorRT for optimization on devices like NVIDIA Jetson.",
+    "stack": "CLIP (ViT-B/16 or ViT-L/14), PyTorch, TensorRT, NVIDIA Jetson Orin Nano"
+  },
+  {
+    "subtopic": "Object detection and multi-object tracking",
+    "file": "/home/ubuntu/pfe/research/02_object_detection_and_multi_object_tracking.md",
+    "key_findings": "The research highlights YOLO11 as the optimal choice for real-time object detection on edge devices, offering superior speed and accuracy compared to YOLOv8 and RT-DETR. For multi-object tracking, ByteTrack remains highly effective by associating low-confidence detections, while BoT-SORT provides enhanced robustness through camera-motion compensation and ReID embeddings. Evaluating these systems should prioritize the HOTA metric via TrackEval, as it provides a balanced assessment of both detection and association accuracy. For a 1-month implementation, adopting the unified Ultralytics ecosystem is strongly recommended to minimize integration risks.",
+    "stack": "YOLO11n, ByteTrack, OSNet, TrackEval, Ultralytics"
+  },
+  {
+    "subtopic": "Multi-agent systems foundations and coordination algorithms",
+    "file": "/home/ubuntu/pfe/research/03_multi_agent_systems_foundations_and_coordination_a.md",
+    "key_findings": "Multi-agent coordination in sensor networks relies heavily on managing dependencies and allocating tasks efficiently among autonomous agents. The BDI (Belief-Desire-Intention) architecture provides a robust framework for modeling individual agent logic, while protocols like Contract-Net and auction-based mechanisms facilitate dynamic task allocation, particularly for resource-constrained devices. Consensus algorithms and Distributed Constraint Optimization Problems (DCOPs) are essential for decentralized decision-making and hierarchical task assignment, such as coordinating PTZ cameras and drones. For a rapid 1-month implementation, it is recommended to avoid overly complex BDI frameworks and instead utilize lightweight state machines combined with MQTT for communication and simple greedy auction mechanisms for task allocation.",
+    "stack": "Python, MQTT, YOLO11n, ByteTrack"
+  },
+  {
+    "subtopic": "MARL for cooperative surveillance and active sensing",
+    "file": "/home/ubuntu/pfe/research/04_marl_for_cooperative_surveillance_and_active_sensi.md",
+    "key_findings": "Multi-Agent Reinforcement Learning (MARL) is essential for cooperative surveillance, enabling distributed decision-making and active sensing among agents like UAVs and PTZ cameras. Policy-based methods, particularly MAPPO and its variants (e.g., CL-MAPPO, MAPPO-CF-PER), outperform value-based methods like QMIX in complex, sparse-reward environments. Recent advancements emphasize communication-aware architectures, such as GNN-based frameworks, which improve target coverage and visual enhancement while minimizing communication overhead. For a 1-month implementation, utilizing PettingZoo for simulation and RLlib for deploying MAPPO is highly recommended to avoid the complexities of tuning off-policy algorithms like MADDPG.",
+    "stack": "PettingZoo, RLlib, MAPPO, PyTorch, Weights & Biases"
+  },
+  {
+    "subtopic": "Agentic AI orchestration frameworks for perception systems",
+    "file": "/home/ubuntu/pfe/research/05_agentic_ai_orchestration_frameworks_for_perception.md",
+    "key_findings": "Agentic AI orchestration frameworks like LangGraph, AutoGen, and CrewAI are shifting video perception from monolithic processing to modular, multi-agent workflows. By integrating stateful memory, tool-use, and LLM-as-judge mechanisms, these systems achieve higher accuracy and explainability in incident reporting. For a 1-month edge-first implementation, a hybrid approach combining lightweight deterministic models (YOLO11n) for continuous monitoring with quantized VLMs (Qwen2.5-VL) for anomaly analysis is highly recommended to balance latency, cost, and performance. Strict guardrails are essential to prevent hallucinations and ensure privacy compliance.",
+    "stack": "LangGraph, Qwen2.5-VL, YOLO11n, ByteTrack, GPT-4o-mini, MQTT, Redis"
+  },
+  {
+    "subtopic": "Audio event detection and anomaly detection",
+    "file": "/home/ubuntu/pfe/research/06_audio_event_detection_and_anomaly_detection.md",
+    "key_findings": "Audio event detection and anomalous sound detection are crucial for robust surveillance, especially in visually constrained environments. State-of-the-art models like BEATs and AST offer high accuracy for complex analysis, while lightweight models like YAMNet are ideal for real-time edge inference. Integrating audio and visual modalities, as demonstrated by frameworks like AVadCLIP, significantly enhances detection accuracy and robustness. For a 1-month implementation, a hierarchical approach using YAMNet at the edge and BEATs on the server, combined with late audio-visual fusion, is highly recommended.",
+    "stack": "YAMNet, BEATs, PyTorch, TensorFlow Lite, MQTT"
+  },
+  {
+    "subtopic": "Edge computing architectures for distributed video analytics",
+    "file": "/home/ubuntu/pfe/research/07_edge_computing_architectures_for_distributed_video.md",
+    "key_findings": "Edge computing architectures for distributed video analytics rely on Cloud-Edge-Terminal Collaborative (CETC) systems to minimize latency, reduce bandwidth, and enhance privacy. Edge-first processing using hardware like NVIDIA Jetson and software frameworks like DeepStream SDK allows for real-time, localized inference. Optimizing models with ONNX Runtime and TensorRT through quantization (e.g., FP16/INT8) is critical for achieving high FPS on resource-constrained edge devices. Implementing frame sampling and ROI extraction further reduces computational load. For a 1-month implementation, leveraging pre-trained lightweight models (YOLO11n) and DeepStream Python bindings is highly recommended to avoid the pitfalls of custom pipeline development.",
+    "stack": "NVIDIA Jetson AGX Orin, DeepStream SDK, TensorRT, ONNX, YOLO11n, ByteTrack, MQTT"
+  },
+  {
+    "subtopic": "Communication middleware",
+    "file": "/home/ubuntu/pfe/research/08_communication_middleware.md",
+    "key_findings": "The research indicates that a hybrid middleware approach is optimal for multi-agent surveillance systems. MQTT is highly recommended for edge-to-fog communication due to its low overhead and reliability in wireless environments. For high-throughput, exactly-once alerting from fog to cloud, Kafka or Redis Streams are preferred. For a 1-month accelerated implementation, a simplified stack of MQTT and Redis Streams is strongly advised to avoid the operational complexity of Kafka and the discovery issues of ROS 2 DDS.",
+    "stack": "MQTT, Redis Streams, JSON, Eclipse Mosquitto, paho-mqtt, redis-py"
+  },
+  {
+    "subtopic": "Privacy, ethics and legal governance",
+    "file": "/home/ubuntu/pfe/research/09_privacy_ethics_and_legal_governance.md",
+    "key_findings": "The EU AI Act prohibits real-time remote biometric identification in public spaces for law enforcement, with narrow exceptions, and classifies other biometric systems as high-risk. The CNIL emphasizes that augmented cameras introduce new privacy risks, requiring mandatory DPIAs, strict necessity justification, and privacy-by-design measures like on-edge anonymization. To comply with these regulations and the NIST AI RMF, surveillance systems must adopt an edge-first architecture, implement human-in-the-loop oversight, and continuously monitor for demographic bias.",
+    "stack": "NVIDIA Jetson Orin Nano, YOLO11n, ByteTrack, BoT-SORT, OpenCV, MQTT"
+  },
+  {
+    "subtopic": "Surveillance datasets and synthetic data generation",
+    "file": "/home/ubuntu/pfe/research/10_surveillance_datasets_and_synthetic_data_generatio.md",
+    "key_findings": "The research highlights the critical role of diverse datasets like UCF-Crime, XD-Violence, and MOT20 for training robust surveillance models. Synthetic data generation tools such as CARLA, AirSim, and NVIDIA Isaac Sim are essential for overcoming privacy constraints and data scarcity, though addressing the sim-to-real gap remains a challenge. For a 1-month implementation, leveraging lightweight models like YOLO11n and ByteTrack alongside synthetic data for pre-training is highly recommended to achieve real-time, edge-first performance.",
+    "stack": "YOLO11n, ByteTrack, MQTT, NVIDIA Omniverse Replicator, CARLA"
+  },
+  {
+    "subtopic": "Explainable and multimodal alert generation",
+    "file": "/home/ubuntu/pfe/research/11_explainable_and_multimodal_alert_generation.md",
+    "key_findings": "Recent advancements in Video-Language Models (VLMs) like Qwen2.5-VL and VideoChat have enabled chat-centric, multimodal video understanding, moving beyond simple classification to explainable alert generation. To mitigate alert fatigue and handle the computational cost of large models, a two-stage pipeline is recommended: lightweight edge models (e.g., YOLO) for continuous monitoring and triggering, followed by VLMs for deep reasoning and summarization of extracted clips. Structuring VLM outputs into evidence bundles with confidence calibration and presenting them via interactive dashboards (e.g., Streamlit) significantly enhances operator situational awareness and trust.",
+    "stack": "Qwen2.5-VL-7B-Instruct, YOLO11n, ByteTrack, MQTT, Streamlit"
+  },
+  {
+    "subtopic": "System evaluation methodology and MLOps",
+    "file": "/home/ubuntu/pfe/research/12_system_evaluation_methodology_and_mlops.md",
+    "key_findings": "The evaluation of a multi-agent surveillance system requires a dual approach: component metrics (mAP, HOTA, AUC) for individual model accuracy and system metrics (time-to-alert, false alerts, bandwidth) for operational efficiency. Ablation studies are essential to validate the contribution of specific agents and the hierarchical architecture. For reproducibility and deployment, an MLOps stack comprising Hydra, DVC, and MLflow, orchestrated via Docker Compose, is highly recommended. Given a 1-month timeframe, leveraging pre-trained models and simplifying inter-agent communication protocols are crucial strategies to avoid over-engineering and ensure a functional prototype for the thesis defense.",
+    "stack": "YOLO11n, ByteTrack, MQTT, Hydra, DVC, MLflow, Docker Compose"
+  }
+]

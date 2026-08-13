@@ -1,0 +1,20 @@
+# Core (always required)
+numpy>=1.24
+opencv-python-headless>=4.8
+paho-mqtt>=2.0
+redis>=5.0
+streamlit>=1.30
+pytest>=7.0
+
+# Perception (needed for CameraAgent / AudioAgent live runs)
+ultralytics>=8.3        # YOLO11 + ByteTrack
+librosa>=0.10           # audio loading + DSP fallback
+
+# Agentic explanation layer (optional)
+openai>=1.30
+
+# Optional extras (uncomment as needed)
+# tensorflow>=2.15 ; tensorflow_hub          # YAMNet audio classification
+# git+https://github.com/openai/CLIP.git     # CLIP zero-shot anomaly scoring
+# torch torchvision                          # required by CLIP
+# langgraph                                  # full graph orchestration variant

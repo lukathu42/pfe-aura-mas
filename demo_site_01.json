@@ -1,0 +1,24 @@
+{
+  "name": "demo_site_01",
+  "duration_seconds": 55,
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips/people.mp4",
+     "zones": [
+       {"name": "zone_A", "type": "restricted",
+        "polygon": [[380, 220], [768, 220], [768, 432], [380, 432]]},
+       {"name": "entry", "type": "entry",
+        "polygon": [[0, 300], [380, 300], [380, 432], [0, 432]]}
+     ]},
+    {"type": "camera", "id": "cam_02", "source": "data/clips/street.mp4",
+     "zones": [
+       {"name": "zone_B", "type": "restricted",
+        "polygon": [[0, 400], [960, 400], [960, 540], [0, 540]]}
+     ]},
+    {"type": "audio", "id": "mic_01", "source": "data/clips/glass_break.wav"}
+  ],
+  "ground_truth": [
+    {"event_type": "intrusion", "zone": "zone_A", "t_start": 3.0, "t_end": 35.0},
+    {"event_type": "loitering", "zone": "entry", "t_start": 16.0, "t_end": 46.0},
+    {"event_type": "audio_glass_break", "zone": null, "t_start": 14.0, "t_end": 16.0}
+  ]
+}

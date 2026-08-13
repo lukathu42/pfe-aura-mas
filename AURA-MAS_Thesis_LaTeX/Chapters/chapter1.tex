@@ -1,0 +1,50 @@
+\chapter{General Introduction}
+\label{chap:introduction}
+
+\section{Context and Motivation}
+
+Video surveillance has become one of the most ubiquitous applications of computer vision, with hundreds of millions of cameras deployed across cities, campuses, industrial facilities, and transport infrastructure. Yet the dominant operating paradigm has changed remarkably little in three decades: camera streams converge on a centralized control room, where a small number of human operators are expected to monitor dozens of screens simultaneously and to notice rare, safety-critical events in real time. Empirical studies of operator performance consistently show that sustained attention over multiple video feeds degrades within minutes, that the ratio of cameras to operators makes exhaustive monitoring physically impossible, and that most recorded footage is only ever examined \emph{after} an incident, for forensic purposes rather than prevention.
+
+The first generation of ``intelligent'' video analytics attempted to relieve this burden with centralized detection pipelines: motion detection, later deep-learning-based object detection and video anomaly detection (\gls{vad}), running on servers that ingest all streams. While detection accuracy has improved dramatically---modern detectors such as \gls{yolo} achieve real-time performance with high mean average precision, and weakly-supervised \gls{vad} methods reach strong results on benchmarks such as UCF-Crime \cite{sultani2018ucfcrime}---the centralized architecture itself has become the bottleneck. It concentrates bandwidth and compute demands, creates a single point of failure, raises serious privacy concerns because raw footage of people is transported and stored centrally, and produces floods of uncorrelated, unexplained alerts that overwhelm rather than assist the operator.
+
+In parallel, two research currents have matured to the point where a fundamentally different architecture becomes practical. First, \emph{multi-agent systems} (\gls{mas}) provide a principled framework for distributing perception and decision-making across autonomous, cooperating software agents, with well-studied coordination mechanisms such as the Contract Net Protocol \cite{smith1980contract} and auction-based task allocation \cite{parker2002alliance}. Second, the recent emergence of \emph{agentic AI}---systems in which large language models (\gls{llm}s) and vision-language models (\gls{vlm}s) plan, use tools, and reason over multimodal evidence \cite{sapkota2025ai, yao2023react}---makes it possible to add a semantic layer that can interpret, corroborate, and \emph{explain} what the perception layer detects, in natural language a human operator can act upon.
+
+This thesis sits precisely at the intersection of these currents. It asks: \emph{how should perception, coordination, decision, and explanation be organized in a modern surveillance system so that the system is faster, more accurate, more private, and more trustworthy than a centralized pipeline?}
+
+\section{Problem Statement}
+
+The problem addressed in this thesis can be stated as follows:
+
+\begin{quote}
+\emph{Design, implement, and evaluate a multi-agent intelligent surveillance system for a semi-closed site, in which autonomous perception agents detect security-relevant events from video and audio at the edge; coordinate with one another to corroborate and actively verify uncertain detections; apply deterministic, auditable alerting policies; and generate grounded natural-language explanations for a human operator---all under privacy-by-design constraints.}
+\end{quote}
+
+This problem decomposes into five research questions:
+
+\begin{itemize}
+    \item \textbf{RQ1 (Architecture).} Does a distributed, hierarchical \gls{mas} architecture measurably improve responsiveness (time-to-alert) and scalability over a centralized sequential pipeline processing the same sensor streams?
+    \item \textbf{RQ2 (Coordination).} Does explicit inter-agent coordination---specifically auction-based verification task allocation inspired by the \gls{cnp}---improve alert precision compared to uncoordinated per-sensor alerting, and at what communication cost?
+    \item \textbf{RQ3 (Multimodality).} Does fusing audio events with video events increase detection confidence and reduce false alerts compared to vision-only operation?
+    \item \textbf{RQ4 (Agentic explanation).} Can an \gls{llm}-based agentic layer generate incident explanations that are strictly grounded in system evidence---i.e., provably free of fabricated references---without influencing or delaying the safety-critical alert decision?
+    \item \textbf{RQ5 (Governance).} Can the entire pipeline operate under privacy-by-design constraints (no raw footage leaves the edge, all exported evidence anonymized, all decisions audited) while remaining useful to the operator?
+\end{itemize}
+
+\section{Objectives and Contributions}
+
+The overall objective is to deliver a working, evaluated prototype---named \textbf{AURA-MAS} (Agentic Understanding \& Response Architecture --- Multi-Agent System)---together with a reproducible evaluation methodology. The contributions of this thesis are:
+
+\begin{description}
+    \item[C1 --- A hierarchical multi-agent surveillance architecture.] A three-layer design (edge perception, site coordination, governance/operator) with seven specialized agent roles, a formal event/alert message schema, and a lightweight \gls{mqtt}/Redis communication substrate (Chapter~\ref{chap:design}).
+    \item[C2 --- An auction-based active verification protocol.] A single-round auction mechanism, derived from the \gls{cnp}, in which uncertain ``gray-zone'' incident hypotheses trigger a verification task auctioned among camera agents; the winning agent performs a high-scrutiny re-analysis whose outcome adjusts the fused confidence before the alert decision (Chapters~\ref{chap:design}--\ref{chap:implementation}).
+    \item[C3 --- Multimodal spatio-temporal late fusion.] A noisy-OR confidence combination scheme with per-modality reliability weights and cross-modal corroboration bonuses, which guarantees that independent supporting evidence strictly increases incident confidence (Chapter~\ref{chap:design}).
+    \item[C4 --- A rule-guarded agentic explanation layer.] An \gls{llm}/\gls{vlm} agent that produces natural-language incident reports \emph{after} the deterministic alert decision, with a mechanical guardrail that verifies every cited evidence identifier against the actual event log and falls back to a deterministic template on any violation (Chapter~\ref{chap:implementation}).
+    \item[C5 --- A reproducible evaluation methodology and ablation study.] Scenario replay infrastructure with ground-truth manifests, system-level metrics (event-level F1, mean time-to-alert, false alerts per hour, coordination overhead), and a four-way architectural ablation: centralized baseline, \gls{mas} without coordination, \gls{mas} with rule-based scheduling, and \gls{mas} with auction coordination (Chapter~\ref{chap:evaluation}).
+\end{description}
+
+\section{Scope and Assumptions}
+
+The thesis targets \emph{semi-closed sites}---campuses, warehouses, industrial facilities---where the set of cameras and microphones is known, zones can be declared (restricted areas, entries), and a single security operator team is responsible. The system performs \emph{event detection and alerting}, not person identification: no facial recognition, biometric matching, or person re-identification (\gls{reid}) across time is performed, by deliberate design choice aligned with the \gls{gdpr} data-minimization principle \cite{gdpr2016} and the prohibitions and high-risk provisions of the EU AI Act \cite{euaiact2024}. Evaluation is performed by replaying recorded multi-sensor scenarios with ground-truth annotations rather than live deployment, which enables controlled, repeatable ablations.
+
+\section{Thesis Organization}
+
+The remainder of this thesis is organized as follows. Chapter~\ref{chap:background_mas} introduces the theoretical foundations of multi-agent systems and agentic AI. Chapter~\ref{chap:background_perception} covers the perception building blocks: object detection, multi-object tracking, video anomaly detection, and audio event detection. Chapter~\ref{chap:sota} surveys the state of the art in distributed and multi-agent surveillance, agentic orchestration frameworks, and the legal/ethical governance landscape, and positions our contribution. Chapter~\ref{chap:design} presents the design of AURA-MAS: architecture, agent roles, message schemas, fusion and coordination mechanisms, and privacy-by-design measures. Chapter~\ref{chap:implementation} details the implementation: technology stack, code organization, and the algorithms of each agent. Chapter~\ref{chap:evaluation} describes the experimental setup, metrics, results of the architectural ablation, and discusses findings and limitations. Chapter~\ref{chap:conclusion} concludes and outlines future work.

@@ -1,0 +1,25 @@
+id,file,title,source_type,credibility,recency,directly_relevant
+00,sources/00_supplementary-papers-triage.md,Triage table of 22 supplementary papers,index,-,2026,-
+01,sources/01_32004-69-1.md,ZOUAOUI Abderaouf - "Fusion d'informations pour la videosurveillance intelligente" (actually ALPR),thesis,4,2015,no
+02,sources/02_anomaly-detection-video-surveillance.md,Boateng Godfred Kyeremeh - "Anomaly Detection in Video Surveillance" (AE+ConvLSTM),thesis,4,2024,partial
+03,sources/03_sahla-mahla-object-detection.md,NACHEF & BOUMEDIENE - real-time object detection via YOLOv3 transfer learning,thesis,3,2022,no
+04,sources/04_these-adjailia-ammar.md,Ammar Ladjailia - optical-flow human action recognition (PhD),thesis,4,2019,partial
+05,sources/05_these-bousetouane-fouad.md,Fouad Bousetouane - decentralized multi-agent consensus cross-camera Re-ID (PhD),thesis,4,2015,partial
+06,sources/06_kraled-kebir-nesrine.md,Kraled Kebir Nesrine & Chennouf Bahaeddine - HOG person detect/track master-slave,thesis,2,2016,no
+07,sources/07_tahar-dahmani-abdelkader.md,Tahar Dahmani Abdelkader - Viola-Jones face detection for VS indexing,thesis,2,2014,no
+08,sources/08_brek-bouthaina-mas-intrusion-detection.md,BREK Bouthaina - JADE multi-agent network intrusion detection (NSL-KDD),thesis,2,2019,partial
+09,../../Mémoire de Master.pdf,(same as 08 - filed outside Documents/),thesis,2,2019,partial
+10,sources/10_ai-agents-vs-agentic-ai-taxonomy.md,Sapkota Roumeliotis Karkee - AI Agents vs Agentic AI taxonomy,paper,3,2025,yes
+11,sources/11_monitorix-multi-agent-traffic-surveillance.md,Abreu et al. - Monitorix FIPA/BDI multi-agent traffic surveillance,paper,3,2000,yes
+12,sources/12_deep-research-agents-roadmap.md,Huang et al. - Deep Research Agents roadmap,paper,3,2025,partial
+13,sources/13_darwin-godel-machine-self-improving-agents.md,Zhang Hu Lu Lange Clune - Darwin Godel Machine,paper,4,2025,partial
+14,sources/14_small-language-models-agentic-ai.md,Belcak et al NVIDIA - Small Language Models for Agentic AI,paper,3,2025,partial
+15,sources/15_hota-multi-object-tracking-metric.md,Luiten et al - HOTA MOT metric,paper,5,2020,partial
+16,sources/16_bytetrack-multi-object-tracking.md,Zhang et al - ByteTrack,paper,5,2022,partial
+17,sources/17_marl-communication-survey.md,Zhu Dastani Wang - MARL communication survey,paper,4,2024,yes
+18,sources/18_edge-video-analytics-survey.md,Xu Zheng Razavi - Edge Video Analytics survey,paper,5,2023,yes
+19,sources/19_consensus-based-task-allocation-multi-robot.md,Qiu et al - Consensus-based dynamic task allocation multi-robot,paper,3,2024,yes
+20,sources/20_video-analytics-cloud-edge-terminal-survey.md,Gong et al - Cloud-Edge-Terminal video analytics survey,paper,3,2025,yes
+AUDIT-1,AURA-MAS_Thesis_LaTeX/Bibliography/bibliography.bib,Prior AI-drafted bibliography (94 entries) - spot-checked not primary evidence,artifact-audit,2,2026,n/a
+AUDIT-2,chapter_sota.tex,Prior AI-drafted SOTA chapter - spot-checked not primary evidence,artifact-audit,2,2026,n/a
+AUDIT-3,pasted_content_2.txt / pfe_surviellance_pfe/deep-research-report.md,Prior AI-generated thesis blueprint (external web search synthesis) - unverifiable citations,artifact-audit,2,2026,n/a

@@ -1,0 +1,56 @@
+\chapter{State of the Art in Distributed and Agentic Surveillance}
+\label{chap:sota}
+
+\section{Introduction}
+
+This chapter surveys the four research areas that AURA-MAS synthesizes---distributed/edge video analytics, multi-agent and \gls{marl}-based surveillance, agentic multimodal alerting, and privacy/legal governance---and concludes by positioning our contribution against the identified gaps.
+
+\section{Distributed and Edge Video Analytics}
+
+The migration of video analytics from cloud to edge is driven by bandwidth, latency, and privacy \cite{do2025survey, toshpulatov2024edge}. Reference industrial stacks (NVIDIA DeepStream \cite{nvidia2024deepstream}) demonstrate multi-stream, hardware-accelerated inference at the edge, while cross-platform runtimes (ONNX Runtime \cite{kacar2024onnx}) and single-board computers make per-camera inference economically viable \cite{sbc2024review}. Edge-cloud collaborative architectures partition work by confidence: cheap models filter at the edge, escalating ambiguous cases upward \cite{ghasemi2024edgecloudai}---a pattern AURA-MAS generalizes into agent-level escalation (edge perception $\rightarrow$ site coordination $\rightarrow$ agentic explanation). Studies of distributed surveillance systems confirm architectural benefits in elasticity and fault containment \cite{sada2019distributed, karim2024real}.
+
+On the communication substrate, comparative studies of \gls{iot} messaging protocols consistently find \gls{mqtt} superior for constrained, event-driven workloads \cite{zhang2024comparison, almanasrah2026message, arafat2025nextgen}, with Mosquitto as the standard broker \cite{light2017mosquitto} and \gls{qos} levels providing per-topic delivery guarantees. Real-time alert pipelines increasingly pair a pub/sub bus with a durable stream store (Redis Streams / Kafka) for alerts and audit \cite{melancon2026blazeaiot, gulotta2023realtime, yoshino2025high}. AURA-MAS adopts exactly this two-tier substrate.
+
+\section{Multi-Agent and Learning-Based Surveillance}
+
+Classical multi-camera coordination research addresses camera hand-off, field-of-view negotiation, and distributed tracking \cite{amosa2023multicamera, sanmiguel2022detection}. Task allocation via market mechanisms remains the practical workhorse \cite{smith1980contract, parker2002alliance}, with modern variants addressing task-oriented communication under bandwidth constraints \cite{zhang2026taskoriented} and submodular sensor selection \cite{liu2026submodular}.
+
+The learning-based line applies \gls{marl} to cooperative sensing: multi-UAV cooperative search \cite{zheng2026multiuav}, cooperative target coverage \cite{yang2025multiagent}, and improved coverage formulations \cite{wang2026improved} demonstrate that learned policies can outperform hand-crafted coordination in simulation. Value-decomposition methods (QMIX \cite{rashid2018qmix}) and centralized-critic methods (MADDPG \cite{lowe2017multiagent}) are the standard algorithms, supported by PettingZoo environments \cite{terry2021pettingzoo} and RLlib \cite{liang2018rllib}. However, published deployments in real surveillance are scarce: sample complexity, sim-to-real gaps, and non-auditable policies remain blocking for safety-critical use---a gap our auditable auction design deliberately sidesteps.
+
+\section{Agentic and Multimodal Alerting}
+
+The newest current applies \gls{llm}/\gls{vlm} agents to video understanding. Hawk \cite{cheng2025hawk} and VideoAgent \cite{fan2024videoagent} orchestrate perception tools from an \gls{llm} planner; AVadCLIP \cite{wu2025avadclip} and related audio-visual methods \cite{ustun2026multimodal} fuse modalities for anomaly detection; description-based \gls{sed} \cite{nishida2026description} and explainable \gls{vad} \cite{huang2025exvad, alkahtani2026explainable} target human-interpretable outputs; multi-agent \gls{llm} frameworks (AutoGen \cite{wu2023autogen}, LangGraph \cite{langgraph2024}, surveyed in \cite{sapkota2025ai, fan2024survey, duan2024exploration}) provide orchestration machinery, with resource-efficient serving studied in \cite{chaudhry2024murakkab}. Reliability remains the open problem: guardrail systems \cite{rebedea2023nemo} and LLM-as-judge evaluation \cite{zheng2023judging} mitigate but do not eliminate hallucination. Notably, none of the surveyed systems architecturally \emph{decouples} the generative component from the alert decision; they either use the \gls{llm} as the detector itself or as an unchecked narrator.
+
+\section{Privacy, Ethics, and Legal Governance}
+
+Surveillance AI is now heavily regulated territory. The \gls{gdpr} imposes lawfulness, data minimization, and storage limitation on video processing \cite{gdpr2016}; European guidance discourages centralized retention of identifiable footage \cite{cnil2025reduced, iapp2022smartcameras}. The EU AI Act \cite{euaiact2024} prohibits real-time remote biometric identification in public spaces (with narrow exceptions) and classifies most other surveillance AI as high-risk, mandating risk management, logging, human oversight, and transparency \cite{barkane2022questioning, barkane2025prohibited, edri2024biometric, lexology2025augmented}. Trustworthy-AI frameworks (NIST AI RMF \cite{livingsecurity2026nist}, reviewed in \cite{forasoft2026trustworthy, ruf2021demystifying}) converge on the same operational requirements: edge-local processing, anonymization, audit trails, and human-in-the-loop decision authority. These requirements are \emph{constitutive} design constraints for AURA-MAS, not afterthoughts.
+
+\section{Synthesis and Positioning}
+
+Table~\ref{tab:sota_gap} summarizes the gap analysis.
+
+\begin{table}[H]
+\centering
+\caption{Gap analysis: existing system families versus AURA-MAS.}
+\label{tab:sota_gap}
+\small
+\begin{tabular}{p{3.6cm}p{2.2cm}p{2.2cm}p{2.2cm}p{2.6cm}}
+\toprule
+\textbf{Capability} & \textbf{Centralized VMS analytics} & \textbf{MARL surveillance (research)} & \textbf{LLM video agents} & \textbf{AURA-MAS (this thesis)} \\
+\midrule
+Edge-local perception & Partial & Simulated & No (cloud VLM) & Yes \\
+Explicit coordination & No & Learned, opaque & Conversational & Auction (auditable) \\
+Multimodal fusion & Rare & Rare & Partial & Yes (noisy-OR late fusion) \\
+Explainable alerts & No & No & Yes, ungrounded & Yes, evidence-checked \\
+Decision/generation decoupling & --- & --- & No & Yes (policy-first) \\
+Privacy by design & Weak & Not addressed & Not addressed & Constitutive \\
+System-level evaluation & Vendor claims & Simulation reward & Qualitative & Replayable ablations \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three gaps emerge. \textbf{(G1)} No surveyed system combines auditable multi-agent coordination with modern zero-shot perception. \textbf{(G2)} Agentic explanation layers are never decision-decoupled and evidence-grounded by construction. \textbf{(G3)} System-level evaluation methodology (time-to-alert, false alerts per hour, coordination overhead, under controlled ablation) is largely absent from the academic literature, which evaluates models rather than systems. AURA-MAS addresses all three, at prototype scale, within explicit legal design constraints.
+
+\section{Conclusion}
+
+The state of the art provides mature components and clear regulatory constraints but no integrated, auditable, privacy-preserving multi-agent architecture with grounded agentic explanation. The next chapter presents our design.

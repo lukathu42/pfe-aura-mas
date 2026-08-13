@@ -1,0 +1,49 @@
+flowchart TB
+    classDef edge fill:#0f2942,stroke:#22d3ee,stroke-width:2px,color:#e2e8f0
+    classDef coord fill:#123a56,stroke:#22d3ee,stroke-width:2px,color:#e2e8f0
+    classDef gov fill:#1b4a63,stroke:#22d3ee,stroke-width:2px,color:#e2e8f0
+    classDef bus fill:#22d3ee,stroke:#0f2942,stroke-width:2px,color:#0f2942
+
+    subgraph L1["LAYER 1 - EDGE PERCEPTION"]
+        direction LR
+        C1["CameraAgent cam_01<br/>YOLO11n + ByteTrack<br/>zone rules + CLIP anomaly"]
+        C2["CameraAgent cam_02<br/>YOLO11n + ByteTrack<br/>zone rules"]
+        A1["AudioAgent mic_01<br/>YAMNet / DSP anomaly"]
+    end
+
+    BUS["EVENT BUS &nbsp;|&nbsp; MQTT QoS 0 - detections, tasks, bids &nbsp;&nbsp;+&nbsp;&nbsp; Redis Streams QoS 1 - alerts, audit"]
+
+    subgraph L2["LAYER 2 - SITE COORDINATION"]
+        direction LR
+        F["FusionAgent<br/>spatio-temporal late fusion<br/>monotone noisy-OR"]
+        CO["CoordinatorAgent<br/>sealed-bid verification<br/>auction (CNP)"]
+        P["PolicyAgent<br/>deterministic thresholds<br/>severity + cooldown"]
+        E["ExplanationAgent<br/>rule-guarded LLM/VLM<br/>evidence-checked report"]
+    end
+
+    subgraph L3["LAYER 3 - GOVERNANCE &amp; OPERATOR"]
+        direction LR
+        AN["Anonymized<br/>Evidence Store"]
+        OC["Operator Console<br/>Streamlit"]
+        AU["Immutable<br/>Audit Log"]
+    end
+
+    C1 -- "structured events only<br/>(never raw frames)" --> BUS
+    C2 --> BUS
+    A1 --> BUS
+    BUS --> F
+    F -- "hypotheses" --> P
+    P -- "gray zone<br/>0.35-0.75" --> CO
+    CO -- "verification score" --> P
+    CO <-- "announce / bid / award" --> BUS
+    P -- "ALERT<br/>(decision made)" --> E
+    C1 -. "anonymized crops" .-> AN
+    E --> OC
+    AN --> OC
+    P -- "every decision" --> AU
+    OC -- "ack / dismiss" --> AU
+
+    class C1,C2,A1 edge
+    class F,CO,P,E coord
+    class AN,OC,AU gov
+    class BUS bus

@@ -1,0 +1,63 @@
+{
+  "scenario": "intrusion_01",
+  "mode": "mas-auction",
+  "t_start": 1786459703.327561,
+  "wall_seconds": 74.64794039726257,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 12.0,
+      "t_end": 30.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 14.0,
+      "t_end": 16.0
+    }
+  ],
+  "alerts": [],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 1,
+      "hypotheses_out": 1
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 0,
+      "suppressed": 1,
+      "verified_up": 0,
+      "verified_down": 1,
+      "decision_ms": [
+        1286.7789268493652
+      ]
+    },
+    "coordinator": {
+      "tasks": 1,
+      "bids": 2,
+      "awards": 1,
+      "verifications": 1,
+      "messages": 5,
+      "allocation_ms": [
+        1286.5595817565918
+      ]
+    },
+    "cam_01": {
+      "frames": 200,
+      "detections": 0,
+      "events": 0,
+      "infer_ms": 208.8
+    },
+    "cam_02": {
+      "frames": 200,
+      "detections": 0,
+      "events": 0,
+      "infer_ms": 209.8
+    },
+    "mic_01": {
+      "chunks": 39,
+      "events": 1
+    }
+  }
+}

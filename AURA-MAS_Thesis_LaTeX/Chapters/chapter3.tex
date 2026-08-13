@@ -1,0 +1,44 @@
+\chapter{Perception for Intelligent Surveillance}
+\label{chap:background_perception}
+
+\section{Introduction}
+
+Every surveillance decision ultimately rests on perception: converting raw pixels and audio samples into structured, semantically meaningful events. This chapter reviews the four perception capabilities used by AURA-MAS edge agents---object detection, multi-object tracking, video anomaly detection, and audio event detection---with emphasis on the accuracy/latency trade-offs that govern edge deployment.
+
+\section{Object Detection}
+
+Object detection localizes and classifies objects in images. Modern real-time detection is dominated by the \gls{yolo} family, which frames detection as a single dense regression pass over the image. The current generation (YOLO11, released by Ultralytics in 2024 \cite{ultralytics2025yolov8}) provides a spectrum of model scales; the nano variant (YOLO11n, $\approx$2.6M parameters) achieves approximately 39.5\% \gls{map} on COCO while sustaining real-time throughput on CPU and embedded hardware, making it the natural choice for per-camera edge agents. Transformer-based detectors such as RT-DETR \cite{ultralytics2025rtdetr} eliminate non-maximum suppression and reach higher accuracy at moderate additional cost; they constitute a drop-in upgrade path in our architecture since agents encapsulate their detector behind a common event interface.
+
+Two practical considerations matter for surveillance specifically. First, detection confidence thresholds trade recall against precision at the \emph{event} level, not just the box level: a missed person is a missed intrusion. Second, pretrained COCO classes (person, car, truck, backpack, \ldots) cover the vast majority of surveillance-relevant objects, so fine-tuning is optional rather than blocking---an important de-risking property for a time-boxed project \cite{encord2024yolo}.
+
+\section{Multi-Object Tracking}
+
+Detection alone yields per-frame boxes; surveillance rules (loitering, line crossing, abandonment) require \emph{identity over time}. Multi-object tracking (MOT) associates detections across frames into trajectories. The prevailing paradigm is tracking-by-detection, and the reference algorithm is ByteTrack \cite{zhang2022bytetrack}, whose key insight is to associate \emph{every} detection box---including low-confidence ones---in a two-stage matching (high-confidence first, then low-confidence against unmatched tracks), which markedly reduces identity switches under occlusion. ByteTrack is integrated natively in the Ultralytics runtime (\texttt{model.track(..., tracker="bytetrack.yaml")}), which AURA-MAS uses directly. Evaluation of trackers uses HOTA/MOTA/IDF1 metrics computed by tools such as TrackEval \cite{luiten2020trackeval, mendez2024metrics}; multi-camera extensions of tracking (cross-camera re-identification) exist \cite{amosa2023multicamera, fei2023momct} but are deliberately excluded from this thesis on privacy grounds---our cross-camera corroboration operates at the \emph{event} level, not the identity level.
+
+\section{Video Anomaly Detection}
+
+\gls{vad} aims to flag frames or segments that deviate from normal patterns. Three families coexist \cite{gong2025survey}:
+
+\begin{itemize}
+    \item \textbf{Reconstruction/prediction methods} (autoencoders, future-frame prediction) trained on normal data only; effective on constrained scenes (Avenue, ShanghaiTech) but brittle under domain shift.
+    \item \textbf{Weakly-supervised methods}, trained with video-level labels on datasets such as UCF-Crime \cite{sultani2018ucfcrime}; the current accuracy leaders.
+    \item \textbf{Zero-shot semantic methods}, which exploit vision-language alignment: a frame embedding is compared against natural-language descriptions of normal versus anomalous situations using \gls{clip} \cite{radford2021clip}. Recent variants (VadCLIP-style, AVadCLIP with audio \cite{wu2025avadclip}, training-free EventVAD \cite{shao2025eventvad}, explainable EX-VAD \cite{huang2025exvad}) show that useful anomaly signals can be obtained \emph{without any training}, which is exceptionally attractive for a one-month project.
+\end{itemize}
+
+AURA-MAS uses the third family as an optional semantic scorer on sampled frames: anomaly score is the softmax mass assigned to a set of anomalous text prompts (``people fighting'', ``fire and smoke'', \ldots) relative to normal prompts. This complements---rather than replaces---the deterministic zone-rule engine, and every \gls{clip}-triggered event is subject to the same downstream fusion, verification, and policy thresholds as any other event.
+
+\section{Audio Event Detection}
+
+Audio is a cheap, omnidirectional, lighting-invariant modality that video-only systems ignore. Sound event detection (\gls{sed}) classifies acoustic events---glass breaking, screams, gunshots, alarms---from short audio windows. Pretrained models dominate practice: YAMNet (MobileNet-based, 521 AudioSet classes) \cite{tensorflow_yamnet, hershey2017cnn}, PANNs \cite{kong2019panns}, the Audio Spectrogram Transformer \cite{li2023ast}, and BEATs \cite{chen2022beats} offer increasing accuracy at increasing cost; efficient distillations exist for edge deployment \cite{schmid2024improving, saradopoulos2025real}. A surveillance-relevant subset of classes can be mapped directly to alert-worthy event types, with per-class confidence thresholds. Because deep audio stacks can be heavy for constrained hardware, AURA-MAS additionally implements a dependency-light \gls{dsp} fallback: rolling z-scores of short-time energy and spectral flatness flag acoustic transients as generic \texttt{audio\_anomaly} events---sufficient to demonstrate multimodal fusion even where TensorFlow is unavailable.
+
+\section{Multimodal Fusion}
+
+Fusion strategies are classified as early (feature-level), late (decision-level), or hybrid. For a distributed system, \emph{late fusion} is the natural fit: each agent emits calibrated event confidences, and a fusion node combines them without needing access to raw features---preserving both bandwidth and privacy. AURA-MAS groups events into spatio-temporal hypotheses (same incident family, same zone, within a sliding window) and combines confidences with a noisy-OR model weighted by per-modality reliability, plus small calibrated bonuses for cross-modality and cross-sensor corroboration (Section~\ref{sec:design_fusion}). Audio-visual \gls{vad} research confirms that such corroboration materially improves robustness \cite{wu2025avadclip, ustun2026multimodal}.
+
+\section{Datasets and Evaluation Data}
+
+Public datasets relevant to this work include UCF-Crime (1{,}900 untrimmed real-world videos across 13 anomaly classes) \cite{sultani2018ucfcrime}, Avenue and ShanghaiTech for scene-specific \gls{vad}, VIRAT for activity detection from static surveillance cameras, and MEVA for large-scale multi-camera activity detection \cite{tan2025how}. Synthetic data generation is an increasingly credible complement \cite{delussu2024synthetic, riaz2023synthetic, chu2025lfsyngen}. For \emph{system-level} evaluation (as opposed to model-level), no standard benchmark exists that combines multi-sensor streams with ground-truth incident annotations; this thesis therefore contributes replayable scenario manifests built from public clips and scripted recordings (Chapter~\ref{chap:evaluation}), following the methodological lead of ETISEO \cite{nghiem2007etiseo} and modern MLOps evaluation practice \cite{aicity2025}.
+
+\section{Conclusion}
+
+The perception toolbox for surveillance is mature: pretrained real-time detectors, robust trackers, zero-shot semantic anomaly scorers, and pretrained audio classifiers can be composed without any model training. The engineering challenge---and the scientific opportunity---has shifted upward, to the architecture that organizes these components: how their outputs are fused, verified, decided upon, and explained. That architecture is the subject of the remainder of this thesis.

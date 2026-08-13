@@ -1,0 +1,16 @@
+{
+  "name": "intrusion_01",
+  "duration_seconds": 60,
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips/intrusion.mp4",
+     "zones": [{"name": "zone_A", "type": "restricted",
+                "polygon": [[100, 200], [500, 200], [500, 470], [100, 470]]}]},
+    {"type": "camera", "id": "cam_02", "source": "data/clips/overview.mp4",
+     "zones": []},
+    {"type": "audio", "id": "mic_01", "source": "data/clips/glass_break.wav"}
+  ],
+  "ground_truth": [
+    {"event_type": "intrusion", "zone": "zone_A", "t_start": 12.0, "t_end": 30.0},
+    {"event_type": "audio_glass_break", "zone": null, "t_start": 14.0, "t_end": 16.0}
+  ]
+}

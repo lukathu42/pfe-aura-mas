@@ -1,0 +1,46 @@
+1.https://web.stanford.edu/~jurafsky/slp3/ed3book_jan26.pdf
+2.https://www.cs.ubc.ca/~murphyk/Bayes/rabiner.pdf
+3.https://www.cs.toronto.edu/~hinton/absps/DNN-2012-proof.pdf
+4.https://www.cs.toronto.edu/~fritz/absps/RNN13.pdf
+5.https://www.researchgate.net/publication/13853244_Long_Short-Term_Memory
+6.https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/CNN_ASLPTrans2-14.pdf
+7.https://proceedings.neurips.cc/paper_files/paper/2017/file/3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf
+8.https://cdn.openai.com/papers/whisper.pdf
+9.https://proceedings.neurips.cc/paper/2020/file/92d1e1eb1cd6f9fba3227870bb6d7f07-Paper.pdf
+10.https://www.isca-archive.org/interspeech_2020/gulati20_interspeech.pdf
+11.https://people.idsia.ch/~santiago/papers/icml2006.pdf
+12.https://www.isca-archive.org/interspeech_2019/park19e_interspeech.pdf
+13.https://www.intel.com/content/dam/www/public/us/en/ai/documents/1412.6980.pdf
+14.https://www.cs.toronto.edu/~gdahl/papers/DBN4LVCSR-TransASLP.pdf
+15.https://www.cs.toronto.edu/~asamir/papers/icassp13_cnn.pdf ..DEEP CONVOLUTIONAL NEURAL NETWORKS FOR LVCSR not Deep Convolutional Neural Networks for Large-Scale Speech
+Tasks
+16.https://arxiv.org/pdf/1406.1078
+17.https://arxiv.org/pdf/1409.0473
+18.https://arxiv.org/pdf/1506.07503
+19.https://arxiv.org/pdf/1508.01211
+20.https://arxiv.org/pdf/1412.5567
+21.https://arxiv.org/pdf/1512.02595
+22.https://houwx.net/files/papers/others/2018_icassp_speech_transformer.pdf
+23.https://arxiv.org/pdf/2002.02562
+24.https://arxiv.org/pdf/2106.07447
+25.https://arxiv.org/pdf/2303.01037
+26.https://arxiv.org/pdf/2305.13516
+27.https://arxiv.org/pdf/2404.09841 of Francis McCann Ramirez not Kensho Hara
+28.keep it 
+29.https://arxiv.org/pdf/1211.3711
+30.https://arxiv.org/pdf/2202.01855 ..Self-Supervised Learning with Random-Projection Quantizer
+for Speech Recognition not BEST-RQ: Self-supervised learning of speech representation
+via random-projection quantizer.
+31.https://arxiv.org/pdf/2501.05948 of Yash Khare not Luka Chkhetiani
+32.keep it
+33.https://arxiv.org/pdf/1804.00015
+34.https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43905.pdf
+35.https://arxiv.org/pdf/1609.06773
+36.https://arxiv.org/pdf/1811.06621
+37.https://arxiv.org/pdf/1904.05862
+38.https://arxiv.org/pdf/2006.13979
+39.https://www.danielpovey.com/files/2015_icassp_librispeech.pdf
+40.https://aclanthology.org/W09-0807.pdf
+41.http://www.lrec-conf.org/proceedings/lrec2006/pdf/543_pdf.pdf ..Developing and Using a Pilot Dialectal Arabic Treebank  not A Human Language Technology Framework for Arabic
+Dialect Processing
+42.https://shs.hal.science/halshs-01969148/file/Addressing_Code-Switching_in_FrenchAlgerian_Arabic.pdf
