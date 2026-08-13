@@ -35,17 +35,38 @@ first draft / scaffold to understand deeply, validate, and harden — not as
 finished, submittable work. In particular, before trusting or extending
 anything:
 
-- The evaluation in `STATE_NOTES.md` / `results/` used **2 real pedestrian
-  clips + 1 synthetic audio clip**, not the UCF-Crime/ESC-50 sample called
-  for in W1.2/W2.6. Numbers there are illustrative, not thesis-grade.
-- CLIP anomaly scoring and YAMNet audio classification (W2.1, W1.5) are
-  wired up but **optional and lazily imported** — verify which fallback
-  path actually ran in any given result before citing it.
+- **Update (2026-08-13, `code-hardening` branch):** the original n=1
+  `demo_site_01`-only evaluation described above has been superseded by a
+  44-run campaign across a real 6-scenario pack (`results/summary.csv`,
+  `results/evaluation_campaign_notes.md`). Read that notes file before
+  trusting anything in `results/` — it documents three real, pre-existing
+  bugs found and fixed (a silently-broken `.venv`; `centralized` mode's
+  timing rules using wall-clock instead of video time, so it could never
+  detect loitering/abandoned-object; `intrusion_01`'s original video sources
+  being synthetic placeholder graphics YOLO can never see a person in, so
+  that scenario never worked even in the results already on disk before this
+  branch started). `data/clips_real/` now holds real, citably-licensed
+  video/audio (AIRTLab violence dataset, ABODA, ESC-50) — see
+  `data/clips_real/manifest.json` for sources and why UCF-Crime/Avenue
+  weren't used. `data/clips/intrusion.mp4` and `overview.mp4` are still on
+  disk but nothing in `scenarios/` references them anymore — don't reuse
+  them, they're synthetic stick-figure placeholders, not real footage.
+- CLIP anomaly scoring is now calibrated (`results/clip_anomaly_calibration_notes.md`,
+  AUC=0.308 — worse than random, root-caused to a prompt/scene domain
+  mismatch, not a broken scorer). YAMNet is still **not installed** in this
+  environment (disk-constrained) — `AudioAgent` runs its DSP fallback, which
+  emits generic `audio_anomaly` instead of class-specific events; this
+  breaks the cross-modality family match the fusion-corroboration claim (C3)
+  needs. Verify which audio path actually ran before citing a result.
 - No `configs/` directory exists yet despite the README describing one;
   zone/threshold config currently lives inline in `scenarios/*.json`.
 
 Before writing thesis prose or citing metrics, regenerate the numbers
 yourself and check `results/summary.csv` timestamps against what's cited.
+Detection showed real run-to-run non-determinism during this campaign
+(likely PyTorch CPU-threading float non-determinism interacting with
+borderline confidence thresholds) — treat any single run as noisy; rerun
+N≥3 times before citing a number as final.
 
 ## Architecture
 
@@ -111,7 +132,9 @@ aura_mas/            the actual Python package (canonical source of truth)
   dashboard/          app.py (Streamlit operator console)
   tests/              test_pipeline.py (offline, no models needed, <1s)
 scenarios/            scenario manifests (also duplicated under aura_mas/scenarios — check both if editing)
-data/                 clips/ (sample video+audio), evidence/, alerts_*.jsonl, audit_*.jsonl
+data/                 clips/ (legacy — includes 2 synthetic placeholder clips, don't reuse),
+                       clips_real/ (real licensed video+audio, see manifest.json),
+                       evidence/, alerts_*.jsonl, audit_*.jsonl
 results/              summary.csv, run_*.json, figures/
 research/             wide-research reports + landscape-positioning study (has its own BibTeX + findings)
 AURA-MAS_Thesis_LaTeX/  the real, compiling LaTeX thesis project (main.pdf here is the good one)
@@ -161,6 +184,15 @@ Heavy optional deps (`tensorflow`+`tensorflow_hub` for YAMNet, CLIP+torch,
 the system is designed to degrade gracefully without them. Don't make them
 hard requirements without checking with the user; this fallback behavior is
 a deliberate risk-mitigation from the execution plan's "Risk fallback table".
+
+**If reinstalling `torch`/`ultralytics` from scratch**, install torch from
+the CPU wheel index first (`pip install torch torchvision --index-url
+https://download.pytorch.org/whl/cpu`) *before* `pip install -r
+requirements.txt`. A plain `pip install torch` (or letting `ultralytics`
+pull it in transitively) resolves to the CUDA build by default even on a
+machine with no GPU, silently downloading several GB of `nvidia-*`/`triton`
+packages — this happened during the 2026-08-13 evaluation pass and ate half
+the available disk before being caught.
 
 ## Working conventions
 

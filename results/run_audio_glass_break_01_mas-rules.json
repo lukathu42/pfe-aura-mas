@@ -1,0 +1,65 @@
+{
+  "scenario": "audio_glass_break_01",
+  "mode": "mas-rules",
+  "vision_only": false,
+  "t_start": 1786631553.937927,
+  "wall_seconds": 26.94140315055847,
+  "ground_truth": [
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 19.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1786631578.9462698,
+      "alert_id": "alt_9f7a1a3dda",
+      "timestamp": 1786631578.946206,
+      "severity": "INFO",
+      "event_type": "audio_anomaly",
+      "confidence": 0.973,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_b9e481d96b",
+        "ev_79af8d2201",
+        "ev_a298b2ce8d"
+      ],
+      "explanation": "[INFO] audio anomaly detected in zone 'site' with fused confidence 0.97, corroborated by 3 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 3,
+      "hypotheses_out": 1
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 1,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.03361701965332031
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "mic_01": {
+      "chunks": 19,
+      "events": 3
+    }
+  }
+}

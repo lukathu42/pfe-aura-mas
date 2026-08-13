@@ -86,7 +86,39 @@ takes.
 
 ## 4. Immediate next actions
 
-- [ ] Fix author/supervisor identity in `AURA-MAS_Thesis_LaTeX/main.tex`
-- [ ] Pick and download the UCF-Crime subset + audio clips (W1.2)
-- [ ] Spot-check the remaining 88 unchecked `bibliography.bib` entries
-- [ ] Build out `scenarios/` to the 6-scenario pack from W2.6
+- [ ] Fix author/supervisor identity in `AURA-MAS_Thesis_LaTeX/main.tex` (manuscript — out of scope for the `code-hardening` branch, see §5)
+- [x] Pick and download real dataset/audio assets (W1.2) — done on `code-hardening`, see `data/clips_real/manifest.json` for what was substituted and why (UCF-Crime/Avenue were impractical here)
+- [ ] Spot-check the remaining 88 unchecked `bibliography.bib` entries (manuscript — out of scope for `code-hardening`)
+- [x] Build out `scenarios/` to the 6-scenario pack from W2.6 — done
+
+## 5. `code-hardening` branch — what actually got done (code only, no manuscript changes)
+
+Per explicit instruction, this branch only touches `aura_mas/`, `scenarios/`,
+`data/`, and `results/` — items 1, 2, and 6 above (identity fix, bibliography,
+chapter rewrites) are still open and untouched.
+
+- Steps 3-5 from §3 above are done: real dataset acquisition, the 6-scenario
+  pack, CLIP calibration, and a full 44-run evaluation campaign (7 scenarios
+  × 4 modes × vision-only/audio-visual where applicable). See
+  `results/evaluation_campaign_notes.md` for the full writeup — short version:
+  found and fixed 3 real pre-existing bugs (`.venv` silently broken and about
+  to pollute the global Python env; `centralized` mode's timing rules used
+  wall-clock instead of video time, meaning it could never detect
+  loitering/abandoned-object; `intrusion_01`'s video sources were synthetic
+  placeholder graphics that YOLO can never detect a person in, so that
+  scenario never worked, including in the original pre-existing results
+  already on disk before this branch started).
+- `results/clip_anomaly_calibration_notes.md`: CLIP zero-shot AUC = 0.308
+  (worse than random) on the fetched clips, root-caused to a prompt/scene
+  domain mismatch (`NORMAL_PROMPTS` assume indoor warehouse scenes, test
+  clips are outdoor street CCTV) — not a broken scorer. Documented, not
+  hand-tuned away.
+- `results/explanation_eval_notes.md`: template-fallback explanations (no
+  LLM key in this environment) are evidence-complete on the alerts checked.
+- Still open even within code scope: YAMNet not installed (disk-constrained;
+  audio events degrade to generic `audio_anomaly`, which breaks the
+  cross-modality family match needed for the C3 fusion-corroboration story —
+  see campaign notes), and detection showed real run-to-run non-determinism
+  that a single-pass campaign can't average out. Both are called out
+  explicitly in `results/evaluation_campaign_notes.md` rather than papered
+  over with a cherry-picked run.

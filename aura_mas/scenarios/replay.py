@@ -43,17 +43,24 @@ log = logging.getLogger("aura.replay")
 
 def run_scenario(manifest_path: str, mode: str = "mas-auction",
                  bus_kind: str = "auto", use_llm: bool = False,
-                 out_path: str | None = None) -> Dict:
-    """mode: mas-auction | mas-rules | mas-nocoord | centralized"""
+                 out_path: str | None = None,
+                 vision_only: bool = False) -> Dict:
+    """mode: mas-auction | mas-rules | mas-nocoord | centralized
+
+    vision_only: drop audio sensors at run time (vision-only vs. audio-visual
+    ablation) without needing a duplicate manifest per scenario.
+    """
     with open(manifest_path) as f:
         manifest = json.load(f)
 
     bus = make_bus(bus_kind)
+    tag = f"{mode}-visiononly" if vision_only else mode
     store = AlertStore(redis_url=None,
-                       jsonl_path=f"data/alerts_{manifest['name']}_{mode}.jsonl")
+                       jsonl_path=f"data/alerts_{manifest['name']}_{tag}.jsonl")
 
     camera_specs = [s for s in manifest["sensors"] if s["type"] == "camera"]
-    audio_specs = [s for s in manifest["sensors"] if s["type"] == "audio"]
+    audio_specs = [] if vision_only else [
+        s for s in manifest["sensors"] if s["type"] == "audio"]
     cam_ids = [s["id"] for s in camera_specs]
 
     coord_mode = {"mas-auction": "auction", "mas-rules": "roundrobin",
@@ -112,7 +119,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     time.sleep(0.5)
 
     result = {
-        "scenario": manifest["name"], "mode": mode,
+        "scenario": manifest["name"], "mode": mode, "vision_only": vision_only,
         "t_start": t_scenario_start, "wall_seconds": time.time() - t_scenario_start,
         "ground_truth": manifest.get("ground_truth", []),
         "alerts": alerts_log,
@@ -123,13 +130,13 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
                             for k, v in a.metrics.items()} for a in agents},
         },
     }
-    out_path = out_path or f"results/run_{manifest['name']}_{mode}.json"
+    out_path = out_path or f"results/run_{manifest['name']}_{tag}.json"
     import os
     os.makedirs("results", exist_ok=True)
     with open(out_path, "w") as f:
         json.dump(result, f, indent=2, default=str)
     log.info("scenario %s [%s]: %d alerts -> %s",
-             manifest["name"], mode, len(alerts_log), out_path)
+             manifest["name"], tag, len(alerts_log), out_path)
     return result
 
 
@@ -144,9 +151,11 @@ def main() -> None:
     p.add_argument("--bus", default="auto", choices=["auto", "mqtt", "local"])
     p.add_argument("--llm", action="store_true",
                    help="enable LLM explanation agent")
+    p.add_argument("--vision-only", action="store_true",
+                   help="drop audio sensors (vision-only vs audio-visual ablation)")
     args = p.parse_args()
     run_scenario(args.manifest, mode=args.mode, bus_kind=args.bus,
-                 use_llm=args.llm)
+                 use_llm=args.llm, vision_only=args.vision_only)
 
 
 if __name__ == "__main__":

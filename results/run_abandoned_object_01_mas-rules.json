@@ -1,0 +1,50 @@
+{
+  "scenario": "abandoned_object_01",
+  "mode": "mas-rules",
+  "vision_only": false,
+  "t_start": 1786631268.977827,
+  "wall_seconds": 82.57793116569519,
+  "ground_truth": [
+    {
+      "event_type": "abandoned_object",
+      "zone": null,
+      "t_start": 58.0,
+      "t_end": 73.0
+    }
+  ],
+  "alerts": [],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 2,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 0,
+      "suppressed": 2,
+      "verified_up": 0,
+      "verified_down": 2,
+      "decision_ms": [
+        190.55819511413574,
+        200.41728019714355
+      ]
+    },
+    "coordinator": {
+      "tasks": 2,
+      "bids": 0,
+      "awards": 2,
+      "verifications": 2,
+      "messages": 4,
+      "allocation_ms": [
+        190.37485122680664,
+        200.1936435699463
+      ]
+    },
+    "cam_01": {
+      "frames": 364,
+      "detections": 547,
+      "events": 2,
+      "infer_ms": 132.6
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "audio_glass_break_01",
+  "duration_seconds": 21,
+  "sensors": [
+    {"type": "audio", "id": "mic_01", "source": "data/clips_real/audio/glass_breaking_with_baseline.wav"}
+  ],
+  "ground_truth": [
+    {"event_type": "audio_glass_break", "zone": null, "t_start": 15.0, "t_end": 19.5}
+  ],
+  "notes": "Audio-only, no camera sensor: isolates the audio branch (W1.5) from vision so its recall/false-alert behavior can be measured independently. glass_breaking_with_baseline.wav = 15s of synthetic low-level white noise + the real ESC-50 'glass_breaking' recording (data/clips_real/manifest.json). The 15s prefix exists because AudioAgent's DSP fallback (DspAnomalyScorer) needs >=10 one-second chunks of rolling history before its z-score baseline is populated (see audio_agent.py) -- a bare 5s clip with no lead-in structurally can never fire under the DSP path, which was verified by testing the original 5s-only clip and observing zero events. Expected event_type is YAMNet-class-specific ('audio_glass_break') only if tensorflow/tensorflow_hub is installed and YAMNet loads; otherwise AudioAgent runs the DSP fallback and emits a generic 'audio_anomaly' without the specific class label -- check which path actually ran before citing results from this scenario."
+}

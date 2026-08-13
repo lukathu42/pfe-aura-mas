@@ -1,16 +1,17 @@
 {
   "name": "intrusion_01",
-  "duration_seconds": 60,
+  "duration_seconds": 55,
   "sensors": [
-    {"type": "camera", "id": "cam_01", "source": "data/clips/intrusion.mp4",
+    {"type": "camera", "id": "cam_01", "source": "data/clips/people.mp4",
      "zones": [{"name": "zone_A", "type": "restricted",
-                "polygon": [[100, 200], [500, 200], [500, 470], [100, 470]]}]},
-    {"type": "camera", "id": "cam_02", "source": "data/clips/overview.mp4",
+                "polygon": [[0, 60], [768, 60], [768, 432], [0, 432]]}]},
+    {"type": "camera", "id": "cam_02", "source": "data/clips/street.mp4",
      "zones": []},
     {"type": "audio", "id": "mic_01", "source": "data/clips/glass_break.wav"}
   ],
   "ground_truth": [
-    {"event_type": "intrusion", "zone": "zone_A", "t_start": 12.0, "t_end": 30.0},
+    {"event_type": "intrusion", "zone": "zone_A", "t_start": 15.0, "t_end": 34.0},
     {"event_type": "audio_glass_break", "zone": null, "t_start": 14.0, "t_end": 16.0}
-  ]
+  ],
+  "notes": "cam_01/cam_02 originally pointed at data/clips/intrusion.mp4 and overview.mp4 -- both turned out to be synthetic vector-graphic placeholders (a flat stick-figure icon over a drawn 'ZONE A - RESTRICTED' rectangle), not real footage. YOLO11n never detects a 'person' in them at any confidence down to 0.05 (verified directly; the only class ever detected in intrusion.mp4 across the whole clip is a stray 'sports ball'), so this scenario could never have produced a real intrusion detection -- confirmed by checking the ORIGINAL pre-existing results/run_intrusion_01_*.json and data/alerts_intrusion_01_centralized.jsonl already on disk before this session started: they show zero intrusion alerts too. Repointed cam_01/cam_02 at the real people.mp4/street.mp4 clips already used successfully elsewhere in this pack; zone_A widened to cover most of the frame (people.mp4's tracked walkers pass through varying x/y, never a fixed narrow box) and GT timing set to match verified real ByteTrack detections (person present in-zone ~15-21s and ~28-34s), not an unverified guess."
 }

@@ -1,0 +1,7 @@
+clip,label,n_frames,mean_score,max_score,top_predicted_label
+data/clips_real/violence/violent_1.mp4,anomaly,29,0.3985,0.8389,a person falling on the ground
+data/clips_real/violence/violent_10.mp4,anomaly,38,0.601,0.9537,a person falling on the ground
+data/clips_real/violence/nonviolent_1.mp4,normal,32,0.6435,0.9105,a person breaking into a restricted area
+data/clips/overview.mp4,normal,200,0.8797,0.9272,a person breaking into a restricted area
+data/clips/street.mp4,normal,130,0.9193,0.9842,a person falling on the ground
+data/clips/people.mp4,normal,120,0.0899,0.5836,a person falling on the ground

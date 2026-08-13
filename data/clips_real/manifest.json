@@ -1,0 +1,60 @@
+{
+  "description": "Real, publicly licensed clips fetched to replace/extend the single synthetic glass_break.wav and the 2-clip video set used in the original demo_site_01/intrusion_01 scenarios. Fetched 2026-08-13 for the 6-scenario evaluation pack (EXECUTION_PLAN.md step 3).",
+  "assets": [
+    {
+      "path": "violence/violent_1.mp4",
+      "source": "A Dataset for Automatic Violence Detection in Videos (Bianculli et al., Data in Brief 33, 2020)",
+      "source_url": "https://github.com/airtlab/A-Dataset-for-Automatic-Violence-Detection-in-Videos",
+      "license": "Free for research and educational purposes (dataset release agreement)",
+      "citation": "M. Bianculli, N. Falcionelli, P. Sernani, S. Tomassini, P. Contardo, M. Lombardi, A.F. Dragoni, A dataset for automatic violence detection in videos, Data in Brief 33 (2020). doi:10.1016/j.dib.2020.106587.",
+      "notes": "violent/cam1/1.mp4, simulated brawl actions (kicks, punches, slapping), ~4.8s, 1920x1080@30fps"
+    },
+    {
+      "path": "violence/violent_10.mp4",
+      "source": "same as above",
+      "source_url": "https://github.com/airtlab/A-Dataset-for-Automatic-Violence-Detection-in-Videos",
+      "license": "Free for research and educational purposes",
+      "notes": "violent/cam1/10.mp4, ~6.2s"
+    },
+    {
+      "path": "violence/nonviolent_1.mp4",
+      "source": "same dataset, non-violent/cam1/1.mp4",
+      "source_url": "https://github.com/airtlab/A-Dataset-for-Automatic-Violence-Detection-in-Videos",
+      "license": "Free for research and educational purposes",
+      "notes": "Deliberately fast/ambiguous non-violent action (hug/high-five/clap) recorded specifically to probe false positives. Used as a hard-negative clip, no violence GT event."
+    },
+    {
+      "path": "abandoned_object/video1.avi",
+      "source": "ABODA - Abandoned Object Dataset (Lin et al.)",
+      "source_url": "https://github.com/kevinlin311tw/ABODA",
+      "license": "Public research dataset, no explicit per-file license stated in repo; used for non-commercial academic evaluation",
+      "notes": "73s indoor hallway sequence. No frame-level GT ships with ABODA; approximate onset (~21s, person leaves after placing an object; motion resumes ~46-49s from a passerby) estimated via aura_mas/scripts/estimate_motion_windows.py, sanity-checked against extracted frames."
+    },
+    {
+      "path": "audio/glass_breaking_esc50.wav",
+      "source": "ESC-50: Dataset for Environmental Sound Classification (Piczak, 2015)",
+      "source_url": "https://github.com/karolpiczak/ESC-50",
+      "license": "CC BY-NC 3.0",
+      "citation": "K. J. Piczak. ESC: Dataset for Environmental Sound Classification. Proceedings of the 23rd ACM International Conference on Multimedia, 2015.",
+      "notes": "category 'glass_breaking', 5s, real recorded (not synthetic)"
+    },
+    {
+      "path": "audio/clock_alarm_esc50.wav",
+      "source": "ESC-50",
+      "source_url": "https://github.com/karolpiczak/ESC-50",
+      "license": "CC BY-NC 3.0",
+      "notes": "category 'clock_alarm', used as the audio_alarm proxy event"
+    },
+    {
+      "path": "audio/siren_esc50.wav",
+      "source": "ESC-50",
+      "source_url": "https://github.com/karolpiczak/ESC-50",
+      "license": "CC BY-NC 3.0",
+      "notes": "category 'siren', 5s"
+    }
+  ],
+  "substitutions_from_original_plan": [
+    "W1.2 named UCF-Crime and ESC-50/UrbanSound8K explicitly. UCF-Crime and the CUHK Avenue dataset (the plan's own documented fallback) were both impractical here: UCF-Crime requires a gated multi-GB download, and the official Avenue mirror (cse.cuhk.edu.hk) served at ~40 KB/s in this environment (~5h for 813MB) against an 18GB free-disk budget. Substituted GitHub-hosted, directly downloadable, citable academic datasets covering the same event categories the schedule scenarios need (violence/fight, abandoned object) instead of blocking on a single slow mirror, per the plan's own 'never spend more than one day blocked on a single component' rule.",
+    "'scream' has no ESC-50 category; substituted 'siren' (present) as an additional hazard-style audio event. Glass-break and alarm categories are covered by real ESC-50 recordings rather than the previous synthetic glass_break.wav."
+  ]
+}

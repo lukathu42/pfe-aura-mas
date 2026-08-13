@@ -1,0 +1,15 @@
+{
+  "name": "combined_audio_video_01",
+  "duration_seconds": 60,
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips/people.mp4",
+     "zones": [{"name": "zone_A", "type": "restricted",
+                "polygon": [[0, 60], [768, 60], [768, 432], [0, 432]]}]},
+    {"type": "audio", "id": "mic_01", "source": "data/clips_real/audio/glass_breaking_with_baseline.wav"}
+  ],
+  "ground_truth": [
+    {"event_type": "intrusion", "zone": "zone_A", "t_start": 15.0, "t_end": 34.0},
+    {"event_type": "audio_glass_break", "zone": null, "t_start": 15.0, "t_end": 19.5}
+  ],
+  "notes": "cam_01 originally pointed at data/clips/intrusion.mp4, a synthetic vector-graphic placeholder (not real footage) that YOLO11n never detects a person in -- same defect fixed in intrusion_01.json (see its notes for how this was verified); repointed at the same real people.mp4/zone_A used there, timed to overlap the audio event. Deliberately overlaps a video 'intrusion' event (family: security, per FusionAgent.EVENT_FAMILIES) with a real audio 'audio_glass_break' event (also family: security) in the same time window (both agents start playback at scenario t=0, so audio GT timing must match the audio FILE's own timeline, not an arbitrary offset -- glass_breaking_with_baseline.wav is 15s of baseline noise + the real glass-break at ~15-19.5s; see audio_glass_break_01.json for why the 15s lead-in is required for the DSP fallback to fire at all). FusionAgent's noisy-OR corroboration (thesis claim C3) should raise fused confidence versus either modality alone. Requires YAMNet (tensorflow_hub) to actually emit the audio_glass_break label; under the DSP fallback the audio event degrades to generic 'audio_anomaly' (family: violence_or_hazard) and will NOT corroborate -- that mismatch is itself a useful ablation data point, not a bug, so don't 'fix' it by hand-mapping families."
+}

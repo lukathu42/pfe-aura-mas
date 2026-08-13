@@ -1,0 +1,12 @@
+{
+  "name": "fight_01",
+  "duration_seconds": 8,
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips_real/violence/violent_1.mp4",
+     "zones": [], "enable_clip": true}
+  ],
+  "ground_truth": [
+    {"event_type": "anomaly", "zone": null, "t_start": 0.5, "t_end": 4.5}
+  ],
+  "notes": "Zone rules (intrusion/loitering/abandoned_object) cannot detect this — 'people fighting violently' is only reachable through CLIP zero-shot anomaly scoring (ClipAnomalyScorer.ANOMALY_PROMPTS), hence enable_clip=true. Source: AIRTLab violence dataset violent/cam1/1.mp4, ~4.8s simulated brawl (see data/clips_real/manifest.json)."
+}

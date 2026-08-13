@@ -1,0 +1,110 @@
+{
+  "scenario": "intrusion_01",
+  "mode": "mas-nocoord",
+  "vision_only": true,
+  "t_start": 1786636306.8699381,
+  "wall_seconds": 84.48105716705322,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 34.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 14.0,
+      "t_end": 16.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1786636321.885672,
+      "alert_id": "alt_41bd4f2d06",
+      "timestamp": 1786636321.8855813,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.78,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636315_daf8da.jpg"
+      ],
+      "fused_events": [
+        "ev_ac2561b1f0"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.78, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1786636361.8980846,
+      "alert_id": "alt_db46a53073",
+      "timestamp": 1786636361.8980079,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.994,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636350_b23d30.jpg",
+        "data/evidence/cam_01_intrusion_1786636350_999de0.jpg",
+        "data/evidence/cam_01_intrusion_1786636351_e9dbc5.jpg",
+        "data/evidence/cam_01_intrusion_1786636352_095a73.jpg",
+        "data/evidence/cam_01_intrusion_1786636355_67105a.jpg"
+      ],
+      "fused_events": [
+        "ev_d1e74510e2",
+        "ev_57c0af6e57",
+        "ev_1cf730746e",
+        "ev_e649163436",
+        "ev_95ed9c07f2"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.99, corroborated by 5 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 9,
+      "hypotheses_out": 4
+    },
+    "policy": {
+      "hypotheses": 4,
+      "alerts": 2,
+      "suppressed": 2,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.0286102294921875,
+        0.024557113647460938,
+        0.02193450927734375,
+        0.025033950805664062
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 9,
+      "infer_ms": 226.4
+    },
+    "cam_02": {
+      "frames": 323,
+      "detections": 149,
+      "events": 0,
+      "infer_ms": 222.9
+    }
+  }
+}

@@ -60,8 +60,9 @@ def evaluate_run(run: Dict, tolerance: float = 5.0) -> Dict:
     coord = run.get("agent_metrics", {}).get("coordinator", {})
     alloc = coord.get("allocation_ms", [])
 
+    mode_label = run["mode"] + ("-visiononly" if run.get("vision_only") else "")
     return {
-        "scenario": run["scenario"], "mode": run["mode"],
+        "scenario": run["scenario"], "mode": mode_label,
         "gt_events": len(gt), "alerts": len(alerts),
         "tp": tp, "fp": fp, "fn": fn,
         "precision": round(precision, 3), "recall": round(recall, 3),

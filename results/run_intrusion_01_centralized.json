@@ -1,0 +1,155 @@
+{
+  "scenario": "intrusion_01",
+  "mode": "centralized",
+  "vision_only": false,
+  "t_start": 1786636788.7974098,
+  "wall_seconds": 253.19628858566284,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 34.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 14.0,
+      "t_end": 16.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1786636804.8341632,
+      "alert_id": "alt_de682026c1",
+      "timestamp": 1786636804.8340726,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.78,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636798_70e339.jpg"
+      ],
+      "fused_events": [
+        "ev_dcaa7a8916"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.78, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1786636848.9125159,
+      "alert_id": "alt_ba2d3599ff",
+      "timestamp": 1786636848.9124377,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.958,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636842_142452.jpg",
+        "data/evidence/cam_01_intrusion_1786636842_38a1d3.jpg"
+      ],
+      "fused_events": [
+        "ev_7f18830092",
+        "ev_cb28a34554"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.96, corroborated by 2 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1786636879.239784,
+      "alert_id": "alt_8dd59f9fc5",
+      "timestamp": 1786636879.2393038,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.994,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636867_5f1be3.jpg",
+        "data/evidence/cam_01_intrusion_1786636867_11c046.jpg",
+        "data/evidence/cam_01_intrusion_1786636868_3a5db0.jpg",
+        "data/evidence/cam_01_intrusion_1786636869_7fa380.jpg",
+        "data/evidence/cam_01_intrusion_1786636873_4fcbea.jpg"
+      ],
+      "fused_events": [
+        "ev_07b6e59379",
+        "ev_eb98d96970",
+        "ev_0989f73e12",
+        "ev_ffd0f67151",
+        "ev_0dc65ca4ef"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.99, corroborated by 5 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1786637040.75344,
+      "alert_id": "alt_290eef423d",
+      "timestamp": 1786637040.7533948,
+      "severity": "INFO",
+      "event_type": "audio_anomaly",
+      "confidence": 0.7,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_45d88b9c0c"
+      ],
+      "explanation": "[INFO] audio anomaly detected in zone 'site' with fused confidence 0.70, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 10,
+      "hypotheses_out": 5
+    },
+    "policy": {
+      "hypotheses": 5,
+      "alerts": 4,
+      "suppressed": 1,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.03337860107421875,
+        0.030755996704101562,
+        0.04172325134277344,
+        0.03790855407714844,
+        0.03314018249511719
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 9,
+      "infer_ms": 328.7
+    },
+    "cam_02": {
+      "frames": 323,
+      "detections": 149,
+      "events": 0,
+      "infer_ms": 418.9
+    },
+    "mic_01": {
+      "chunks": 39,
+      "events": 1
+    }
+  }
+}

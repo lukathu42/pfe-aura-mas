@@ -1,14 +1,15 @@
 {
   "scenario": "intrusion_01",
   "mode": "mas-auction",
-  "t_start": 1786459703.327561,
-  "wall_seconds": 74.64794039726257,
+  "vision_only": false,
+  "t_start": 1786636562.9649537,
+  "wall_seconds": 88.55215072631836,
   "ground_truth": [
     {
       "event_type": "intrusion",
       "zone": "zone_A",
-      "t_start": 12.0,
-      "t_end": 30.0
+      "t_start": 15.0,
+      "t_end": 34.0
     },
     {
       "event_type": "audio_glass_break",
@@ -17,20 +18,91 @@
       "t_end": 16.0
     }
   ],
-  "alerts": [],
+  "alerts": [
+    {
+      "t_wall": 1786636580.9921343,
+      "alert_id": "alt_741a91a26f",
+      "timestamp": 1786636580.992011,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.78,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636574_0246dc.jpg"
+      ],
+      "fused_events": [
+        "ev_85bb46627b"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.78, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1786636592.5027654,
+      "alert_id": "alt_33c11baec3",
+      "timestamp": 1786636592.5027006,
+      "severity": "INFO",
+      "event_type": "audio_anomaly",
+      "confidence": 0.85,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_7d0f86cbf8"
+      ],
+      "explanation": "[INFO] audio anomaly detected in zone 'site' with fused confidence 0.85, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1786636622.513478,
+      "alert_id": "alt_3cde718465",
+      "timestamp": 1786636622.5133746,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.994,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1786636610_3fefb1.jpg",
+        "data/evidence/cam_01_intrusion_1786636610_63d166.jpg",
+        "data/evidence/cam_01_intrusion_1786636611_7ddff4.jpg",
+        "data/evidence/cam_01_intrusion_1786636612_575eee.jpg",
+        "data/evidence/cam_01_intrusion_1786636615_d95cac.jpg"
+      ],
+      "fused_events": [
+        "ev_24e1632d05",
+        "ev_87b27ebf71",
+        "ev_fe02f026ad",
+        "ev_9d412a3694",
+        "ev_e57e850e48"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.99, corroborated by 5 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
   "agent_metrics": {
     "fusion": {
-      "events_in": 1,
-      "hypotheses_out": 1
+      "events_in": 10,
+      "hypotheses_out": 5
     },
     "policy": {
-      "hypotheses": 1,
-      "alerts": 0,
-      "suppressed": 1,
-      "verified_up": 0,
-      "verified_down": 1,
+      "hypotheses": 5,
+      "alerts": 3,
+      "suppressed": 2,
+      "verified_up": 1,
+      "verified_down": 0,
       "decision_ms": [
-        1286.7789268493652
+        0.03719329833984375,
+        1506.3097476959229,
+        0.024080276489257812,
+        0.030755996704101562,
+        0.026464462280273438
       ]
     },
     "coordinator": {
@@ -40,20 +112,20 @@
       "verifications": 1,
       "messages": 5,
       "allocation_ms": [
-        1286.5595817565918
+        1505.9924125671387
       ]
     },
     "cam_01": {
-      "frames": 200,
-      "detections": 0,
-      "events": 0,
-      "infer_ms": 208.8
+      "frames": 298,
+      "detections": 198,
+      "events": 9,
+      "infer_ms": 241.9
     },
     "cam_02": {
-      "frames": 200,
-      "detections": 0,
+      "frames": 323,
+      "detections": 149,
       "events": 0,
-      "infer_ms": 209.8
+      "infer_ms": 235.8
     },
     "mic_01": {
       "chunks": 39,

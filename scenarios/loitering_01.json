@@ -1,0 +1,13 @@
+{
+  "name": "loitering_01",
+  "duration_seconds": 55,
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips/people.mp4",
+     "zones": [
+       {"name": "entry", "type": "entry",
+        "polygon": [[0, 300], [380, 300], [380, 432], [0, 432]]}
+     ]}
+  ],
+  "ground_truth": [],
+  "notes": "Deliberately EMPTY ground truth. The original demo_site_01.json (pre-existing in this repo) claimed a loitering GT event on this same clip+zone at t=16-46s; that claim was never actually empirically verified. Checked directly here: tracked every person's ByteTrack track_id span across the full clip (and, for comparison, street.mp4/intrusion.mp4/overview.mp4) -- the longest continuous single-track presence found anywhere is 5.5s (people.mp4, track 3, t=15.3-20.8s), below ZoneRuleEngine's loiter_seconds=8.0 threshold, regardless of zone shape (also tried a full-frame zone). People cross the frame; nobody actually lingers >=8s in any available real clip. This almost certainly explains why every mode in the original results/summary.csv (centralized, mas-nocoord, mas-rules, mas-auction) shows exactly 1 false negative on demo_site_01 out of 3 GT events -- it is very likely this same never-actually-detectable loitering claim, not a random miss. Rather than repeat an unverified GT claim, this scenario is kept as a true-negative / false-positive probe: it should produce zero loitering alerts, and doing so is the expected, correct behavior, not a failure. A genuine loitering-positive scenario would need footage of someone actually standing still for 8+ seconds, which was not available among the clips fetched for this evaluation pass."
+}

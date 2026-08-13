@@ -1,0 +1,12 @@
+{
+  "name": "abandoned_object_01",
+  "duration_seconds": 78,
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips_real/abandoned_object/video1.avi",
+     "zones": []}
+  ],
+  "ground_truth": [
+    {"event_type": "abandoned_object", "zone": null, "t_start": 58.0, "t_end": 73.0}
+  ],
+  "notes": "Source: ABODA video1.avi (see data/clips_real/manifest.json). No shipped frame-level GT. First pass used aura_mas/scripts/estimate_motion_windows.py (a generic motion detector, not object-aware) and guessed onset ~21s -- WRONG: direct YOLO probing (bypassing CameraAgent) showed the bag/suitcase object is only actually detected by the model from ~t=42s, and its class label flickers between 'handbag' and 'suitcase' frame to frame at the same bbox until t~58s, where it settles as a stable 'suitcase' classification through the end of the clip (t=73s). abandoned_object fires zone-independently and keys off ByteTrack track_id continuity (see ZoneRuleEngine.evaluate); a track_id can reset when the detector's class label flips even at a fixed bbox, so the pre-58s flicker period is deliberately excluded from GT rather than padded in -- it would not reliably fire and padding it in would overstate what the pipeline actually detects. This class-flicker-breaks-track-continuity behavior is itself a real, citable limitation of the abandoned-object heuristic (see EXECUTION_PLAN.md-adjacent results notes)."
+}

@@ -224,8 +224,9 @@ class CameraAgent(Agent):
             if max_frames and self.metrics["frames"] >= max_frames:
                 break
             ts = now_ts()
+            video_ts = frame_id / src_fps
             self._last_frame = frame
-            self._process_frame(frame, frame_id, ts)
+            self._process_frame(frame, frame_id, ts, video_ts)
             if self.realtime:
                 # simulate real-time pacing of the source
                 budget = frame_id / src_fps - (time.time() - t_start)
@@ -234,7 +235,8 @@ class CameraAgent(Agent):
         cap.release()
         return self.metrics
 
-    def _process_frame(self, frame: np.ndarray, frame_id: int, ts: float) -> None:
+    def _process_frame(self, frame: np.ndarray, frame_id: int, ts: float,
+                       video_ts: Optional[float] = None) -> None:
         t0 = time.time()
         results = self._model.track(frame, persist=True, verbose=False,
                                     tracker="bytetrack.yaml", conf=0.35)
@@ -264,7 +266,12 @@ class CameraAgent(Agent):
         person_boxes = [tuple(int(v) for v in o["bbox"])
                         for o in objects if o["class"] == "person"]
         self._last_person_boxes = person_boxes
-        for ev in self.rule_engine.evaluate(objects, ts):
+        # duration-based rules (loitering, abandoned_object) key off video
+        # playback time, not wall-clock time: in non-realtime modes (e.g. the
+        # centralized baseline, which processes frames as fast as the CPU
+        # allows) wall-clock elapsed time can be far shorter than the elapsed
+        # scene time, so these rules would otherwise almost never fire.
+        for ev in self.rule_engine.evaluate(objects, video_ts if video_ts is not None else ts):
             self._emit_event(frame, ts, modality="video", **ev)
 
         # CLIP anomaly -------------------------------------------------------
