@@ -16,16 +16,7 @@ from typing import Dict, List, Optional
 
 from aura_mas.agents.base import Agent
 from aura_mas.core.bus import Event, TOPIC_EVENTS, new_id, now_ts
-
-# events considered mutually corroborating (same incident family)
-EVENT_FAMILIES = {
-    "intrusion": "security", "loitering": "security",
-    "abandoned_object": "security", "anomaly": "violence_or_hazard",
-    "audio_scream": "violence_or_hazard", "audio_glass_break": "security",
-    "audio_gunshot": "violence_or_hazard", "audio_alarm": "hazard",
-    "audio_explosion": "hazard", "audio_breaking": "security",
-    "audio_anomaly": "violence_or_hazard",
-}
+from aura_mas.core.taxonomy import EVENT_FAMILIES
 
 MODALITY_RELIABILITY = {"video": 0.9, "audio": 0.7}
 

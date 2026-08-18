@@ -53,11 +53,26 @@ anything:
   them, they're synthetic stick-figure placeholders, not real footage.
 - CLIP anomaly scoring is now calibrated (`results/clip_anomaly_calibration_notes.md`,
   AUC=0.308 — worse than random, root-caused to a prompt/scene domain
-  mismatch, not a broken scorer). YAMNet is still **not installed** in this
-  environment (disk-constrained) — `AudioAgent` runs its DSP fallback, which
-  emits generic `audio_anomaly` instead of class-specific events; this
-  breaks the cross-modality family match the fusion-corroboration claim (C3)
-  needs. Verify which audio path actually ran before citing a result.
+  mismatch, not a broken scorer).
+- **Update (2026-08-18, `code-hardening` branch):** YAMNet is now installed
+  (`tensorflow-cpu`, local SavedModel fetched by
+  `aura_mas/scripts/fetch_yamnet.py` — `tensorflow_hub`'s `tfhub.dev` URL is
+  dead, HTTP 404) and `AudioAgent` emits class-specific events
+  (`audio_glass_break`, `audio_alarm`, ...) instead of generic
+  `audio_anomaly` when it loads successfully. See
+  `results/yamnet_integration_notes.md` for the install process and two real
+  bugs found and fixed while making it actually work end-to-end (mean-pooling
+  on independently-rewindowed 1s chunks was diluting short transients below
+  threshold; `AudioAgent` never set `zone` on emitted events, which
+  independently blocked the FusionAgent corroboration claim C3 even with the
+  right event labels). `AudioAgent(backend=...)` now supports `auto | yamnet
+  | dsp` so DSP-vs-YAMNet is a selectable, documented ablation — pass
+  `--audio-backend` to `aura_mas.scenarios.replay`, or check
+  `run["audio_backend"]` / `agent_metrics["<mic_id>"]["backend"]` in a run
+  JSON before citing a result, rather than assuming YAMNet ran. See
+  `results/evaluation_campaign_v2_notes.md` for the re-run campaign numbers
+  and `results/methodology_changes.md` for every scoring-affecting change
+  made in this pass, mapped old→new.
 - No `configs/` directory exists yet despite the README describing one;
   zone/threshold config currently lives inline in `scenarios/*.json`.
 

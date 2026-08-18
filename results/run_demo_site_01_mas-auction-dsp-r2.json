@@ -1,0 +1,146 @@
+{
+  "scenario": "demo_site_01",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "dsp",
+  "rep": 2,
+  "tag": "mas-auction-dsp-r2",
+  "t_start": 1787080557.1508775,
+  "wall_seconds": 61.92822241783142,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 3.0,
+      "t_end": 35.0
+    },
+    {
+      "event_type": "loitering",
+      "zone": "entry",
+      "t_start": 16.0,
+      "t_end": 46.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 14.0,
+      "t_end": 16.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787080569.0664477,
+      "alert_id": "alt_b8a977f4ba",
+      "timestamp": 1787080569.066352,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.751,
+      "zone": "zone_B",
+      "sensors": [
+        "cam_02"
+      ],
+      "evidence": [
+        "data/evidence/cam_02_intrusion_1787080562_4f1b97.jpg"
+      ],
+      "fused_events": [
+        "ev_26ceec5e6a"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_B' with fused confidence 0.75, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1787080573.8012729,
+      "alert_id": "alt_527fe95317",
+      "timestamp": 1787080573.8011944,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.521,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1787080565_128583.jpg"
+      ],
+      "fused_events": [
+        "ev_2761c8fd59"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.52, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1787080599.4899435,
+      "alert_id": "alt_f1c694c995",
+      "timestamp": 1787080599.4898942,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.958,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1787080591_0dfe97.jpg",
+        "data/evidence/cam_01_intrusion_1787080592_843b0e.jpg",
+        "data/evidence/cam_01_intrusion_1787080592_f32c59.jpg"
+      ],
+      "fused_events": [
+        "ev_b9c4155178",
+        "ev_c8bc335683",
+        "ev_4c1ffe3c94"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.96, corroborated by 3 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 8,
+      "hypotheses_out": 6
+    },
+    "policy": {
+      "hypotheses": 6,
+      "alerts": 3,
+      "suppressed": 3,
+      "verified_up": 0,
+      "verified_down": 2,
+      "decision_ms": [
+        0.031232833862304688,
+        1732.499361038208,
+        1681.0526847839355,
+        0.015020370483398438,
+        0.029802322387695312,
+        0.013828277587890625
+      ]
+    },
+    "coordinator": {
+      "tasks": 2,
+      "bids": 4,
+      "awards": 2,
+      "verifications": 2,
+      "messages": 10,
+      "allocation_ms": [
+        1732.177972793579,
+        1680.5896759033203
+      ]
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 6,
+      "infer_ms": 161.8
+    },
+    "cam_02": {
+      "frames": 323,
+      "detections": 149,
+      "events": 1,
+      "infer_ms": 153.1
+    },
+    "mic_01": {
+      "chunks": 39,
+      "events": 1,
+      "backend": "dsp",
+      "suppressed_dupes": 0
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "audio_alarm_siren_01",
+  "duration_seconds": 21,
+  "sensors": [
+    {"type": "audio", "id": "mic_01", "source": "data/clips_real/audio/siren_with_baseline.wav"}
+  ],
+  "ground_truth": [
+    {"event_type": "audio_alarm", "zone": null, "t_start": 15.0, "t_end": 20.0}
+  ],
+  "notes": "Audio-only, added on the YAMNet-integration pass (see results/methodology_changes.md) to give the DSP-vs-YAMNet ablation a class-discrimination axis: every audio scenario before this one used 'audio_glass_break' ground truth only. siren_with_baseline.wav = 15s of uniform noise (aura_mas/scripts/make_audio_baselines.py, matched to glass_breaking_with_baseline.wav's measured noise characteristics -- no generator script exists for that original file, so this is a best-effort reproduction, not byte-identical) + the real ESC-50 'siren' recording (data/clips_real/manifest.json). Under YAMNet this fires as 'audio_alarm' (SURVEILLANCE_CLASSES maps YAMNet's 'Siren' class -> audio_alarm, audio_agent.py); under the DSP fallback it degrades to generic 'audio_anomaly' like every other audio scenario. Empirically verified the real event scores Siren=0.67-0.80 in chunks starting at t=16-17s (see results/yamnet_integration_notes.md), hence the t_start=15.0 GT onset matching the file's own 15s noise/event boundary."
+}

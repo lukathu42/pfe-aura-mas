@@ -1,14 +1,21 @@
 """AudioAgent: edge perception agent for one audio source.
 
-Two operating modes (auto-selected):
-- YAMNet mode (if tensorflow + tensorflow_hub available): 521-class AudioSet
-  event classification; surveillance-relevant classes are mapped to events.
-- DSP fallback mode (librosa/numpy only): unsupervised anomaly scoring from
-  short-time energy + spectral flatness z-scores against a rolling baseline —
-  robust, dependency-light, and sufficient for the fusion ablation.
+Two operating modes, selected by `backend`:
+- YAMNet mode (`backend="yamnet"`, or `"auto"` if a local model is present):
+  521-class AudioSet event classification from a local SavedModel fetched by
+  `aura_mas/scripts/fetch_yamnet.py`; surveillance-relevant classes are
+  mapped to events via `SURVEILLANCE_CLASSES`.
+- DSP fallback mode (`backend="dsp"`, or `"auto"` when YAMNet is unavailable):
+  librosa/numpy-only unsupervised anomaly scoring from short-time energy +
+  spectral flatness z-scores against a rolling baseline — dependency-light,
+  but only emits a generic `audio_anomaly` event (no class label), which is
+  why it cannot corroborate with class-specific ground truth in the fusion
+  metrics. See `results/yamnet_integration_notes.md` for a measured DSP vs
+  YAMNet comparison.
 """
 from __future__ import annotations
 
+import os
 import time
 from collections import deque
 from typing import Dict, List, Optional
@@ -59,38 +66,105 @@ class AudioAgent(Agent):
     def __init__(self, agent_id: str, bus, source: str,
                  chunk_seconds: float = 1.0,
                  anomaly_threshold: float = 0.5,
-                 realtime: bool = True) -> None:
+                 realtime: bool = True,
+                 backend: str = "auto",
+                 top_k: int = 1,
+                 zone: Optional[str] = None) -> None:
+        """backend: "auto" (YAMNet if the local model loads, else DSP),
+        "yamnet" (required -- raise if unavailable, no silent fallback), or
+        "dsp" (force the fallback, e.g. for an ablation run).
+
+        top_k: max distinct event_types emitted per chunk after collapsing
+        YAMNet classes that map to the same event_type (see SURVEILLANCE_CLASSES
+        -- "Glass" and "Shatter" both -> audio_glass_break) down to their
+        highest-confidence match. Without this, one chunk can emit several
+        near-duplicate events that noisy-OR fusion (fusion_agent.py) treats as
+        independent corroborating evidence, inflating confidence.
+
+        zone: the sensor's zone, if any -- propagated onto emitted Events so
+        an audio event can land in the same FusionAgent hypothesis key as a
+        camera event in the same zone (fusion_agent.py keys hypotheses by
+        f"{family}:{zone or 'site'}"). Without this, audio events default to
+        "site" and can never corroborate a zoned video event.
+        """
         super().__init__(agent_id, bus)
         self.source = source
         self.chunk_seconds = chunk_seconds
         self.anomaly_threshold = anomaly_threshold
         self.realtime = realtime
+        self.backend = backend
+        self.top_k = top_k
+        self.zone = zone
         self._yamnet = None
         self._class_names: List[str] = []
+        self._class_idx: Dict[str, int] = {}
         self._dsp = DspAnomalyScorer()
-        self.metrics = {"chunks": 0, "events": 0}
+        self.backend_used = "dsp"
+        self.metrics = {"chunks": 0, "events": 0, "backend": "dsp",
+                        "suppressed_dupes": 0}
 
     def setup(self) -> None:
+        if self.backend == "dsp":
+            return
         try:
-            import tensorflow_hub as hub
-            import csv
-            import urllib.request
-            self._yamnet = hub.load("https://tfhub.dev/google/yamnet/1")
-            class_map_path = self._yamnet.class_map_path().numpy().decode()
-            with open(class_map_path) as f:
-                self._class_names = [row["display_name"]
-                                     for row in csv.DictReader(f)]
+            self._load_yamnet()
+            self.backend_used = "yamnet"
+            self.metrics["backend"] = "yamnet"
             self.log.info("YAMNet loaded (%d classes)", len(self._class_names))
+        except Exception as exc:  # noqa: BLE001
+            if self.backend == "yamnet":
+                raise  # a requested backend that silently degrades hides bugs
+            self.log.warning("YAMNet unavailable (%s: %s); using DSP fallback",
+                             type(exc).__name__, exc)
+            self.log.debug("YAMNet load traceback", exc_info=True)
+
+    def _load_yamnet(self) -> None:
+        import csv
+        os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "3")
+        import tensorflow as tf
+        model_dir = os.environ.get("AURA_YAMNET_DIR", "models/yamnet")
+        self._yamnet = tf.saved_model.load(model_dir)
+        try:
+            class_map_path = self._yamnet.class_map_path().numpy().decode()
         except Exception:  # noqa: BLE001
-            self.log.warning("YAMNet unavailable; using DSP anomaly fallback")
+            class_map_path = os.path.join(model_dir, "assets",
+                                          "yamnet_class_map.csv")
+        with open(class_map_path) as f:
+            self._class_names = [row["display_name"]
+                                 for row in csv.DictReader(f)]
+        self._class_idx = {name: i for i, name in enumerate(self._class_names)}
+
+    def warmup(self) -> None:
+        """Run one dummy inference so the timed scenario window doesn't
+        absorb model load / graph tracing latency. No-op for DSP: pushing
+        zeros through DspAnomalyScorer would poison its rolling baseline."""
+        if self.backend_used == "yamnet":
+            n = int(16000 * self.chunk_seconds)
+            self._infer(np.zeros(n + n // 2, np.float32))
+
+    def _infer(self, chunk: np.ndarray):
+        chunk = np.asarray(chunk, dtype=np.float32)
+        try:
+            return self._yamnet(chunk)
+        except (TypeError, ValueError):
+            import tensorflow as tf
+            out = self._yamnet.signatures["serving_default"](
+                waveform=tf.constant(chunk))
+            return out["output_0"], out.get("output_1"), out.get("output_2")
 
     def run(self, max_chunks: Optional[int] = None) -> Dict:
         import librosa
         audio, sr = librosa.load(self.source, sr=16000, mono=True)
         n = int(sr * self.chunk_seconds)
+        half = n // 2
         for i in range(0, len(audio) - n, n):
             chunk = audio[i:i + n]
-            self._process_chunk(chunk, sr)
+            # YAMNet is scored over a lookback-extended window (chunk plus the
+            # trailing half of the previous chunk), not the bare 1s chunk --
+            # see _process_chunk docstring for why. DSP scoring is unaffected,
+            # it still only ever sees `chunk`.
+            yamnet_window = audio[max(0, i - half):i + n]
+            self._process_chunk(chunk, sr, yamnet_window=yamnet_window)
             self.metrics["chunks"] += 1
             if max_chunks and self.metrics["chunks"] >= max_chunks:
                 break
@@ -98,17 +172,43 @@ class AudioAgent(Agent):
                 time.sleep(self.chunk_seconds * 0.9)
         return self.metrics
 
-    def _process_chunk(self, chunk: np.ndarray, sr: int) -> None:
+    def _process_chunk(self, chunk: np.ndarray, sr: int,
+                       yamnet_window: Optional[np.ndarray] = None) -> None:
+        """yamnet_window, max-pooling: independently re-windowing YAMNet on
+        each non-overlapping 1s chunk resets its internal 0.96s/0.48s-hop
+        frame boundaries every call, so a short transient (e.g. a ~0.5s glass
+        break) straddling a chunk boundary gets analyzed by no frame that's
+        well-centered on it in either chunk -- confirmed empirically: mean-
+        pooled scores on non-overlapping 1s chunks never exceeded 0.11 on a
+        clean single-event ESC-50 glass-break clip. Extending the window
+        backward by half a chunk plus taking max (not mean) across internal
+        frames recovers the transient (observed 0.5-0.75 on the same clip)
+        without touching DSP's chunking/thresholds at all. See
+        results/yamnet_integration_notes.md."""
         ts = now_ts()
         if self._yamnet is not None:
-            scores, _, _ = self._yamnet(chunk)
-            mean_scores = scores.numpy().mean(axis=0)
+            infer_input = yamnet_window if yamnet_window is not None else chunk
+            scores, _, _ = self._infer(infer_input)
+            agg_scores = scores.numpy().max(axis=0)
+            candidates = []
             for cls, (event_type, min_conf) in SURVEILLANCE_CLASSES.items():
-                if cls in self._class_names:
-                    idx = self._class_names.index(cls)
-                    conf = float(mean_scores[idx])
-                    if conf >= min_conf:
-                        self._emit(event_type, conf, ts, {"yamnet_class": cls})
+                idx = self._class_idx.get(cls)
+                if idx is None:
+                    continue
+                conf = float(agg_scores[idx])
+                if conf >= min_conf:
+                    candidates.append((conf, event_type, cls))
+            best: Dict[str, tuple] = {}
+            for conf, event_type, cls in candidates:
+                if conf > best.get(event_type, (0.0, ""))[0]:
+                    best[event_type] = (conf, cls)
+            ranked = sorted(best.items(), key=lambda kv: -kv[1][0])[:self.top_k]
+            self.metrics["suppressed_dupes"] += len(candidates) - len(ranked)
+            for rank, (event_type, (conf, cls)) in enumerate(ranked):
+                self._emit(event_type, conf, ts, {
+                    "yamnet_class": cls, "yamnet_rank": rank,
+                    "n_candidates": len(candidates),
+                })
         else:
             score = self._dsp.score(chunk, sr)
             if score >= self.anomaly_threshold:
@@ -117,7 +217,7 @@ class AudioAgent(Agent):
     def _emit(self, event_type: str, conf: float, ts: float, extra: Dict) -> None:
         ev = Event(event_id=new_id("ev"), sensor_id=self.agent_id, timestamp=ts,
                    event_type=event_type, confidence=round(conf, 3),
-                   modality="audio", extra=extra)
+                   modality="audio", zone=self.zone, extra=extra)
         self.metrics["events"] += 1
         self.log.info("AUDIO EVENT %s conf=%.2f", event_type, conf)
         self.bus.publish(TOPIC_EVENTS, ev.to_json(), qos=1)

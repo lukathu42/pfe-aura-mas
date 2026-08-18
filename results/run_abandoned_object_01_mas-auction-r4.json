@@ -1,0 +1,53 @@
+{
+  "scenario": "abandoned_object_01",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 4,
+  "tag": "mas-auction-r4",
+  "t_start": 1787066524.4597394,
+  "wall_seconds": 80.89182996749878,
+  "ground_truth": [
+    {
+      "event_type": "abandoned_object",
+      "zone": null,
+      "t_start": 58.0,
+      "t_end": 73.0
+    }
+  ],
+  "alerts": [],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 2,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 0,
+      "suppressed": 2,
+      "verified_up": 0,
+      "verified_down": 2,
+      "decision_ms": [
+        1513.3299827575684,
+        1269.1810131072998
+      ]
+    },
+    "coordinator": {
+      "tasks": 2,
+      "bids": 2,
+      "awards": 2,
+      "verifications": 2,
+      "messages": 8,
+      "allocation_ms": [
+        1513.0062103271484,
+        1268.8684463500977
+      ]
+    },
+    "cam_01": {
+      "frames": 364,
+      "detections": 548,
+      "events": 2,
+      "infer_ms": 175.5
+    }
+  }
+}

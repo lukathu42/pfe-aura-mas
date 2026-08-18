@@ -8,6 +8,10 @@ __pycache__/
 # Understand-Anything / Claude tooling caches
 .ua/
 
+# Fetched model weights (see aura_mas/scripts/fetch_yamnet.py, PROVENANCE.json kept)
+/models/yamnet/*
+!/models/yamnet/PROVENANCE.json
+
 # LaTeX build artifacts (keep the compiled main.pdf, ignore the rest)
 *.aux
 *.bbl

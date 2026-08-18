@@ -1,0 +1,70 @@
+{
+  "scenario": "fight_01",
+  "mode": "centralized",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 1,
+  "tag": "centralized-r1",
+  "t_start": 1787075066.5298584,
+  "wall_seconds": 11.214463233947754,
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 0.5,
+      "t_end": 4.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787075074.4758801,
+      "alert_id": "alt_d6608d3af1",
+      "timestamp": 1787075074.4758468,
+      "severity": "WARNING",
+      "event_type": "anomaly",
+      "confidence": 0.625,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_anomaly_1787075067_962043.jpg"
+      ],
+      "fused_events": [
+        "ev_b0951846eb"
+      ],
+      "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.62, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 1,
+      "hypotheses_out": 1
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 1,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.011920928955078125
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 24,
+      "detections": 65,
+      "events": 1,
+      "infer_ms": 93.5
+    }
+  }
+}

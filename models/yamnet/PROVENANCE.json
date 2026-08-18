@@ -1,0 +1,9 @@
+{
+  "url": "https://www.kaggle.com/api/v1/models/google/yamnet/tensorFlow2/yamnet/1/download",
+  "sha256": "b80da2a1a56926fb0767205051a200dd7b3beaf3ea1ea126c42a53943996e5e0",
+  "bytes": 14242921,
+  "fetched_utc": "2026-08-18T13:39:47.665223+00:00",
+  "format": "TensorFlow 2 SavedModel",
+  "license": "Apache 2.0 (google/yamnet)",
+  "note": "tfhub.dev/google/yamnet/1 returns HTTP 404 as of 2026-08-18; this is the Kaggle Models mirror, fetched directly (no tensorflow_hub dependency)."
+}

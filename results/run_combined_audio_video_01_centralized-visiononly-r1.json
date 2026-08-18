@@ -1,0 +1,91 @@
+{
+  "scenario": "combined_audio_video_01",
+  "mode": "centralized",
+  "vision_only": true,
+  "audio_backend": "auto",
+  "rep": 1,
+  "tag": "centralized-visiononly-r1",
+  "t_start": 1787071557.4761133,
+  "wall_seconds": 35.0382137298584,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 34.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 19.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787071575.4741533,
+      "alert_id": "alt_5c76ade2b8",
+      "timestamp": 1787071575.4740834,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 1.0,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1787071558_cd652f.jpg",
+        "data/evidence/cam_01_intrusion_1787071562_caaa62.jpg",
+        "data/evidence/cam_01_intrusion_1787071562_6d8d26.jpg",
+        "data/evidence/cam_01_intrusion_1787071567_a21bf0.jpg",
+        "data/evidence/cam_01_intrusion_1787071567_3d4a61.jpg",
+        "data/evidence/cam_01_intrusion_1787071568_48c428.jpg",
+        "data/evidence/cam_01_intrusion_1787071568_844a5b.jpg",
+        "data/evidence/cam_01_intrusion_1787071569_cb18eb.jpg"
+      ],
+      "fused_events": [
+        "ev_3494fcd698",
+        "ev_ceb7a06ec8",
+        "ev_4b9a0ceacc",
+        "ev_597cacbfd1",
+        "ev_08b4818712",
+        "ev_b4bc6c1ac8",
+        "ev_81136c7d0b",
+        "ev_7e1774208e"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 1.00, corroborated by 8 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 9,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 1,
+      "suppressed": 1,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.016450881958007812,
+        0.014066696166992188
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 9,
+      "infer_ms": 89.3
+    }
+  }
+}

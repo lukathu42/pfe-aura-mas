@@ -1,0 +1,91 @@
+{
+  "scenario": "abandoned_object_01",
+  "mode": "centralized",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 1,
+  "tag": "centralized-r1",
+  "t_start": 1787067340.841733,
+  "wall_seconds": 81.86112189292908,
+  "ground_truth": [
+    {
+      "event_type": "abandoned_object",
+      "zone": null,
+      "t_start": 58.0,
+      "t_end": 73.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787067393.4261818,
+      "alert_id": "alt_4031a98b1c",
+      "timestamp": 1787067393.4260998,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.63,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787067387_3128d8.jpg"
+      ],
+      "fused_events": [
+        "ev_17e42c818e"
+      ],
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.63, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1787067416.4339917,
+      "alert_id": "alt_f707bfe5bb",
+      "timestamp": 1787067416.433943,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.63,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787067410_f5abdb.jpg"
+      ],
+      "fused_events": [
+        "ev_afdfd73f38"
+      ],
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.63, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 2,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 2,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.03337860107421875,
+        0.030994415283203125
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 364,
+      "detections": 547,
+      "events": 2,
+      "infer_ms": 198.4
+    }
+  }
+}

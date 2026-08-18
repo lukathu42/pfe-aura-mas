@@ -1,0 +1,41 @@
+{
+  "scenario": "audio_alarm_siren_01",
+  "mode": "mas-nocoord",
+  "vision_only": true,
+  "audio_backend": "auto",
+  "rep": 2,
+  "tag": "mas-nocoord-visiononly-r2",
+  "t_start": 1787069062.218783,
+  "wall_seconds": 8.000218868255615,
+  "ground_truth": [
+    {
+      "event_type": "audio_alarm",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 20.0
+    }
+  ],
+  "alerts": [],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 0,
+      "hypotheses_out": 0
+    },
+    "policy": {
+      "hypotheses": 0,
+      "alerts": 0,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": []
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    }
+  }
+}

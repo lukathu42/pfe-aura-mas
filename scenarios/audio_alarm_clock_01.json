@@ -1,0 +1,11 @@
+{
+  "name": "audio_alarm_clock_01",
+  "duration_seconds": 21,
+  "sensors": [
+    {"type": "audio", "id": "mic_01", "source": "data/clips_real/audio/clock_alarm_with_baseline.wav"}
+  ],
+  "ground_truth": [
+    {"event_type": "audio_alarm", "zone": null, "t_start": 15.0, "t_end": 20.0}
+  ],
+  "notes": "Audio-only, added on the YAMNet-integration pass (see results/methodology_changes.md) alongside audio_alarm_siren_01.json -- see that manifest's notes for the general rationale (class-discrimination axis for the DSP-vs-YAMNet ablation). clock_alarm_with_baseline.wav = 15s of uniform noise (aura_mas/scripts/make_audio_baselines.py) + the real ESC-50 'clock_alarm' recording. Under YAMNet this fires as 'audio_alarm' (SURVEILLANCE_CLASSES maps YAMNet's 'Alarm' class -> audio_alarm). Empirically verified the real event scores Alarm=0.88 in the chunk starting at t=15s (see results/yamnet_integration_notes.md), hence t_start=15.0."
+}

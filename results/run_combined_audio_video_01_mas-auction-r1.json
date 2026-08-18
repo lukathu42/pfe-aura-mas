@@ -1,0 +1,114 @@
+{
+  "scenario": "combined_audio_video_01",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 1,
+  "tag": "mas-auction-r1",
+  "t_start": 1787069758.6564999,
+  "wall_seconds": 57.68010473251343,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 34.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 19.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787069766.754504,
+      "alert_id": "alt_94d7476966",
+      "timestamp": 1787069766.7544744,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.78,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1787069760_e78efd.jpg"
+      ],
+      "fused_events": [
+        "ev_828f1a8134"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.78, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    },
+    {
+      "t_wall": 1787069797.759726,
+      "alert_id": "alt_67592d7700",
+      "timestamp": 1787069797.7597024,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 0.994,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1787069787_86a1c2.jpg",
+        "data/evidence/cam_01_intrusion_1787069787_53d3bb.jpg",
+        "data/evidence/cam_01_intrusion_1787069788_20d22d.jpg",
+        "data/evidence/cam_01_intrusion_1787069789_cca786.jpg",
+        "data/evidence/cam_01_intrusion_1787069791_6e4267.jpg"
+      ],
+      "fused_events": [
+        "ev_8a9dbb4d3c",
+        "ev_3a640b5dba",
+        "ev_4a5cd99654",
+        "ev_cebf74a23d",
+        "ev_4a6d82398b"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 0.99, corroborated by 5 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 12,
+      "hypotheses_out": 5
+    },
+    "policy": {
+      "hypotheses": 5,
+      "alerts": 2,
+      "suppressed": 3,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.010013580322265625,
+        0.007152557373046875,
+        0.0095367431640625,
+        0.017404556274414062,
+        0.011920928955078125
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 9,
+      "infer_ms": 45.2
+    },
+    "mic_01": {
+      "chunks": 19,
+      "events": 3,
+      "backend": "yamnet",
+      "suppressed_dupes": 2
+    }
+  }
+}

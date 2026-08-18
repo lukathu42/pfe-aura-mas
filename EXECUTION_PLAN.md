@@ -115,10 +115,41 @@ chapter rewrites) are still open and untouched.
   hand-tuned away.
 - `results/explanation_eval_notes.md`: template-fallback explanations (no
   LLM key in this environment) are evidence-complete on the alerts checked.
-- Still open even within code scope: YAMNet not installed (disk-constrained;
-  audio events degrade to generic `audio_anomaly`, which breaks the
-  cross-modality family match needed for the C3 fusion-corroboration story —
-  see campaign notes), and detection showed real run-to-run non-determinism
-  that a single-pass campaign can't average out. Both are called out
-  explicitly in `results/evaluation_campaign_notes.md` rather than papered
-  over with a cherry-picked run.
+- Still open even within code scope (as of the 2026-08-13 pass): YAMNet not
+  installed (disk-constrained; audio events degrade to generic
+  `audio_anomaly`, which breaks the cross-modality family match needed for
+  the C3 fusion-corroboration story — see campaign notes), and detection
+  showed real run-to-run non-determinism that a single-pass campaign can't
+  average out. Both are called out explicitly in
+  `results/evaluation_campaign_notes.md` rather than papered over with a
+  cherry-picked run.
+
+### 2026-08-18 follow-up (same branch): YAMNet installed, campaign v2
+
+Closes the YAMNet gap and the single-pass-only gap from the previous entry:
+
+- YAMNet installed (`tensorflow-cpu`, local SavedModel — `tensorflow_hub`'s
+  `tfhub.dev` URL turned out to be dead, HTTP 404) and wired into
+  `AudioAgent` with two real bugs found and fixed along the way (transient-
+  diluting mean-pooling on independently-rewindowed chunks; a missing `zone`
+  on emitted audio events that independently blocked C3's corroboration
+  claim even after the family-mapping fix). See
+  `results/yamnet_integration_notes.md`.
+- `results/eval/metrics.py` FAMILY dict and `fusion_agent.EVENT_FAMILIES`
+  (previously duplicated and drifted out of sync) unified into
+  `aura_mas/core/taxonomy.py`.
+- `aura_mas/scenarios/replay.py` gained `--rep`/`--out`/`--audio-backend`
+  and a warm-up pass moved before the scenario timer starts (closes the
+  `fight_01` cold-start artifact from the previous campaign notes).
+  `aura_mas/eval/metrics.py` gained a `summary_agg.csv` mean±std aggregation
+  stage. `aura_mas/scripts/run_campaign.py` is the first campaign driver —
+  previously a hand-typed loop.
+- Two new audio scenarios (`audio_alarm_siren_01`, `audio_alarm_clock_01`)
+  exercise the `hazard`-family `audio_alarm` class — every prior audio
+  scenario used `audio_glass_break` only.
+- Full change list, with expected direction of effect on each score, in
+  `results/methodology_changes.md`. Re-run campaign numbers (multi-rep
+  mean±std, replacing the single-pass v1 numbers) in
+  `results/evaluation_campaign_v2_notes.md`.
+- `results/summary_v1_dsp_baseline.csv` preserves the pre-YAMNet numbers
+  for before/after comparison.

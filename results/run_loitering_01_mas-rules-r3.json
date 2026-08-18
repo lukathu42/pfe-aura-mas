@@ -1,0 +1,40 @@
+{
+  "scenario": "loitering_01",
+  "mode": "mas-rules",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 3,
+  "tag": "mas-rules-r3",
+  "t_start": 1787077817.2229607,
+  "wall_seconds": 58.369651794433594,
+  "ground_truth": [],
+  "alerts": [],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 0,
+      "hypotheses_out": 0
+    },
+    "policy": {
+      "hypotheses": 0,
+      "alerts": 0,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": []
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 0,
+      "infer_ms": 152.2
+    }
+  }
+}

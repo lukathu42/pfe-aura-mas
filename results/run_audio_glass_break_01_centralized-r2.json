@@ -1,0 +1,70 @@
+{
+  "scenario": "audio_glass_break_01",
+  "mode": "centralized",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 2,
+  "tag": "centralized-r2",
+  "t_start": 1787069679.4908845,
+  "wall_seconds": 9.14072561264038,
+  "ground_truth": [
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 19.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787069686.883112,
+      "alert_id": "alt_6300f2a037",
+      "timestamp": 1787069686.8830926,
+      "severity": "WARNING",
+      "event_type": "audio_glass_break",
+      "confidence": 0.702,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_ee1846226d",
+        "ev_bce2f66e86"
+      ],
+      "explanation": "[WARNING] audio glass break detected in zone 'site' with fused confidence 0.70, corroborated by 2 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 3,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 1,
+      "suppressed": 1,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.012874603271484375,
+        0.0059604644775390625
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "mic_01": {
+      "chunks": 19,
+      "events": 3,
+      "backend": "yamnet",
+      "suppressed_dupes": 2
+    }
+  }
+}

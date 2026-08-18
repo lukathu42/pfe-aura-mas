@@ -14,7 +14,12 @@ librosa>=0.10           # audio loading + DSP fallback
 openai>=1.30
 
 # Optional extras (uncomment as needed)
-# tensorflow>=2.15 ; tensorflow_hub          # YAMNet audio classification
+# tensorflow-cpu>=2.21                       # YAMNet audio classification (never plain
+#                                             # `tensorflow` -- pulls CUDA/nvidia-* wheels
+#                                             # even on CPU-only machines). Run
+#                                             # `python -m aura_mas.scripts.fetch_yamnet`
+#                                             # once after installing to fetch the local
+#                                             # SavedModel (no tensorflow_hub dependency).
 # git+https://github.com/openai/CLIP.git     # CLIP zero-shot anomaly scoring
 # torch torchvision                          # required by CLIP
 # langgraph                                  # full graph orchestration variant

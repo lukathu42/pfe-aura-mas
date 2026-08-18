@@ -1,0 +1,1 @@
+{"timestamp": 1787062679.4869325, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_b2b106e946", "event_type": "audio_alarm", "confidence": 0.614, "severity": "WARNING", "decision": "ALERT", "reason": "accepted"}

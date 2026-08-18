@@ -1,0 +1,74 @@
+{
+  "scenario": "abandoned_object_01",
+  "mode": "mas-rules",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 4,
+  "tag": "mas-rules-r4",
+  "t_start": 1787066883.1663885,
+  "wall_seconds": 80.89015984535217,
+  "ground_truth": [
+    {
+      "event_type": "abandoned_object",
+      "zone": null,
+      "t_start": 58.0,
+      "t_end": 73.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787066937.05996,
+      "alert_id": "alt_6026abbd12",
+      "timestamp": 1787066937.059887,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.78,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787066930_4da446.jpg"
+      ],
+      "fused_events": [
+        "ev_5b817d26a8"
+      ],
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.78, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 2,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 1,
+      "suppressed": 1,
+      "verified_up": 1,
+      "verified_down": 1,
+      "decision_ms": [
+        593.961238861084,
+        301.4364242553711
+      ]
+    },
+    "coordinator": {
+      "tasks": 2,
+      "bids": 0,
+      "awards": 2,
+      "verifications": 2,
+      "messages": 4,
+      "allocation_ms": [
+        593.6408042907715,
+        301.16939544677734
+      ]
+    },
+    "cam_01": {
+      "frames": 364,
+      "detections": 547,
+      "events": 2,
+      "infer_ms": 185.9
+    }
+  }
+}

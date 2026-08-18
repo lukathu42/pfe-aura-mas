@@ -1,0 +1,96 @@
+{
+  "scenario": "combined_audio_video_01",
+  "mode": "centralized",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 1,
+  "tag": "centralized-r1",
+  "t_start": 1787071309.3805666,
+  "wall_seconds": 29.38216781616211,
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 34.0
+    },
+    {
+      "event_type": "audio_glass_break",
+      "zone": "zone_A",
+      "t_start": 15.0,
+      "t_end": 19.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787071337.4233053,
+      "alert_id": "alt_44ca31cf56",
+      "timestamp": 1787071337.4232652,
+      "severity": "CRITICAL",
+      "event_type": "intrusion",
+      "confidence": 1.0,
+      "zone": "zone_A",
+      "sensors": [
+        "cam_01",
+        "mic_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_intrusion_1787071321_0ac35b.jpg",
+        "data/evidence/cam_01_intrusion_1787071321_446662.jpg",
+        "data/evidence/cam_01_intrusion_1787071321_bada9a.jpg",
+        "data/evidence/cam_01_intrusion_1787071322_cc65cf.jpg",
+        "data/evidence/cam_01_intrusion_1787071323_f4951a.jpg",
+        "data/evidence/cam_01_intrusion_1787071327_dfc26c.jpg"
+      ],
+      "fused_events": [
+        "ev_4dd00a1dcb",
+        "ev_1f01100a64",
+        "ev_7709f5f2e9",
+        "ev_405c353d97",
+        "ev_bba1123890",
+        "ev_264014d221",
+        "ev_52b53f9e82",
+        "ev_1b4996df4b"
+      ],
+      "explanation": "[CRITICAL] intrusion detected in zone 'zone_A' with fused confidence 1.00, corroborated by 8 event(s) from 2 sensor(s) (audio/video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 12,
+      "hypotheses_out": 2
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 1,
+      "suppressed": 1,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.0247955322265625,
+        0.0057220458984375
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "cam_01": {
+      "frames": 298,
+      "detections": 198,
+      "events": 9,
+      "infer_ms": 66.0
+    },
+    "mic_01": {
+      "chunks": 19,
+      "events": 3,
+      "backend": "yamnet",
+      "suppressed_dupes": 2
+    }
+  }
+}

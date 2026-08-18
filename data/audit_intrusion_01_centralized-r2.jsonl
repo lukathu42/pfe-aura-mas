@@ -1,0 +1,3 @@
+{"timestamp": 1787076863.5640216, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_e1f7923d67", "event_type": "intrusion", "confidence": 0.958, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}
+{"timestamp": 1787076877.566617, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_2a14b50a48", "event_type": "intrusion", "confidence": 0.999, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "cooldown"}
+{"timestamp": 1787076914.573312, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_84f1adf4c2", "event_type": "audio_glass_break", "confidence": 0.196, "severity": "WARNING", "decision": "SUPPRESS", "reason": "threshold"}

@@ -1,0 +1,68 @@
+{
+  "scenario": "audio_alarm_clock_01",
+  "mode": "mas-nocoord",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": 1,
+  "tag": "mas-nocoord-r1",
+  "t_start": 1787068148.1047437,
+  "wall_seconds": 28.62900710105896,
+  "ground_truth": [
+    {
+      "event_type": "audio_alarm",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 20.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787068171.1163864,
+      "alert_id": "alt_074363395c",
+      "timestamp": 1787068171.116329,
+      "severity": "WARNING",
+      "event_type": "audio_alarm",
+      "confidence": 0.614,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_98321b58e7"
+      ],
+      "explanation": "[WARNING] audio alarm detected in zone 'site' with fused confidence 0.61, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN"
+    }
+  ],
+  "agent_metrics": {
+    "fusion": {
+      "events_in": 1,
+      "hypotheses_out": 1
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 1,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.025987625122070312
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": []
+    },
+    "mic_01": {
+      "chunks": 19,
+      "events": 1,
+      "backend": "yamnet",
+      "suppressed_dupes": 0
+    }
+  }
+}

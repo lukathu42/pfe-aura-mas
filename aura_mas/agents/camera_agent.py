@@ -204,6 +204,18 @@ class CameraAgent(Agent):
         self.bus.subscribe(TOPIC_TASKS, self._on_task_announce)
         self.bus.subscribe(TOPIC_AWARDS, self._on_award)
 
+    def warmup(self) -> None:
+        """Run one dummy inference so YOLO/CLIP cold-start load doesn't land
+        inside the timed scenario window (see replay.py -- t_scenario_start
+        is now captured after all agents warm up, not before they load)."""
+        dummy = np.zeros((480, 640, 3), dtype=np.uint8)
+        if self._model is not None:
+            self._model.predict(dummy, verbose=False)  # predict, not track:
+            # track(persist=True) would seed ByteTrack state with a phantom
+            # frame and shift real track_ids.
+        if self._clip is not None:
+            self._clip.score(dummy)
+
     # ------------------------------------------------------------- main loop
     def run(self, max_frames: Optional[int] = None) -> Dict[str, Any]:
         """Process the video source; blocking. Returns run metrics."""
