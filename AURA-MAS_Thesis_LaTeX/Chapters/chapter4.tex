@@ -80,7 +80,7 @@ The zone rule engine implements three rules over tracked objects, using the foot
 
 \subsection{Audio Pipeline}
 
-AudioAgents process 1-second chunks. In YAMNet mode \cite{tensorflow_yamnet}, a curated mapping from AudioSet classes to surveillance event types (with per-class thresholds) produces typed events. In \gls{dsp} fallback mode, rolling z-scores of short-time energy and spectral flatness produce generic \texttt{audio\_anomaly} events, normalized to $[0,1]$.
+AudioAgents process audio in overlapping windows extending up to 1.5~s of lookback context per 1-second chunk, so that short transient sounds are scored with sufficient temporal context rather than against a bare 1~s window. In YAMNet mode\footnote{The \gls{dsp} fallback triggers not only when \texttt{tensorflow}/\texttt{tensorflow\_hub} are absent, but also transiently on model-load failure; an earlier silent \texttt{except Exception} around the YAMNet load masked a dead model URL for an unknown period, motivating an explicit \texttt{backend="yamnet"} configuration option that now fails loudly instead of silently falling back.} \cite{tensorflow_yamnet}, a curated mapping from AudioSet classes to surveillance event types (with per-class thresholds) produces typed events. In \gls{dsp} fallback mode, rolling z-scores of short-time energy and spectral flatness produce generic \texttt{audio\_anomaly} events, normalized to $[0,1]$.
 
 \section{Fusion Design}
 \label{sec:design_fusion}

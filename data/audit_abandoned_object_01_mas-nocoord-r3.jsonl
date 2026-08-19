@@ -1,2 +1,0 @@
-{"timestamp": 1787067211.4969833, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_e9e271cbb8", "event_type": "abandoned_object", "confidence": 0.63, "severity": "WARNING", "decision": "ALERT", "reason": "accepted"}
-{"timestamp": 1787067233.5049675, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_0c74f1ed2e", "event_type": "abandoned_object", "confidence": 0.63, "severity": "WARNING", "decision": "ALERT", "reason": "accepted"}

@@ -101,14 +101,6 @@ periodic `tick()`. All cross-agent communication goes through
 
 ### Message flow / topics (`aura_mas/core/bus.py`)
 
-- `site/{sensor_id}/detections` — per-frame `Detection` (QoS 0, high freq)
-- `site/events` — semantic `Event` from CameraAgent/AudioAgent (QoS 1):
-  `intrusion | loitering | abandoned_object | anomaly | audio_scream | audio_glass_break | ...`
-- `site/coordination/tasks|bids|awards|verifications` — single-round
-  contract-net auction (CoordinatorAgent)
-- `aura:alerts` (Redis stream) — final `Alert` from PolicyAgent, durable
-- `aura:audit` (Redis stream) — every policy decision + operator action
-
 Schemas are plain dataclasses (`Detection`, `Event`, `Alert`) serialized to
 JSON — keep changes to these backward-compatible with `results/*.json` and
 `data/*.jsonl` already on disk, or regenerate them.
@@ -136,25 +128,6 @@ exported. This is a stated design invariant ("no biometric identification
 anywhere in the system") — any new evidence-export path must go through it.
 
 ## Repository layout
-
-```
-aura_mas/            the actual Python package (canonical source of truth)
-  core/               bus.py (transports+schemas), privacy.py
-  agents/             base, camera_agent, audio_agent, fusion_agent,
-                       coordinator_agent, policy_agent, explanation_agent
-  scenarios/          replay.py (scenario runner incl. centralized baseline)
-  eval/               metrics.py (F1, time-to-alert, false alerts/h, msg overhead)
-  dashboard/          app.py (Streamlit operator console)
-  tests/              test_pipeline.py (offline, no models needed, <1s)
-scenarios/            scenario manifests (also duplicated under aura_mas/scenarios — check both if editing)
-data/                 clips/ (legacy — includes 2 synthetic placeholder clips, don't reuse),
-                       clips_real/ (real licensed video+audio, see manifest.json),
-                       evidence/, alerts_*.jsonl, audit_*.jsonl
-results/              summary.csv, run_*.json, figures/
-research/             wide-research reports + landscape-positioning study (has its own BibTeX + findings)
-AURA-MAS_Thesis_LaTeX/  the real, compiling LaTeX thesis project (main.pdf here is the good one)
-docker-compose.yml    Mosquitto + Redis
-```
 
 ### Known duplication — don't get confused by it
 

@@ -1,2 +1,0 @@
-{"timestamp": 1787069396.0517957, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_2e930a2916", "event_type": "audio_explosion", "confidence": 0.345, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "threshold"}
-{"timestamp": 1787069398.0524, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_f339fc4665", "event_type": "audio_glass_break", "confidence": 0.702, "severity": "WARNING", "decision": "ALERT", "reason": "accepted"}

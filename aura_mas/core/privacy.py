@@ -75,3 +75,6 @@ def anonymize_and_save(frame: np.ndarray, evidence_dir: str,
     path = os.path.join(evidence_dir, name)
     cv2.imwrite(path, anon, [cv2.IMWRITE_JPEG_QUALITY, 85])
     return path
+
+
+

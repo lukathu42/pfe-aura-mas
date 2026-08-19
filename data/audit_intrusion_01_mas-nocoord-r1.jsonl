@@ -1,5 +1,0 @@
-{"timestamp": 1787076248.0442502, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_b2739483b3", "event_type": "intrusion", "confidence": 0.78, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}
-{"timestamp": 1787076260.0479107, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_26f5cbd7ad", "event_type": "audio_glass_break", "confidence": 0.196, "severity": "WARNING", "decision": "SUPPRESS", "reason": "threshold"}
-{"timestamp": 1787076261.0487723, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_1a10ea113d", "event_type": "intrusion", "confidence": 0.958, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "cooldown"}
-{"timestamp": 1787076278.0525732, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_00216eb2a3", "event_type": "intrusion", "confidence": 0.994, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}
-{"timestamp": 1787076289.055954, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_0dbd54855c", "event_type": "intrusion", "confidence": 0.825, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "cooldown"}
