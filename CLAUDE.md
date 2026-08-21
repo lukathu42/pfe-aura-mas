@@ -23,11 +23,13 @@ being presented as the thesis's real evaluation numbers.
 ## Current state (important — read before planning work)
 
 This is **not a Day-1 scaffold**. A working prototype already exists and
-implements most of Weeks 1-3 of `One-Month Execution Schedule — AURA-MAS PFE.md`:
+implements most of Weeks 1-3 of
+`research/planning/One-Month Execution Schedule — AURA-MAS PFE.md`:
 all six agents run end-to-end, the auction coordination protocol works, a
 Streamlit dashboard exists, unit tests pass (6/6), a first evaluation run
-(`STATE_NOTES.md`) compared centralized vs. MAS-nocoord vs. MAS-rules vs.
-MAS-auction, and a 53-page thesis PDF already compiles.
+(`research/reports/STATE_NOTES.md`) compared centralized vs. MAS-nocoord vs.
+MAS-rules vs. MAS-auction, and a thesis PDF already compiles
+(`AURA-MAS_Thesis_LaTeX/main.pdf`).
 
 **However**, this was produced in a single fast sandbox pass, not through
 the 30 days of iterative work the schedule describes. Treat it as a strong
@@ -129,26 +131,52 @@ anywhere in the system") — any new evidence-export path must go through it.
 
 ## Repository layout
 
-### Known duplication — don't get confused by it
+### Repo cleanup (2026-08-21) — the duplication described in older notes is gone
 
-This directory is a flattened extraction of several delivery bundles. Some
-duplication is real and you should be aware of it rather than "fixing" it
-without asking:
+A prior pass through this repo was a flattened extraction of several
+delivery bundles and had real, confusing duplication. A 2026-08-21 cleanup
+resolved it; if you're reading an older note (commit message, research
+finding) that references any of the following, treat it as historical, not
+current:
 
 - **Root-level `.py` files** (`camera_agent.py`, `bus.py`, `app.py`, etc.)
-  are byte-identical copies of the files under `aura_mas/`. Treat
-  `aura_mas/` as canonical; if you edit logic, edit there (the root copies
-  will silently go stale — flag this to the user if it matters for a task).
-- **LaTeX**: `AURA-MAS_Thesis_LaTeX/main.pdf` is the real, compiled 53-page
-  thesis. The root-level `main.tex`/`chapter*.tex`/`main.pdf` are a stale,
-  *failed* build (`main.pdf` there is a 15-byte stub) — don't edit those or
-  cite that PDF.
-- `engineerthesis/` is a different, unrelated reference thesis (original
-  template source), not part of AURA-MAS.
-- Several `*.zip` files at the root (`AURA-MAS_Code.zip`,
-  `AURA-MAS_Thesis_LaTeX.zip`, `masterthesis.zip` [66MB], `engineerthesis.zip`)
-  are frozen snapshots of the above — not tracked in git, safe to ignore
-  unless the user asks to diff against them.
+  that duplicated `aura_mas/` have been deleted. `aura_mas/` is the sole
+  copy — by the time they were removed several had already drifted from the
+  `aura_mas/` versions, so never trust or edit a root-level agent file if
+  one reappears; nothing imports it.
+- **LaTeX**: the stale, failed root-level build (`main.tex`, `chapter*.tex`,
+  a 15-byte stub `main.pdf`, plus their compile artifacts) has been deleted.
+  `AURA-MAS_Thesis_LaTeX/main.pdf` (compiled from `AURA-MAS_Thesis_LaTeX/main.tex`)
+  is the only compiled thesis now. That directory is intentionally left at
+  the repo root rather than moved into `research/`: dozens of citations
+  across `research/aura-mas-landscape-positioning/` and
+  `research/reports/research-report-v1/` reference exact paths like
+  `AURA-MAS_Thesis_LaTeX/Chapters/chapter6.tex:84` as evidence, and moving
+  the directory would silently break that audit trail.
+- `engineerthesis/` (an unrelated reference thesis by a different author)
+  and `AURA-MAS_Thesis_LaTeX/Master_BELMANA_Soufyane.pdf` (a different named
+  student's compiled thesis, kept only as a LaTeX formatting reference) have
+  both been deleted outright — they were other people's academic work and
+  didn't belong in a public repo. Prior research notes had already flagged
+  the PDF for removal (`research/reports/research-report-v1/01-project-summary.md:332`).
+- No `*.zip` delivery-bundle snapshots exist in the working tree anymore.
+
+### `research/` layout
+
+Non-code prose — planning docs, literature notes, status/audit reports,
+presentation material — lives under `research/`, one folder per category:
+`research/planning/`, `research/literature-review/`, `research/reports/`,
+`research/presentation/`, plus the pre-existing
+`research/aura-mas-landscape-positioning/` (left un-renamed for the same
+citation-integrity reason as the LaTeX dir above — its own findings files
+cite `research/aura-mas-landscape-positioning/findings/F*` by path). Files
+were relocated with `git mv` (history preserved) and, except for
+`research/planning/EXECUTION_PLAN.md`'s corrected reference to the deleted
+stale root `AURA-MAS_Thesis.pdf`, moved without editing their content — so
+other documents' bare-filename citations (e.g. `` `STATE_NOTES.md` ``)
+remain textually valid; they were always prose pointers meant to be
+grepped, not clickable relative links, so a moved file is still findable by
+name even though its directory changed.
 
 ## Running things
 

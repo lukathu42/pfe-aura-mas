@@ -33,24 +33,12 @@ __pycache__/
 *-blx.bib
 main-blx.bib
 
-# Stale/duplicate root-level failed LaTeX build (real one is in AURA-MAS_Thesis_LaTeX/)
-/main.tex
-/main.pdf
-/chapter1.tex
-/chapter2.tex
-/chapter3.tex
-/chapter4.tex
-/chapter5.tex
-/chapter6.tex
-/chapter7.tex
-/chapter_sota.tex
-
 # Large delivery-bundle zips (frozen snapshots of tracked content, not source)
 *.zip
 
-# Large reference PDFs not authored in this repo
+# Unrelated reference theses (not part of AURA-MAS; removed from the repo,
+# ignored so a stray local extraction is never re-added)
 /engineerthesis/
-/masterthesis.zip
 
 # Streamlit / misc caches
 .streamlit/
