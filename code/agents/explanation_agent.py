@@ -20,10 +20,13 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
 import os
 import re
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
+
+log = logging.getLogger("aura.explanation")
 
 SYSTEM_PROMPT = """You are the explanation agent of AURA-MAS, a multi-agent \
 site surveillance system. You write concise, factual incident reports for a \
@@ -55,7 +58,7 @@ class ExplanationAgent:
         self.max_evidence_frames = max_evidence_frames
         self._client = None
         self.metrics = {"requests": 0, "guardrail_rejections": 0,
-                        "fallbacks": 0}
+                        "fallbacks": 0, "errors": 0}
 
     # -------------------------------------------------------------- pipeline
     def explain(self, alert, hypothesis) -> str:
@@ -66,6 +69,14 @@ class ExplanationAgent:
             self._draft_report(state)
             self._guardrail_check(state)
         except Exception:  # noqa: BLE001
+            # The template fallback is a design guarantee (C4), but an API
+            # outage and a guardrail rejection are different failures and were
+            # indistinguishable: both only showed up as a bumped `fallbacks`
+            # count, with the traceback discarded entirely.
+            self.metrics["errors"] += 1
+            log.exception("explanation pipeline failed; falling back to "
+                          "template for alert %s", getattr(alert, "alert_id",
+                                                            "?"))
             state.guardrail_passed = False
         if not state.guardrail_passed:
             self.metrics["fallbacks"] += 1

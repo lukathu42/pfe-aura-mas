@@ -188,6 +188,7 @@ class CameraAgent(Agent):
         self._clip = None
         self._last_frame: Optional[np.ndarray] = None
         self.metrics = {"frames": 0, "detections": 0, "events": 0,
+                        "clip": "on" if enable_clip else "off",
                         "infer_ms": []}
 
     # ------------------------------------------------------------------ setup
@@ -197,8 +198,17 @@ class CameraAgent(Agent):
         if self.enable_clip:
             try:
                 self._clip = ClipAnomalyScorer()
-            except Exception:  # noqa: BLE001
-                self.log.warning("CLIP unavailable; anomaly scoring disabled")
+            except Exception as exc:  # noqa: BLE001
+                # enable_clip is an explicit per-sensor opt-in and for
+                # scenarios like fight_01 the zone rules cannot reach the
+                # annotated event at all, so silently disabling the scorer
+                # yields an f1=0 that reads as a genuine detection failure
+                # (cf. AudioAgent backend="yamnet").
+                raise RuntimeError(
+                    "enable_clip=True but ClipAnomalyScorer could not load "
+                    f"({type(exc).__name__}: {exc}); install CLIP+torch (see "
+                    "requirements.txt) or set enable_clip=false for this "
+                    "sensor") from exc
         os.makedirs(self.evidence_dir, exist_ok=True)
         # coordination: listen for task announcements and awards
         self.bus.subscribe(TOPIC_TASKS, self._on_task_announce)
@@ -226,25 +236,27 @@ class CameraAgent(Agent):
         stride = max(1, round(src_fps / self.infer_fps))
         frame_id = 0
         t_start = time.time()
-        while True:
-            ok, frame = cap.read()
-            if not ok:
-                break
-            frame_id += 1
-            if frame_id % stride:
-                continue
-            if max_frames and self.metrics["frames"] >= max_frames:
-                break
-            ts = now_ts()
-            video_ts = frame_id / src_fps
-            self._last_frame = frame
-            self._process_frame(frame, frame_id, ts, video_ts)
-            if self.realtime:
-                # simulate real-time pacing of the source
-                budget = frame_id / src_fps - (time.time() - t_start)
-                if budget > 0:
-                    time.sleep(min(budget, 0.5))
-        cap.release()
+        try:
+            while True:
+                ok, frame = cap.read()
+                if not ok:
+                    break
+                frame_id += 1
+                if frame_id % stride:
+                    continue
+                if max_frames and self.metrics["frames"] >= max_frames:
+                    break
+                ts = now_ts()
+                video_ts = frame_id / src_fps
+                self._last_frame = frame
+                self._process_frame(frame, frame_id, ts, video_ts)
+                if self.realtime:
+                    # simulate real-time pacing of the source
+                    budget = frame_id / src_fps - (time.time() - t_start)
+                    if budget > 0:
+                        time.sleep(min(budget, 0.5))
+        finally:
+            cap.release()
         return self.metrics
 
     def _process_frame(self, frame: np.ndarray, frame_id: int, ts: float,
@@ -331,9 +343,18 @@ class CameraAgent(Agent):
         self._busy = True
         try:
             result = self._verify(award)
-            self.bus.publish(TOPIC_VERIFICATIONS, json.dumps(result), qos=1)
+        except Exception as exc:  # noqa: BLE001
+            # Reported explicitly so the coordinator scores an errored
+            # verification instead of waiting out its timeout, which is
+            # indistinguishable from no verification being needed.
+            self.log.exception("verification failed for task %s",
+                               award.get("task_id"))
+            result = {"task_id": award["task_id"], "agent_id": self.agent_id,
+                      "error": f"{type(exc).__name__}: {exc}",
+                      "timestamp": now_ts()}
         finally:
             self._busy = False
+        self.bus.publish(TOPIC_VERIFICATIONS, json.dumps(result), qos=1)
 
     def _verify(self, award: Dict) -> Dict:
         """High-scrutiny re-check: re-run detection at higher resolution/conf."""

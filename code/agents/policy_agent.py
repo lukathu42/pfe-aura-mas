@@ -43,6 +43,7 @@ class PolicyAgent(Agent):
         self._last_alert: Dict[str, float] = {}   # (zone,event_type) -> ts
         self.metrics = {"hypotheses": 0, "alerts": 0, "suppressed": 0,
                         "verified_up": 0, "verified_down": 0,
+                        "explanation_failures": 0,
                         "decision_ms": []}
 
     # entry point wired as FusionAgent.on_hypothesis callback ---------------
@@ -105,6 +106,7 @@ class PolicyAgent(Agent):
             try:
                 alert.explanation = self.explainer.explain(alert, hyp)
             except Exception:  # noqa: BLE001
+                self.metrics["explanation_failures"] += 1
                 self.log.exception("explanation failed; using template")
                 alert.explanation = self._template_explanation(alert, hyp)
         else:

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import glob
 import json
+import logging
 import os
 import time
 
@@ -22,6 +23,8 @@ st.set_page_config(page_title="AURA-MAS Operator Console", layout="wide",
 
 SEVERITY_COLOR = {"CRITICAL": "#d62728", "WARNING": "#ff7f0e", "INFO": "#1f77b4"}
 
+log = logging.getLogger("aura.dashboard")
+
 
 @st.cache_resource
 def get_store() -> AlertStore:
@@ -29,18 +32,35 @@ def get_store() -> AlertStore:
                                           "redis://localhost:6379"))
 
 
-def load_alerts(store: AlertStore) -> list[Alert]:
+def load_alerts(store: AlertStore) -> tuple[list[Alert], list[str]]:
+    """Returns (alerts, problems); an operator console must not hide data loss."""
     alerts = store.read_alerts(200)
+    problems: list[str] = []
+    if store.read_skipped:
+        problems.append(f"{store.read_skipped} unreadable alert record(s) in "
+                        "the alert store were skipped")
     if not alerts:  # fallback: aggregate all replay JSONL logs
         for path in glob.glob("data/alerts_*.jsonl"):
-            with open(path) as f:
-                for line in f:
-                    try:
-                        alerts.append(Alert.from_json(line))
-                    except Exception:  # noqa: BLE001
-                        pass
+            skipped = 0
+            try:
+                with open(path) as f:
+                    for line in f:
+                        if not line.strip():
+                            continue
+                        try:
+                            alerts.append(Alert.from_json(line))
+                        except Exception:  # noqa: BLE001
+                            skipped += 1
+                            log.exception("unparsable alert line in %s", path)
+            except OSError as exc:
+                log.exception("cannot read %s", path)
+                problems.append(f"{path}: {exc.strerror or exc}")
+                continue
+            if skipped:
+                problems.append(f"{path}: {skipped} unparsable record(s) "
+                                "skipped")
         alerts.sort(key=lambda a: a.timestamp, reverse=True)
-    return alerts
+    return alerts, problems
 
 
 def main() -> None:
@@ -50,7 +70,9 @@ def main() -> None:
                "human-in-the-loop escalation")
 
     col_feed, col_detail = st.columns([1, 1.4])
-    alerts = load_alerts(store)
+    alerts, problems = load_alerts(store)
+    for problem in problems:
+        st.warning(f"Alert feed is incomplete — {problem}", icon="⚠️")
 
     if "ack" not in st.session_state:
         st.session_state.ack = {}
@@ -65,7 +87,7 @@ def main() -> None:
             if a.severity not in sev_filter:
                 continue
             status = st.session_state.ack.get(a.alert_id, a.status)
-            color = SEVERITY_COLOR[a.severity]
+            color = SEVERITY_COLOR.get(a.severity, "#7f7f7f")
             label = (f"{time.strftime('%H:%M:%S', time.localtime(a.timestamp))} "
                      f"· {a.severity} · {a.event_type} · zone={a.zone or 'site'}"
                      f" · {status}")

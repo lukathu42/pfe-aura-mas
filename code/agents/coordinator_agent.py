@@ -24,12 +24,14 @@ class CoordinatorAgent(Agent):
     def __init__(self, agent_id: str, bus, mode: str = "auction",
                  camera_ids: Optional[List[str]] = None,
                  bid_window: float = 1.0,
+                 verification_timeout: float = 3.0,
                  gray_zone: tuple = (0.35, 0.75)) -> None:
         super().__init__(agent_id, bus)
         assert mode in ("auction", "roundrobin", "off")
         self.mode = mode
         self.camera_ids = camera_ids or []
         self.bid_window = bid_window
+        self.verification_timeout = verification_timeout
         self.gray_zone = gray_zone
         self._bids: Dict[str, List[Dict]] = {}
         self._verifications: Dict[str, Dict] = {}
@@ -37,6 +39,8 @@ class CoordinatorAgent(Agent):
         self._lock = threading.Lock()
         self.metrics = {"tasks": 0, "bids": 0, "awards": 0,
                         "verifications": 0, "messages": 0,
+                        "no_bid_tasks": 0, "verification_timeouts": 0,
+                        "verification_errors": 0,
                         "allocation_ms": []}
 
     def setup(self) -> None:
@@ -72,13 +76,26 @@ class CoordinatorAgent(Agent):
         self.metrics["awards"] += 1
         self.metrics["messages"] += 1
 
-        result = self._await_verification(task_id, timeout=3.0)
+        result = self._await_verification(task_id,
+                                          timeout=self.verification_timeout)
         self.metrics["allocation_ms"].append((time.time() - t0) * 1000)
-        if result:
-            self.metrics["verifications"] += 1
-            self.log.info("verification by %s: verified=%s score=%.2f",
-                          winner, result["verified"],
-                          result["verification_score"])
+        # An unanswered or errored verification round degrades the auction to
+        # the no-coordination baseline for this hypothesis. Counting the two
+        # outcomes separately keeps that visible in the run artifact instead
+        # of hiding behind a low `verifications` count.
+        if result is None:
+            self.metrics["verification_timeouts"] += 1
+            self.log.error("verification timed out for task %s (winner=%s)",
+                           task_id, winner)
+            return None
+        if "error" in result:
+            self.metrics["verification_errors"] += 1
+            self.log.error("verification by %s failed for task %s: %s",
+                           winner, task_id, result["error"])
+            return None
+        self.metrics["verifications"] += 1
+        self.log.info("verification by %s: verified=%s score=%.2f",
+                      winner, result["verified"], result["verification_score"])
         return result
 
     # ---------------------------------------------------------------- auction
@@ -91,7 +108,9 @@ class CoordinatorAgent(Agent):
         with self._lock:
             bids = self._bids.pop(task["task_id"], [])
         if not bids:
-            self.log.warning("no bids for task %s", task["task_id"])
+            self.metrics["no_bid_tasks"] += 1
+            self.log.error("no bids for task %s; hypothesis goes unverified",
+                           task["task_id"])
             return None
         best = max(bids, key=lambda b: b["bid"])
         self.log.info("auction %s: %d bids, winner=%s (%.2f)",

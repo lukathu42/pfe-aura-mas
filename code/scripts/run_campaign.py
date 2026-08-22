@@ -122,9 +122,16 @@ def run_one(run: dict, min_free_gb: float) -> int:
     if proc.returncode != 0:
         print(f"FAILED rc={proc.returncode} ({seconds}s): {out}")
         print(proc.stderr[-3000:])
-    else:
-        print(f"ok ({seconds}s): {out}")
-    return proc.returncode
+        return proc.returncode
+    if not os.path.exists(out):
+        # A replay that exits 0 without an artifact never happens by design;
+        # counting it as ok would leave a hole in the grid that the next
+        # resume pass cannot distinguish from a combination never scheduled.
+        print(f"FAILED rc=0 but no artifact written ({seconds}s): {out}")
+        print(proc.stderr[-3000:])
+        return 1
+    print(f"ok ({seconds}s): {out}")
+    return 0
 
 
 def main() -> None:
@@ -171,6 +178,8 @@ def main() -> None:
             failures += 1
     print(f"\nCampaign done: {len(grid)} runs, {failures} failures. "
          f"Log: {LOG_PATH}")
+    if failures:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

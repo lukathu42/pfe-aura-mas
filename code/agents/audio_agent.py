@@ -127,6 +127,8 @@ class AudioAgent(Agent):
         try:
             class_map_path = self._yamnet.class_map_path().numpy().decode()
         except Exception:  # noqa: BLE001
+            self.log.warning("YAMNet class_map_path() unavailable; falling "
+                             "back to the on-disk asset", exc_info=True)
             class_map_path = os.path.join(model_dir, "assets",
                                           "yamnet_class_map.csv")
         with open(class_map_path) as f:

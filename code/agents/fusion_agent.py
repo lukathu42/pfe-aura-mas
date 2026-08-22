@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import threading
 import time
+import traceback
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
@@ -52,14 +53,21 @@ class FusionAgent(Agent):
         self.on_hypothesis = on_hypothesis  # callback(Hypothesis)
         self._hypotheses: Dict[str, Hypothesis] = {}
         self._lock = threading.Lock()
-        self.metrics = {"events_in": 0, "hypotheses_out": 0}
+        self.metrics = {"events_in": 0, "hypotheses_out": 0,
+                        "malformed_events": 0, "downstream_errors": 0}
 
     def setup(self) -> None:
         self.bus.subscribe(TOPIC_EVENTS, self._on_event)
 
     # ------------------------------------------------------------------ fuse
     def _on_event(self, topic: str, payload: str) -> None:
-        ev = Event.from_json(payload)
+        try:
+            ev = Event.from_json(payload)
+        except Exception:  # noqa: BLE001
+            self.metrics["malformed_events"] += 1
+            self.log.exception("dropping malformed event on %s", topic)
+            self.tick_errors.append(traceback.format_exc())
+            return
         self.metrics["events_in"] += 1
         family = EVENT_FAMILIES.get(ev.event_type, "other")
         key = f"{family}:{ev.zone or 'site'}"
@@ -107,8 +115,7 @@ class FusionAgent(Agent):
             self.log.info("HYPOTHESIS %s conf=%.2f events=%d modalities=%s",
                           hyp.dominant_type(), hyp.confidence,
                           len(hyp.events), hyp.modalities)
-            if self.on_hypothesis:
-                self.on_hypothesis(hyp)
+            self._emit(hyp)
 
     def flush_all(self) -> None:
         """Force-flush at end of a replay run."""
@@ -117,5 +124,16 @@ class FusionAgent(Agent):
             self._hypotheses.clear()
         for hyp in hyps:
             self.metrics["hypotheses_out"] += 1
-            if self.on_hypothesis:
-                self.on_hypothesis(hyp)
+            self._emit(hyp)
+
+    def _emit(self, hyp: Hypothesis) -> None:
+        """One failing hypothesis must not drop the others in the same flush."""
+        if not self.on_hypothesis:
+            return
+        try:
+            self.on_hypothesis(hyp)
+        except Exception:  # noqa: BLE001
+            self.metrics["downstream_errors"] += 1
+            self.log.exception("downstream handler failed for hypothesis %s",
+                               hyp.hypothesis_id)
+            self.tick_errors.append(traceback.format_exc())

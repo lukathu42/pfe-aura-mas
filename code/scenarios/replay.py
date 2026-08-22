@@ -28,7 +28,8 @@ import json
 import logging
 import threading
 import time
-from typing import Dict, List
+import traceback
+from typing import Callable, Dict, List
 
 from aura_mas.core.bus import AlertStore, make_bus
 from aura_mas.agents.camera_agent import CameraAgent
@@ -39,6 +40,27 @@ from aura_mas.agents.policy_agent import PolicyAgent
 from aura_mas.agents.explanation_agent import ExplanationAgent
 
 log = logging.getLogger("aura.replay")
+
+
+class ScenarioRunError(RuntimeError):
+    """A replay did not complete cleanly, so no run artifact is emitted.
+
+    A partial run scores as a detection failure (f1=0) indistinguishable from
+    a real negative result, and results/run_*.json files are cited evaluation
+    artifacts -- so a crashed sensor must not leave one behind.
+    """
+
+
+def _guarded(target: Callable[[], object], label: str,
+             errors: List[str]) -> Callable[[], None]:
+    """Wrap a thread body so its traceback reaches the caller, not stderr."""
+    def wrapper() -> None:
+        try:
+            target()
+        except Exception:  # noqa: BLE001
+            log.exception("%s failed", label)
+            errors.append(f"{label}: {traceback.format_exc()}")
+    return wrapper
 
 
 def run_scenario(manifest_path: str, mode: str = "mas-auction",
@@ -105,6 +127,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     policy.start()
 
     agents, threads = [], []
+    agent_errors: List[str] = []
     realtime = mode != "centralized"
 
     for spec in camera_specs:
@@ -115,13 +138,15 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
                           realtime=realtime)
         cam.start()  # runs setup(): loads YOLO (+ CLIP if enabled)
         agents.append(cam)
-        threads.append(threading.Thread(target=cam.run, daemon=True))
+        threads.append((cam.agent_id, threading.Thread(
+            target=_guarded(cam.run, cam.agent_id, agent_errors), daemon=True)))
     for spec in audio_specs:
         aud = AudioAgent(spec["id"], bus, spec["source"], realtime=realtime,
                          backend=audio_backend, zone=spec.get("zone"))
         aud.start()  # runs setup(): loads YAMNet if backend allows it
         agents.append(aud)
-        threads.append(threading.Thread(target=aud.run, daemon=True))
+        threads.append((aud.agent_id, threading.Thread(
+            target=_guarded(aud.run, aud.agent_id, agent_errors), daemon=True)))
 
     # Warm up every agent (one dummy inference each) BEFORE starting the
     # timer, so YOLO/CLIP/YAMNet cold-start load latency (~seconds on CPU)
@@ -133,21 +158,27 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
             a.warmup()
     t_scenario_start = time.time()
 
+    unfinished: List[str] = []
     if mode == "centralized":
         # centralized baseline: process sources sequentially in ONE process,
         # no edge parallelism -> measures the architectural benefit of the MAS
-        for th in threads:
+        for _, th in threads:
             th.start()
             th.join()
     else:
-        for th in threads:
+        for _, th in threads:
             th.start()
-        for th in threads:
+        for agent_id, th in threads:
             th.join(timeout=manifest.get("duration_seconds", 120) + 30)
+            if th.is_alive():
+                unfinished.append(agent_id)
 
     time.sleep(fusion.window_seconds + 1.5)
     fusion.flush_all()
     time.sleep(0.5)
+
+    _abort_on_failure(manifest["name"], tag, agent_errors, unfinished,
+                      [fusion, policy, coordinator, *agents], bus, store)
 
     result = {
         "scenario": manifest["name"], "mode": mode, "vision_only": vision_only,
@@ -170,6 +201,27 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     log.info("scenario %s [%s]: %d alerts -> %s",
              manifest["name"], tag, len(alerts_log), out_path)
     return result
+
+
+def _abort_on_failure(scenario: str, tag: str, agent_errors: List[str],
+                      unfinished: List[str], agents: List, bus,
+                      store) -> None:
+    """Refuse to emit a run artifact for a run that did not complete cleanly."""
+    problems: List[str] = list(agent_errors)
+    if unfinished:
+        problems.append(
+            "agents still running when the join timeout expired (the recorded "
+            f"alerts are truncated): {', '.join(unfinished)}")
+    for agent in agents:
+        problems.extend(f"{agent.agent_id} tick: {tb}"
+                        for tb in agent.tick_errors)
+    problems.extend(bus.subscriber_errors)
+    problems.extend(store.write_errors)
+    if not problems:
+        return
+    raise ScenarioRunError(
+        f"scenario {scenario} [{tag}] did not complete cleanly; no run JSON "
+        f"written ({len(problems)} problem(s)):\n\n" + "\n".join(problems))
 
 
 def main() -> None:

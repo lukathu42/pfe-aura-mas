@@ -73,7 +73,11 @@ def anonymize_and_save(frame: np.ndarray, evidence_dir: str,
     anon = anonymize_frame(frame, boxes)
     name = f"{prefix}_{int(time.time())}_{uuid.uuid4().hex[:6]}.jpg"
     path = os.path.join(evidence_dir, name)
-    cv2.imwrite(path, anon, [cv2.IMWRITE_JPEG_QUALITY, 85])
+    # cv2.imwrite reports failure by returning False, never by raising: an
+    # unchecked call hands back a path to a file that does not exist, so the
+    # alert (and the thesis's evidence chain) cites missing evidence.
+    if not cv2.imwrite(path, anon, [cv2.IMWRITE_JPEG_QUALITY, 85]):
+        raise OSError(f"failed to write anonymized evidence to {path}")
     return path
 
 
