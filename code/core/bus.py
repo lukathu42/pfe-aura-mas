@@ -33,20 +33,28 @@ def new_id(prefix: str) -> str:
     return f"{prefix}_{uuid.uuid4().hex[:10]}"
 
 
+class JsonMessage:
+    """Shared JSON (de)serialization for the message dataclasses."""
+
+    def to_json(self) -> str:
+        return json.dumps(asdict(self))
+
+    @classmethod
+    def from_json(cls, s: str):
+        return cls(**json.loads(s))
+
+
 @dataclass
-class Detection:
+class Detection(JsonMessage):
     """Single-frame object detection from a CameraAgent."""
     sensor_id: str
     frame_id: int
     timestamp: float
     objects: List[Dict[str, Any]]  # {class, confidence, bbox[x1,y1,x2,y2], track_id}
 
-    def to_json(self) -> str:
-        return json.dumps(asdict(self))
-
 
 @dataclass
-class Event:
+class Event(JsonMessage):
     """Semantic event emitted by an edge agent (zone rule, anomaly, audio)."""
     event_id: str
     sensor_id: str
@@ -59,16 +67,9 @@ class Event:
     evidence_path: Optional[str] = None
     extra: Dict[str, Any] = field(default_factory=dict)
 
-    def to_json(self) -> str:
-        return json.dumps(asdict(self))
-
-    @staticmethod
-    def from_json(s: str) -> "Event":
-        return Event(**json.loads(s))
-
 
 @dataclass
-class Alert:
+class Alert(JsonMessage):
     """Final alert produced by the PolicyAgent, durable in Redis Streams."""
     alert_id: str
     timestamp: float
@@ -81,13 +82,6 @@ class Alert:
     fused_events: List[str]
     explanation: Optional[str] = None
     status: str = "OPEN"     # OPEN | ACKNOWLEDGED | DISMISSED
-
-    def to_json(self) -> str:
-        return json.dumps(asdict(self))
-
-    @staticmethod
-    def from_json(s: str) -> "Alert":
-        return Alert(**json.loads(s))
 
 
 # ---------------------------------------------------------------------------
@@ -107,6 +101,14 @@ AUDIT_STREAM = "aura:audit"
 # ---------------------------------------------------------------------------
 # Bus implementations
 # ---------------------------------------------------------------------------
+
+def _dispatch(callbacks: List[Callable], topic: str, payload: str) -> None:
+    for cb in callbacks:
+        try:
+            cb(topic, payload)
+        except Exception:  # noqa: BLE001
+            log.exception("subscriber error on %s", topic)
+
 
 class BaseBus:
     """Interface each transport implements."""
@@ -149,11 +151,7 @@ class LocalBus(BaseBus):
             targets = [(pat, cbs[:]) for pat, cbs in self._subs.items()
                        if self._match(pat, topic)]
         for _, cbs in targets:
-            for cb in cbs:
-                try:
-                    cb(topic, payload)
-                except Exception:  # noqa: BLE001
-                    log.exception("subscriber error on %s", topic)
+            _dispatch(cbs, topic, payload)
 
     def subscribe(self, topic: str, callback: Callable[[str, str], None]) -> None:
         with self._lock:
@@ -177,11 +175,7 @@ class MqttBus(BaseBus):
         payload = msg.payload.decode("utf-8", errors="replace")
         for pattern, cbs in self._callbacks.items():
             if LocalBus._match(pattern, msg.topic):
-                for cb in cbs:
-                    try:
-                        cb(msg.topic, payload)
-                    except Exception:  # noqa: BLE001
-                        log.exception("subscriber error on %s", msg.topic)
+                _dispatch(cbs, msg.topic, payload)
 
     def publish(self, topic: str, payload: str, qos: int = 0) -> None:
         self._client.publish(topic, payload, qos=qos)

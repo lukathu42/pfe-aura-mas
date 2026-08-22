@@ -25,10 +25,10 @@ import cv2
 import numpy as np
 
 from aura_mas.agents.base import Agent
-from aura_mas.core.bus import (Detection, Event, TOPIC_BIDS, TOPIC_EVENTS,
-                               TOPIC_TASKS, TOPIC_AWARDS, TOPIC_VERIFICATIONS,
-                               new_id, now_ts)
+from aura_mas.core.bus import (Detection, TOPIC_BIDS, TOPIC_TASKS,
+                               TOPIC_AWARDS, TOPIC_VERIFICATIONS, now_ts)
 from aura_mas.core.privacy import anonymize_and_save
+from aura_mas.core.video import iter_frames, open_video
 
 
 def point_in_polygon(pt: Tuple[float, float], poly: List[Tuple[float, float]]) -> bool:
@@ -219,20 +219,10 @@ class CameraAgent(Agent):
     # ------------------------------------------------------------- main loop
     def run(self, max_frames: Optional[int] = None) -> Dict[str, Any]:
         """Process the video source; blocking. Returns run metrics."""
-        cap = cv2.VideoCapture(self.source)
-        if not cap.isOpened():
-            raise RuntimeError(f"cannot open source {self.source}")
-        src_fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
+        cap, src_fps = open_video(self.source)
         stride = max(1, round(src_fps / self.infer_fps))
-        frame_id = 0
         t_start = time.time()
-        while True:
-            ok, frame = cap.read()
-            if not ok:
-                break
-            frame_id += 1
-            if frame_id % stride:
-                continue
+        for frame_id, frame in iter_frames(cap, stride, start=1):
             if max_frames and self.metrics["frames"] >= max_frames:
                 break
             ts = now_ts()
@@ -244,7 +234,6 @@ class CameraAgent(Agent):
                 budget = frame_id / src_fps - (time.time() - t_start)
                 if budget > 0:
                     time.sleep(min(budget, 0.5))
-        cap.release()
         return self.metrics
 
     def _process_frame(self, frame: np.ndarray, frame_id: int, ts: float,
@@ -302,13 +291,10 @@ class CameraAgent(Agent):
             frame, self.evidence_dir,
             prefix=f"{self.agent_id}_{event_type}",
             boxes=getattr(self, "_last_person_boxes", None))
-        ev = Event(event_id=new_id("ev"), sensor_id=self.agent_id, timestamp=ts,
-                   event_type=event_type, confidence=round(confidence, 3),
-                   modality=modality, zone=zone, track_id=track_id,
-                   evidence_path=evidence_path, extra=extra or {})
-        self.metrics["events"] += 1
         self.log.info("EVENT %s conf=%.2f zone=%s", event_type, confidence, zone)
-        self.bus.publish(TOPIC_EVENTS, ev.to_json(), qos=1)
+        self.publish_event(event_type, confidence, ts, modality, zone=zone,
+                           track_id=track_id, evidence_path=evidence_path,
+                           extra=extra)
 
     # -------------------------------------------------------- coordination --
     def _view_score(self, task: Dict) -> float:

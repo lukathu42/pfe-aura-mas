@@ -31,6 +31,7 @@ import time
 from typing import Dict, List
 
 from aura_mas.core.bus import AlertStore, make_bus
+from aura_mas.core.utils import round_mean, run_output_path, run_tag
 from aura_mas.agents.camera_agent import CameraAgent
 from aura_mas.agents.audio_agent import AudioAgent
 from aura_mas.agents.fusion_agent import FusionAgent
@@ -68,13 +69,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
         manifest = json.load(f)
 
     bus = make_bus(bus_kind)
-    tag = mode
-    if vision_only:
-        tag += "-visiononly"
-    if audio_backend != "auto":
-        tag += f"-{audio_backend}"
-    if rep is not None:
-        tag += f"-r{rep}"
+    tag = run_tag(mode, vision_only, audio_backend, rep)
     store = AlertStore(redis_url=None,
                        jsonl_path=f"data/alerts_{manifest['name']}_{tag}.jsonl")
 
@@ -158,11 +153,11 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
         "agent_metrics": {
             "fusion": fusion.metrics, "policy": policy.metrics,
             "coordinator": coordinator.metrics,
-            **{a.agent_id: {k: (round(sum(v) / len(v), 1) if k == "infer_ms" and v else v)
+            **{a.agent_id: {k: (round_mean(v) if k == "infer_ms" and v else v)
                             for k, v in a.metrics.items()} for a in agents},
         },
     }
-    out_path = out_path or f"results/run_{manifest['name']}_{tag}.json"
+    out_path = out_path or run_output_path(manifest["name"], tag)
     import os
     os.makedirs("results", exist_ok=True)
     with open(out_path, "w") as f:

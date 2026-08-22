@@ -2,23 +2,16 @@
 restricted zone polygon for the demo scenario manifest."""
 import sys
 
-import cv2
 from ultralytics import YOLO
+
+from aura_mas.core.video import iter_frames, open_video
 
 
 def main(path: str) -> None:
     m = YOLO("yolo11n.pt")
-    cap = cv2.VideoCapture(path)
-    fps = cap.get(cv2.CAP_PROP_FPS) or 25
+    cap, fps = open_video(path)
     feet = []
-    fid = 0
-    while True:
-        ok, frame = cap.read()
-        if not ok:
-            break
-        fid += 1
-        if fid % 12:
-            continue
+    for fid, frame in iter_frames(cap, 12, start=1):
         r = m.predict(frame, conf=0.4, verbose=False)[0]
         if r.boxes is None:
             continue
@@ -27,7 +20,6 @@ def main(path: str) -> None:
                 x1, y1, x2, y2 = b.xyxy[0].tolist()
                 t = fid / fps
                 feet.append((round(t, 1), int((x1 + x2) / 2), int(y2)))
-    cap.release()
     print("first/last person foot points (t, cx, cy):")
     for row in feet[:10]:
         print(row)

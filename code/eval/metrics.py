@@ -20,6 +20,7 @@ import statistics
 from typing import Dict, List
 
 from aura_mas.core.taxonomy import EVENT_FAMILIES as FAMILY
+from aura_mas.core.utils import round_mean, write_csv
 
 AGG_METRICS = (
     "precision", "recall", "f1", "mean_time_to_alert_s",
@@ -71,12 +72,11 @@ def evaluate_run(run: Dict, tolerance: float = 5.0) -> Dict:
         "tp": tp, "fp": fp, "fn": fn,
         "precision": round(precision, 3), "recall": round(recall, 3),
         "f1": round(f1, 3),
-        "mean_time_to_alert_s": round(sum(time_to_alert) / len(time_to_alert), 2)
-        if time_to_alert else None,
+        "mean_time_to_alert_s": round_mean(time_to_alert, 2),
         "false_alerts_per_hour": round(fp / hours, 1),
         "coord_messages": coord.get("messages", 0),
         "coord_tasks": coord.get("tasks", 0),
-        "mean_allocation_ms": round(sum(alloc) / len(alloc), 1) if alloc else None,
+        "mean_allocation_ms": round_mean(alloc, 1),
         "wall_seconds": round(run.get("wall_seconds", 0), 1),
     }
 
@@ -121,16 +121,6 @@ def aggregate(rows: List[Dict], keys=GROUP_KEYS) -> List[Dict]:
     return agg_rows
 
 
-def _write_csv(rows: List[Dict], out_path: str) -> None:
-    import csv
-    import os
-    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
-    with open(out_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-        w.writeheader()
-        w.writerows(rows)
-
-
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("runs", nargs="+", help="run JSON files or globs")
@@ -155,7 +145,7 @@ def main() -> None:
         print("no runs found")
         return
 
-    _write_csv(rows, args.out)
+    write_csv(rows, args.out)
 
     # pretty print
     cols = ["scenario", "mode", "f1", "precision", "recall",
@@ -173,7 +163,7 @@ def main() -> None:
     if agg_out and agg_out.lower() != "none":
         agg_rows = aggregate(rows)  # excludes rep=None rows -- see aggregate() docstring
         if agg_rows:
-            _write_csv(agg_rows, agg_out)
+            write_csv(agg_rows, agg_out)
             print(f"saved -> {agg_out} ({len(agg_rows)} groups, up to {n_reps} reps each)")
         else:
             print("no rep-tagged runs found; skipping aggregate output")

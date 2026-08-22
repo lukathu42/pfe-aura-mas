@@ -28,6 +28,8 @@ import time
 from pathlib import Path
 from typing import List, Optional
 
+from aura_mas.core.utils import run_output_path, run_tag
+
 MODES = ["mas-auction", "mas-rules", "mas-nocoord", "centralized"]
 LOG_PATH = "results/campaign_log.csv"
 LOG_FIELDS = ["tag", "scenario", "mode", "vision_only", "audio_backend",
@@ -60,15 +62,13 @@ def build_grid(scenario_paths: List[str], modes: List[str], reps: List[int],
     return grid
 
 
+def tag_for(run: dict) -> str:
+    return run_tag(run["mode"], run["vision_only"], run["audio_backend"],
+                   run["rep"])
+
+
 def out_path_for(run: dict) -> str:
-    tag = run["mode"]
-    if run["vision_only"]:
-        tag += "-visiononly"
-    if run["audio_backend"] != "auto":
-        tag += f"-{run['audio_backend']}"
-    if run["rep"] is not None:
-        tag += f"-r{run['rep']}"
-    return f"results/run_{run['scenario']}_{tag}.json"
+    return run_output_path(run["scenario"], tag_for(run))
 
 
 def free_gb(path: str = ".") -> float:
@@ -110,11 +110,8 @@ def run_one(run: dict, min_free_gb: float) -> int:
     proc = subprocess.run(cmd, capture_output=True, text=True)
     seconds = round(time.time() - started, 1)
 
-    tag = run["mode"] + ("-visiononly" if run["vision_only"] else "") \
-        + ("" if run["audio_backend"] == "auto" else f"-{run['audio_backend']}") \
-        + ("" if run["rep"] is None else f"-r{run['rep']}")
     append_log({
-        "tag": tag, "scenario": run["scenario"], "mode": run["mode"],
+        "tag": tag_for(run), "scenario": run["scenario"], "mode": run["mode"],
         "vision_only": run["vision_only"], "audio_backend": run["audio_backend"],
         "rep": run["rep"], "rc": proc.returncode, "seconds": seconds,
         "started_iso": started_iso, "out_path": out,

@@ -15,13 +15,11 @@ sweep) is unchanged from the plan.
 from __future__ import annotations
 
 import argparse
-import csv
-import os
 from typing import List, Tuple
 
-import cv2
-
 from aura_mas.agents.camera_agent import ClipAnomalyScorer
+from aura_mas.core.utils import round_mean, write_csv
+from aura_mas.core.video import iter_frames, open_video
 
 ANOMALY_CLIPS = [
     "data/clips_real/violence/violent_1.mp4",
@@ -37,19 +35,8 @@ NORMAL_CLIPS = [
 
 def sample_scores(scorer: ClipAnomalyScorer, path: str, every_n: int = 5
                    ) -> List[Tuple[float, str]]:
-    cap = cv2.VideoCapture(path)
-    scores = []
-    idx = 0
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        if idx % every_n == 0:
-            score, label = scorer.score(frame)
-            scores.append((score, label))
-        idx += 1
-    cap.release()
-    return scores
+    cap, _ = open_video(path)
+    return [scorer.score(frame) for _, frame in iter_frames(cap, every_n)]
 
 
 def auc(pos: List[float], neg: List[float]) -> float:
@@ -87,34 +74,21 @@ def main() -> None:
     pos_scores: List[float] = []
     neg_scores: List[float] = []
 
-    for path in ANOMALY_CLIPS:
-        scores = sample_scores(scorer, path, args.every_n)
-        vals = [s for s, _ in scores]
-        pos_scores.extend(vals)
-        per_clip_rows.append({
-            "clip": path, "label": "anomaly", "n_frames": len(vals),
-            "mean_score": round(sum(vals) / len(vals), 4) if vals else None,
-            "max_score": round(max(vals), 4) if vals else None,
-            "top_predicted_label": max(scores, key=lambda x: x[0])[1] if scores else None,
-        })
+    for label, clips, sink in (("anomaly", ANOMALY_CLIPS, pos_scores),
+                               ("normal", NORMAL_CLIPS, neg_scores)):
+        for path in clips:
+            scores = sample_scores(scorer, path, args.every_n)
+            vals = [s for s, _ in scores]
+            sink.extend(vals)
+            per_clip_rows.append({
+                "clip": path, "label": label, "n_frames": len(vals),
+                "mean_score": round_mean(vals, 4),
+                "max_score": round(max(vals), 4) if vals else None,
+                "top_predicted_label": max(scores, key=lambda x: x[0])[1] if scores else None,
+            })
 
-    for path in NORMAL_CLIPS:
-        scores = sample_scores(scorer, path, args.every_n)
-        vals = [s for s, _ in scores]
-        neg_scores.extend(vals)
-        per_clip_rows.append({
-            "clip": path, "label": "normal", "n_frames": len(vals),
-            "mean_score": round(sum(vals) / len(vals), 4) if vals else None,
-            "max_score": round(max(vals), 4) if vals else None,
-            "top_predicted_label": max(scores, key=lambda x: x[0])[1] if scores else None,
-        })
-
-    os.makedirs(args.out_dir, exist_ok=True)
     calib_path = f"{args.out_dir}/clip_anomaly_calibration.csv"
-    with open(calib_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(per_clip_rows[0].keys()))
-        w.writeheader()
-        w.writerows(per_clip_rows)
+    write_csv(per_clip_rows, calib_path)
 
     frame_auc = auc(pos_scores, neg_scores)
 
@@ -135,10 +109,7 @@ def main() -> None:
             "fpr": round(fpr, 3) if fpr is not None else None,
         })
     sweep_path = f"{args.out_dir}/clip_anomaly_threshold_sweep.csv"
-    with open(sweep_path, "w", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=list(sweep_rows[0].keys()))
-        w.writeheader()
-        w.writerows(sweep_rows)
+    write_csv(sweep_rows, sweep_path)
 
     print(f"frame-level AUC = {frame_auc:.3f}  "
           f"(n_pos={len(pos_scores)}, n_neg={len(neg_scores)})")
