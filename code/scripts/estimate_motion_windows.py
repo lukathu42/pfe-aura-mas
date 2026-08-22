@@ -16,27 +16,21 @@ import argparse
 
 import cv2
 
+from aura_mas.core.video import iter_frames, open_video
+
 
 def motion_windows(path: str, threshold: float = 3.0, stride: int = 5,
                     merge_gap: float = 2.0) -> list[tuple[float, float]]:
-    cap = cv2.VideoCapture(path)
-    fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
+    cap, fps = open_video(path)
     prev = None
     hits: list[float] = []
-    frame_idx = 0
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
-        if frame_idx % stride == 0:
-            gray = cv2.cvtColor(cv2.resize(frame, (160, 120)), cv2.COLOR_BGR2GRAY)
-            if prev is not None:
-                diff = cv2.absdiff(gray, prev).mean()
-                if diff > threshold:
-                    hits.append(frame_idx / fps)
-            prev = gray
-        frame_idx += 1
-    cap.release()
+    for frame_idx, frame in iter_frames(cap, stride):
+        gray = cv2.cvtColor(cv2.resize(frame, (160, 120)), cv2.COLOR_BGR2GRAY)
+        if prev is not None:
+            diff = cv2.absdiff(gray, prev).mean()
+            if diff > threshold:
+                hits.append(frame_idx / fps)
+        prev = gray
 
     windows: list[tuple[float, float]] = []
     for ts in hits:

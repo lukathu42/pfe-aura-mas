@@ -23,7 +23,7 @@ from typing import Dict, List, Optional
 import numpy as np
 
 from aura_mas.agents.base import Agent
-from aura_mas.core.bus import Event, TOPIC_EVENTS, new_id, now_ts
+from aura_mas.core.bus import now_ts
 
 SURVEILLANCE_CLASSES = {
     # YAMNet class name -> (event_type, min_confidence)
@@ -215,9 +215,6 @@ class AudioAgent(Agent):
                 self._emit("audio_anomaly", score, ts, {"method": "dsp_zscore"})
 
     def _emit(self, event_type: str, conf: float, ts: float, extra: Dict) -> None:
-        ev = Event(event_id=new_id("ev"), sensor_id=self.agent_id, timestamp=ts,
-                   event_type=event_type, confidence=round(conf, 3),
-                   modality="audio", zone=self.zone, extra=extra)
-        self.metrics["events"] += 1
         self.log.info("AUDIO EVENT %s conf=%.2f", event_type, conf)
-        self.bus.publish(TOPIC_EVENTS, ev.to_json(), qos=1)
+        self.publish_event(event_type, conf, ts, "audio", zone=self.zone,
+                           extra=extra)
