@@ -1,0 +1,107 @@
+[
+  {
+    "episode": 0,
+    "scenario": "audio_alarm_siren_01",
+    "tasks": 0,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 1,
+    "scenario": "audio_alarm_clock_01",
+    "tasks": 1,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 2,
+    "scenario": "combined_audio_video_01",
+    "tasks": 0,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 3,
+    "scenario": "audio_alarm_clock_01",
+    "tasks": 1,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 4,
+    "scenario": "intrusion_01",
+    "tasks": 0,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 5,
+    "scenario": "intrusion_01",
+    "tasks": 0,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 6,
+    "scenario": "intrusion_01",
+    "tasks": 0,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 7,
+    "scenario": "fight_01",
+    "tasks": 1,
+    "bandit_decisions": 1,
+    "verifications": 1
+  },
+  {
+    "episode": 8,
+    "scenario": "audio_glass_break_01",
+    "tasks": 1,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 9,
+    "scenario": "audio_alarm_clock_01",
+    "tasks": 1,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 10,
+    "scenario": "intrusion_01",
+    "tasks": 0,
+    "bandit_decisions": 0,
+    "verifications": 0
+  },
+  {
+    "episode": 11,
+    "scenario": "abandoned_object_01",
+    "tasks": 2,
+    "bandit_decisions": 2,
+    "verifications": 2
+  },
+  {
+    "episode": 12,
+    "scenario": "fight_01",
+    "tasks": 1,
+    "bandit_decisions": 1,
+    "verifications": 1
+  },
+  {
+    "episode": 13,
+    "scenario": "fight_01",
+    "tasks": 1,
+    "bandit_decisions": 1,
+    "verifications": 1
+  },
+  {
+    "episode": 14,
+    "scenario": "abandoned_object_01",
+    "tasks": 2,
+    "bandit_decisions": 2,
+    "verifications": 2
+  }
+]
