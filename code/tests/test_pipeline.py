@@ -171,3 +171,57 @@ def test_explanation_guardrail_rejects_fabricated_evidence():
                    "recommended_action": "review"}
     agent._guardrail_check(state)
     assert state.guardrail_passed
+
+def test_bus_payload_validation_rejects_hostile_messages():
+    import pytest
+
+    valid = make_event().to_json()
+    assert Event.from_json(valid).event_type == "intrusion"
+
+    # unknown keys are dropped instead of crashing the subscriber thread
+    hostile = json.loads(valid)
+    hostile["__class__"] = "evil"
+    hostile["confidence"] = 99.0
+    parsed = Event.from_json(json.dumps(hostile))
+    assert parsed.confidence == 1.0
+
+    for bad in ("[]", "{}", json.dumps({**json.loads(valid), "confidence": "high"}),
+                json.dumps({**json.loads(valid), "sensor_id": {"a": 1}})):
+        with pytest.raises(ValueError):
+            Event.from_json(bad)
+
+    with pytest.raises(ValueError):
+        Alert.from_json(json.dumps({"alert_id": "a", "timestamp": 1.0,
+                                    "severity": "INFO", "event_type": "x",
+                                    "confidence": 0.5, "zone": None,
+                                    "sensors": [{"nested": 1}], "evidence": [],
+                                    "fused_events": []}))
+
+
+def test_replay_sanitizes_manifest_name_used_in_output_paths():
+    import pytest
+    pytest.importorskip("cv2")  # replay imports the perception agents
+    from aura_mas.scenarios.replay import _safe_name
+
+    assert _safe_name("intrusion_01") == "intrusion_01"
+    assert "/" not in _safe_name("../../etc/passwd")
+    assert _safe_name("../../etc/passwd") == "etc_passwd"
+
+
+def test_dashboard_evidence_paths_are_confined_to_evidence_root(tmp_path, monkeypatch):
+    import pytest
+    pytest.importorskip("streamlit")
+    monkeypatch.setenv("AURA_EVIDENCE_DIR", str(tmp_path / "evidence"))
+    import importlib
+    import aura_mas.dashboard.app as app
+    importlib.reload(app)
+
+    (tmp_path / "evidence").mkdir()
+    inside = tmp_path / "evidence" / "ev.jpg"
+    inside.write_bytes(b"jpg")
+    outside = tmp_path / "secret.jpg"
+    outside.write_bytes(b"jpg")
+
+    assert app.under_evidence_root(str(inside))
+    assert not app.under_evidence_root(str(outside))
+    assert not app.under_evidence_root(str(tmp_path / "evidence" / ".." / "secret.jpg"))

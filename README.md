@@ -21,7 +21,9 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt          # core; see requirements-full.txt for ML extras
 
 # 2. brokers (optional — everything falls back to in-process bus / JSONL)
-docker compose up -d                     # Mosquitto + Redis
+./deploy/init_secrets.sh                 # broker credentials -> .env (git-ignored)
+set -a && source .env && set +a
+docker compose up -d                     # Mosquitto + Redis, bound to 127.0.0.1 only
 
 # 3. offline tests (no models needed, <5 s)
 python -m pytest aura_mas/tests -q
@@ -35,9 +37,13 @@ for m in centralized mas-nocoord mas-rules mas-auction; do
 done
 python -m aura_mas.eval.metrics "results/run_*.json" --out results/summary.csv
 
-# 6. operator dashboard
-streamlit run aura_mas/dashboard/app.py
+# 6. operator dashboard (password from .env; see deploy/README.md)
+streamlit run aura_mas/dashboard/app.py --server.address 127.0.0.1
 ```
+
+See [`deploy/README.md`](deploy/README.md) for the security configuration:
+broker authentication, the console's fail-closed password gate, TLS for remote
+edge nodes, and every environment variable the code reads.
 
 ## Raspberry Pi showcase
 

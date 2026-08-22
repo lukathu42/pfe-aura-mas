@@ -9,6 +9,8 @@ alerts — every action is written to the audit log (human-in-the-loop).
 from __future__ import annotations
 
 import glob
+import hmac
+import html
 import json
 import os
 import time
@@ -21,12 +23,48 @@ st.set_page_config(page_title="AURA-MAS Operator Console", layout="wide",
                    page_icon="🛰️")
 
 SEVERITY_COLOR = {"CRITICAL": "#d62728", "WARNING": "#ff7f0e", "INFO": "#1f77b4"}
+DEFAULT_COLOR = "#7f7f7f"
+EVIDENCE_ROOT = os.path.realpath(os.getenv("AURA_EVIDENCE_DIR", "data/evidence"))
 
 
 @st.cache_resource
 def get_store() -> AlertStore:
-    return AlertStore(redis_url=os.getenv("AURA_REDIS_URL",
-                                          "redis://localhost:6379"))
+    return AlertStore()
+
+
+def authenticated() -> bool:
+    """Shared-secret gate on the console.
+
+    The console exposes surveillance alerts and evidence imagery and lets the
+    operator acknowledge/dismiss incidents (written to the audit log), so it is
+    fail-closed: without `AURA_DASHBOARD_PASSWORD` it refuses to render unless
+    the deployment explicitly opts out with `AURA_DASHBOARD_ALLOW_ANONYMOUS=1`.
+    """
+    if st.session_state.get("authenticated"):
+        return True
+    expected = os.getenv("AURA_DASHBOARD_PASSWORD", "")
+    if not expected:
+        if os.getenv("AURA_DASHBOARD_ALLOW_ANONYMOUS", "") in ("1", "true", "yes"):
+            return True
+        st.error("Console locked: set AURA_DASHBOARD_PASSWORD before starting "
+                 "Streamlit (or AURA_DASHBOARD_ALLOW_ANONYMOUS=1 for an "
+                 "isolated offline demo).")
+        return False
+    with st.form("login"):
+        entered = st.text_input("Operator password", type="password")
+        if st.form_submit_button("Sign in"):
+            if hmac.compare_digest(entered, expected):
+                st.session_state.authenticated = True
+                return True
+            st.error("Incorrect password.")
+    return False
+
+
+def under_evidence_root(path: str) -> bool:
+    """Evidence paths arrive over the bus, so they are treated as untrusted."""
+    real = os.path.realpath(path)
+    return (os.path.commonpath([real, EVIDENCE_ROOT]) == EVIDENCE_ROOT
+            and os.path.isfile(real))
 
 
 def load_alerts(store: AlertStore) -> list[Alert]:
@@ -44,6 +82,8 @@ def load_alerts(store: AlertStore) -> list[Alert]:
 
 
 def main() -> None:
+    if not authenticated():
+        return
     store = get_store()
     st.title("AURA-MAS — Operator Console")
     st.caption("Privacy-aware hierarchical multi-agent surveillance · "
@@ -65,7 +105,6 @@ def main() -> None:
             if a.severity not in sev_filter:
                 continue
             status = st.session_state.ack.get(a.alert_id, a.status)
-            color = SEVERITY_COLOR[a.severity]
             label = (f"{time.strftime('%H:%M:%S', time.localtime(a.timestamp))} "
                      f"· {a.severity} · {a.event_type} · zone={a.zone or 'site'}"
                      f" · {status}")
@@ -80,11 +119,14 @@ def main() -> None:
             st.info("Select an alert from the feed.")
             return
         a = selected
+        # every interpolated field originates from the bus / alert log, so it is
+        # escaped before being rendered with unsafe_allow_html
         st.markdown(
-            f"**{a.event_type.replace('_',' ').title()}** — "
-            f"<span style='color:{SEVERITY_COLOR[a.severity]}'>"
-            f"{a.severity}</span> · confidence **{a.confidence:.2f}** · "
-            f"zone **{a.zone or 'site'}** · sensors: `{', '.join(a.sensors)}`",
+            f"**{html.escape(a.event_type.replace('_',' ').title())}** — "
+            f"<span style='color:{SEVERITY_COLOR.get(a.severity, DEFAULT_COLOR)}'>"
+            f"{html.escape(a.severity)}</span> · confidence "
+            f"**{a.confidence:.2f}** · zone **{html.escape(a.zone or 'site')}** · "
+            f"sensors: `{html.escape(', '.join(a.sensors))}`",
             unsafe_allow_html=True)
 
         st.markdown("##### Agentic incident report")
@@ -94,7 +136,7 @@ def main() -> None:
         cols = st.columns(3)
         shown = 0
         for path in a.evidence:
-            if path and os.path.exists(path):
+            if path and under_evidence_root(path):
                 cols[shown % 3].image(path, use_container_width=True)
                 shown += 1
         if not shown:

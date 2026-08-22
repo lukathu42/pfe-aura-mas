@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
 import threading
 import time
 from typing import Dict, List
@@ -39,6 +40,19 @@ from aura_mas.agents.policy_agent import PolicyAgent
 from aura_mas.agents.explanation_agent import ExplanationAgent
 
 log = logging.getLogger("aura.replay")
+
+
+def _safe_name(name: str) -> str:
+    """Slugify a manifest-supplied name before it becomes part of a file path.
+
+    Output paths are derived from `manifest["name"]`; a manifest is external
+    input, so a name like `../../.ssh/authorized_keys` would otherwise write
+    outside `data/` and `results/`.
+    """
+    slug = re.sub(r"[^A-Za-z0-9._-]+", "_", name).strip("._-")
+    if not slug:
+        raise ValueError(f"manifest name {name!r} has no usable characters")
+    return slug[:80]
 
 
 def run_scenario(manifest_path: str, mode: str = "mas-auction",
@@ -68,6 +82,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
         manifest = json.load(f)
 
     bus = make_bus(bus_kind)
+    scenario_name = _safe_name(manifest["name"])
     tag = mode
     if vision_only:
         tag += "-visiononly"
@@ -76,7 +91,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     if rep is not None:
         tag += f"-r{rep}"
     store = AlertStore(redis_url=None,
-                       jsonl_path=f"data/alerts_{manifest['name']}_{tag}.jsonl")
+                       jsonl_path=f"data/alerts_{scenario_name}_{tag}.jsonl")
 
     camera_specs = [s for s in manifest["sensors"] if s["type"] == "camera"]
     audio_specs = [] if vision_only else [
@@ -162,7 +177,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
                             for k, v in a.metrics.items()} for a in agents},
         },
     }
-    out_path = out_path or f"results/run_{manifest['name']}_{tag}.json"
+    out_path = out_path or f"results/run_{scenario_name}_{tag}.json"
     import os
     os.makedirs("results", exist_ok=True)
     with open(out_path, "w") as f:

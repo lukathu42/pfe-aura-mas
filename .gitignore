@@ -1,3 +1,7 @@
+# Local secrets (see deploy/init_secrets.sh)
+.env
+/deploy/mosquitto/passwd
+
 # Python
 __pycache__/
 *.pyc

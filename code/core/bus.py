@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import threading
 import time
 import uuid
 from collections import defaultdict
-from dataclasses import dataclass, field, asdict
-from typing import Any, Callable, Dict, List, Optional
+from dataclasses import MISSING, dataclass, field, asdict, fields as dataclass_fields
+from typing import Any, Callable, Dict, List, Optional, Type
 
 log = logging.getLogger("aura.bus")
 
@@ -31,6 +32,52 @@ def now_ts() -> float:
 
 def new_id(prefix: str) -> str:
     return f"{prefix}_{uuid.uuid4().hex[:10]}"
+
+
+MAX_PAYLOAD_BYTES = 1 << 20
+
+
+def _parse_message(cls: Type, s: str):
+    """Validating deserializer for bus payloads.
+
+    Bus traffic is untrusted input: a broker reachable by any other client can
+    inject arbitrary JSON. Unknown keys are dropped, missing required fields
+    and wrong types are rejected, and numeric ranges are clamped, so a crafted
+    payload cannot crash a subscriber thread (`cls(**json.loads(s))` raises
+    TypeError on unexpected keys) or smuggle non-scalar values into fusion,
+    policy decisions, and the operator console.
+    """
+    if len(s.encode("utf-8", errors="ignore")) > MAX_PAYLOAD_BYTES:
+        raise ValueError(f"{cls.__name__} payload exceeds {MAX_PAYLOAD_BYTES} bytes")
+    raw = json.loads(s)
+    if not isinstance(raw, dict):
+        raise ValueError(f"{cls.__name__} payload must be a JSON object")
+
+    kwargs: Dict[str, Any] = {}
+    for f in dataclass_fields(cls):
+        if f.name not in raw:
+            continue
+        value = raw[f.name]
+        if value is None:
+            kwargs[f.name] = None
+            continue
+        expected = _FIELD_TYPES[cls][f.name]
+        if expected is float and type(value) is int:
+            value = float(value)
+        if type(value) is not expected:
+            raise ValueError(f"{cls.__name__}.{f.name} has invalid type {type(value).__name__}")
+        if expected is list and not all(type(v) is str for v in value):
+            raise ValueError(f"{cls.__name__}.{f.name} must be a list of strings")
+        kwargs[f.name] = value
+
+    missing = [f.name for f in dataclass_fields(cls)
+               if f.default is MISSING and f.default_factory is MISSING
+               and f.name not in kwargs]
+    if missing:
+        raise ValueError(f"{cls.__name__} payload missing fields: {missing}")
+    if "confidence" in kwargs and kwargs["confidence"] is not None:
+        kwargs["confidence"] = min(1.0, max(0.0, kwargs["confidence"]))
+    return cls(**kwargs)
 
 
 @dataclass
@@ -64,7 +111,7 @@ class Event:
 
     @staticmethod
     def from_json(s: str) -> "Event":
-        return Event(**json.loads(s))
+        return _parse_message(Event, s)
 
 
 @dataclass
@@ -87,7 +134,20 @@ class Alert:
 
     @staticmethod
     def from_json(s: str) -> "Alert":
-        return Alert(**json.loads(s))
+        return _parse_message(Alert, s)
+
+
+_FIELD_TYPES: Dict[Type, Dict[str, type]] = {
+    Detection: {"sensor_id": str, "frame_id": int, "timestamp": float,
+                "objects": list},
+    Event: {"event_id": str, "sensor_id": str, "timestamp": float,
+            "event_type": str, "confidence": float, "modality": str,
+            "zone": str, "track_id": int, "evidence_path": str, "extra": dict},
+    Alert: {"alert_id": str, "timestamp": float, "severity": str,
+            "event_type": str, "confidence": float, "zone": str,
+            "sensors": list, "evidence": list, "fused_events": list,
+            "explanation": str, "status": str},
+}
 
 
 # ---------------------------------------------------------------------------
@@ -161,16 +221,35 @@ class LocalBus(BaseBus):
 
 
 class MqttBus(BaseBus):
-    """MQTT transport (Mosquitto broker)."""
+    """MQTT transport (Mosquitto broker).
 
-    def __init__(self, host: str = "localhost", port: int = 1883,
-                 client_id: Optional[str] = None) -> None:
+    Credentials and TLS come from the environment (`AURA_MQTT_USERNAME`,
+    `AURA_MQTT_PASSWORD`, `AURA_MQTT_TLS=1`, optional `AURA_MQTT_CA_CERT`) so a
+    deployment can talk to an authenticated broker without any secret living in
+    the code or in `docker-compose.yml`. See `deploy/README.md`.
+    """
+
+    def __init__(self, host: Optional[str] = None, port: Optional[int] = None,
+                 client_id: Optional[str] = None,
+                 username: Optional[str] = None,
+                 password: Optional[str] = None) -> None:
         import paho.mqtt.client as mqtt  # lazy import
+        host = host or os.getenv("AURA_MQTT_HOST", "localhost")
+        port = int(port or os.getenv("AURA_MQTT_PORT", "1883"))
+        username = username or os.getenv("AURA_MQTT_USERNAME")
+        password = password or os.getenv("AURA_MQTT_PASSWORD")
         self._client = mqtt.Client(
             mqtt.CallbackAPIVersion.VERSION2,
             client_id=client_id or new_id("aura"))
         self._callbacks: Dict[str, List[Callable]] = defaultdict(list)
         self._client.on_message = self._on_message
+        if username:
+            self._client.username_pw_set(username, password)
+        elif host not in ("localhost", "127.0.0.1", "::1"):
+            log.warning("connecting to remote MQTT broker %s without credentials; "
+                        "set AURA_MQTT_USERNAME/AURA_MQTT_PASSWORD", host)
+        if os.getenv("AURA_MQTT_TLS", "").lower() in ("1", "true", "yes"):
+            self._client.tls_set(ca_certs=os.getenv("AURA_MQTT_CA_CERT") or None)
         self._client.connect(host, port, keepalive=30)
 
     def _on_message(self, client, userdata, msg) -> None:  # noqa: ANN001
@@ -198,19 +277,33 @@ class MqttBus(BaseBus):
         self._client.disconnect()
 
 
+_UNSET = "__unset__"
+
+
+def _redact(url: str) -> str:
+    """Strip any userinfo from a connection URL before it reaches a log."""
+    if "@" in url and "//" in url:
+        scheme, _, rest = url.partition("//")
+        return f"{scheme}//***@{rest.rpartition('@')[2]}"
+    return url
+
+
 class AlertStore:
     """Durable alert log. Redis Streams if available, else JSONL file."""
 
-    def __init__(self, redis_url: Optional[str] = "redis://localhost:6379",
+    def __init__(self, redis_url: Optional[str] = _UNSET,
                  jsonl_path: str = "data/alerts.jsonl") -> None:
         self._redis = None
         self._jsonl_path = jsonl_path
+        os.makedirs(os.path.dirname(os.path.abspath(jsonl_path)), exist_ok=True)
+        if redis_url is _UNSET:
+            redis_url = os.getenv("AURA_REDIS_URL", "redis://localhost:6379")
         if redis_url:
             try:
                 import redis
                 self._redis = redis.Redis.from_url(redis_url, socket_connect_timeout=2)
                 self._redis.ping()
-                log.info("AlertStore using Redis Streams at %s", redis_url)
+                log.info("AlertStore using Redis Streams at %s", _redact(redis_url))
             except Exception:  # noqa: BLE001
                 self._redis = None
                 log.warning("Redis unavailable; falling back to JSONL %s", jsonl_path)

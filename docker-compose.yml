@@ -1,14 +1,22 @@
 services:
   mosquitto:
     image: eclipse-mosquitto:2
+    # loopback-only: the event bus carries surveillance events and evidence
+    # paths, so it is never published on the host's external interfaces.
+    # Remote edge nodes (e.g. the Raspberry Pi) reach it over an SSH tunnel or
+    # a WireGuard/VPN address -- see deploy/README.md.
     ports:
-      - "1883:1883"
-    command: mosquitto -c /mosquitto-no-auth.conf
+      - "127.0.0.1:1883:1883"
+    volumes:
+      - ./deploy/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./deploy/mosquitto/passwd:/mosquitto/config/passwd:ro
     restart: unless-stopped
 
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
-    command: redis-server --appendonly yes
+      - "127.0.0.1:6379:6379"
+    command: >
+      redis-server --appendonly yes
+      --requirepass ${AURA_REDIS_PASSWORD:?run deploy/init_secrets.sh first (writes .env)}
     restart: unless-stopped
