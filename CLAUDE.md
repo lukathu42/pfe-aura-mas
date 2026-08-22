@@ -118,10 +118,20 @@ JSON — keep changes to these backward-compatible with `results/*.json` and
   CameraAgents bid a view-utility score; best bidder re-verifies. Modes:
   `auction | roundrobin | off` — `roundrobin`/`off` exist specifically as
   ablation baselines, don't remove them.
-- **ExplanationAgent**: state-graph (collect evidence → describe → draft →
-  **guardrail check** → emit). The guardrail rejects any report that cites
-  an `evidence_id` not present in the alert — this is a thesis safety
-  claim, keep it strict, don't loosen it to "fix" a failing report.
+- **ExplanationAgent**: an explicit `python-statemachine` FSM
+  (`aura_mas/agents/explanation_fsm.py`): collecting → [describing] →
+  drafting → checking_guardrail → emitted | fallback. The draft-report LLM
+  call uses `instructor` for Pydantic-validated structured output
+  (`aura_mas/agents/explanation_schema.py:DraftReport`) instead of raw
+  `json.loads`; `tenacity` retries only transient OpenAI errors (rate
+  limit/timeout/connection) with bounded backoff — a structurally invalid
+  response is NOT retried, it goes straight to the fallback template.
+  OpenTelemetry spans (`aura_mas/telemetry.py`, console exporter, no new
+  service) capture per-call latency/token counts/guardrail outcome; `--llm`
+  on `replay.py` configures tracing automatically. The guardrail rejects any
+  report that cites an `evidence_id` not present in the alert — this is a
+  thesis safety claim, keep it strict, don't loosen it to "fix" a failing
+  report.
 
 ### Privacy
 
@@ -195,11 +205,24 @@ python -m aura_mas.eval.metrics "results/run_*.json" --out results/summary.csv
 streamlit run aura_mas/dashboard/app.py
 ```
 
-Heavy optional deps (`tensorflow`+`tensorflow_hub` for YAMNet, CLIP+torch,
-`langgraph`) are commented out in `requirements.txt` and lazily imported —
-the system is designed to degrade gracefully without them. Don't make them
-hard requirements without checking with the user; this fallback behavior is
-a deliberate risk-mitigation from the execution plan's "Risk fallback table".
+Add `--llm` to enable `ExplanationAgent`; this also calls `configure_tracing()`
+automatically, so OpenTelemetry spans print to the console for that run.
+
+Heavy optional deps (`tensorflow`+`tensorflow_hub` for YAMNet, CLIP+torch)
+are commented out in `requirements.txt` and lazily imported — the system is
+designed to degrade gracefully without them. Don't make them hard
+requirements without checking with the user; this fallback behavior is a
+deliberate risk-mitigation from the execution plan's "Risk fallback table".
+
+The explanation-agent's own deps (`python-statemachine`, `instructor`,
+`tenacity`, `opentelemetry-api`/`-sdk`) are lightweight and always installed
+(not commented out like the heavy perception extras) — `ExplanationAgent` is
+only ever *constructed* behind `--llm`, so importing the module costs
+nothing when it isn't used. No orchestration framework (LangGraph, CrewAI,
+etc.) is used anywhere in this repo; a 2026-08-21 architecture review found
+the existing bus-based multi-agent design would make one architecturally
+redundant, since 5 of 6 agents aren't LLM-driven at all — see the FSM
+description above instead.
 
 **If reinstalling `torch`/`ultralytics` from scratch**, install torch from
 the CPU wheel index first (`pip install torch torchvision --index-url

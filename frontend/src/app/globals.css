@@ -1,0 +1,537 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   AURA-MAS — Command Console Design System
+   Tactical glass / bounded-site surveillance
+   Tokens adapted from OSIRIS (github.com/simplifaisoul/osiris, MIT) —
+   palette semantics repointed from global-intel to site-surveillance:
+   gold = identity/selection, cyan = replay/system-live, the severity
+   ramp maps directly onto Alert.severity (CRITICAL/WARNING/INFO).
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  --gold-rgb: 212, 175, 55;
+  --cyan-rgb: 0, 229, 255;
+
+  /* ── Core surfaces ── */
+  --bg-void: #04040a;
+  --bg-primary: #06060c;
+  --bg-secondary: #0c0e1a;
+  --bg-tertiary: #121628;
+  --bg-panel: rgba(8, 10, 20, 0.88);
+  --bg-panel-solid: #0c0e1a;
+
+  /* ── Gold — identity / selection accent ── */
+  --gold-primary: #d4af37;
+  --gold-light: #f0d060;
+  --gold-dim: #8b7325;
+  --gold-glow: rgba(var(--gold-rgb), 0.3);
+
+  /* ── Cyan — replay / bus-live indicator ── */
+  --cyan-primary: #00e5ff;
+  --cyan-dim: #006b7a;
+  --cyan-glow: rgba(var(--cyan-rgb), 0.15);
+
+  /* ── Severity ramp (Alert.severity + Event confidence bands) ── */
+  --sev-critical: #ff3d3d;
+  --sev-warning: #ff9500;
+  --sev-info: #448aff;
+  --sev-resolved: #00e676;
+
+  /* ── Borders ── */
+  --border-primary: rgba(var(--gold-rgb), 0.15);
+  --border-secondary: rgba(var(--gold-rgb), 0.08);
+  --border-active: rgba(var(--gold-rgb), 0.4);
+  --border-cyan: rgba(var(--cyan-rgb), 0.2);
+
+  /* ── Text ── */
+  --text-primary: #e8e6e0;
+  --text-secondary: #9b978e;
+  --text-muted: #5c5a54;
+  --text-heading: #f5f0e0;
+  --text-gold: #d4af37;
+  --text-cyan: #00e5ff;
+
+  /* ── Scrollbar / hover ── */
+  --scrollbar-thumb: rgba(var(--gold-rgb), 0.2);
+  --scrollbar-thumb-hover: rgba(var(--gold-rgb), 0.4);
+  --hover-accent: rgba(var(--gold-rgb), 0.08);
+
+  /* ── Fonts ──
+     --font-body / --font-hud are supplied by next/font (layout.tsx) via
+     the html element's class, not defined here — that keeps the actual
+     hashed font-family + fallback stack next/font generates authoritative
+     instead of being shadowed by a static redeclaration at this specificity. */
+
+  /* ── Spacing ── */
+  --panel-gap: 12px;
+  --edge-pad: 20px;
+}
+
+@theme inline {
+  --color-background: var(--bg-void);
+  --color-foreground: var(--text-primary);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-hud);
+}
+
+/* ── Base ── */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg-void);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--gold-glow);
+  color: var(--text-heading);
+}
+
+/* ── Scrollbar ── */
+.styled-scrollbar::-webkit-scrollbar {
+  width: 3px;
+}
+.styled-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+.styled-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+.styled-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLASS PANELS
+   ═══════════════════════════════════════════════════════════════ */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid var(--border-primary);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(var(--gold-rgb), 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.3) inset;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.glass-panel:hover {
+  border-color: rgba(var(--gold-rgb), 0.22);
+}
+
+.glass-panel-sm {
+  background: var(--bg-panel);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-secondary);
+  border-radius: 10px;
+}
+
+.glass-panel-interactive {
+  background: var(--bg-panel);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid var(--border-primary);
+  border-radius: 14px;
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(var(--gold-rgb), 0.06) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.3) inset;
+  transition:
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.glass-panel-interactive:hover {
+  transform: scale(1.01);
+  border-color: var(--border-active);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(var(--gold-rgb), 0.08),
+    0 1px 0 rgba(var(--gold-rgb), 0.1) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.3) inset;
+}
+.glass-panel-interactive:active {
+  transform: scale(0.995);
+  transition-duration: 0.1s;
+}
+
+.osiris-glow {
+  box-shadow:
+    0 0 20px rgba(var(--gold-rgb), 0.12),
+    0 0 60px rgba(var(--gold-rgb), 0.06),
+    0 4px 30px rgba(0, 0, 0, 0.5);
+}
+.osiris-glow-cyan {
+  box-shadow:
+    0 0 20px rgba(var(--cyan-rgb), 0.1),
+    0 0 60px rgba(var(--cyan-rgb), 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HUD TEXT SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+.hud-text {
+  font-family: var(--font-hud);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+.hud-label {
+  font-family: var(--font-hud);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.hud-value {
+  font-family: var(--font-hud);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gold-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SEVERITY TAGS — maps directly onto Alert.severity
+   ═══════════════════════════════════════════════════════════════ */
+.severity-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-family: var(--font-hud);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+.severity-tag--critical {
+  background: rgba(255, 61, 61, 0.12);
+  color: var(--sev-critical);
+  border-color: rgba(255, 61, 61, 0.3);
+}
+.severity-tag--warning {
+  background: rgba(255, 149, 0, 0.12);
+  color: var(--sev-warning);
+  border-color: rgba(255, 149, 0, 0.3);
+}
+.severity-tag--info {
+  background: rgba(68, 138, 255, 0.1);
+  color: var(--sev-info);
+  border-color: rgba(68, 138, 255, 0.25);
+}
+.severity-tag--resolved {
+  background: rgba(0, 230, 118, 0.12);
+  color: var(--sev-resolved);
+  border-color: rgba(0, 230, 118, 0.3);
+}
+.severity-tag--system {
+  background: rgba(var(--cyan-rgb), 0.08);
+  color: var(--cyan-primary);
+  border-color: rgba(var(--cyan-rgb), 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TACTICAL BUTTON
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes btn-flash {
+  0% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.btn-tactical {
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-hud);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  background: rgba(var(--gold-rgb), 0.08);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+.btn-tactical:hover {
+  background: rgba(var(--gold-rgb), 0.14);
+  border-color: var(--border-active);
+  box-shadow:
+    0 0 20px rgba(var(--gold-rgb), 0.12),
+    0 0 50px rgba(var(--gold-rgb), 0.06);
+}
+.btn-tactical:active {
+  transform: scale(0.97);
+  transition-duration: 0.08s;
+}
+.btn-tactical--cyan {
+  background: rgba(var(--cyan-rgb), 0.08);
+  border-color: var(--border-cyan);
+}
+.btn-tactical--cyan:hover {
+  background: rgba(var(--cyan-rgb), 0.14);
+  border-color: rgba(var(--cyan-rgb), 0.4);
+  box-shadow:
+    0 0 20px rgba(var(--cyan-rgb), 0.1),
+    0 0 50px rgba(var(--cyan-rgb), 0.05);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PULSE RING — live/replaying indicator
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes pulse-ring-expand {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+.pulse-ring {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.pulse-ring::before,
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--gold-primary);
+  animation: pulse-ring-expand 2.4s cubic-bezier(0, 0.55, 0.45, 1) infinite;
+  will-change: transform, opacity;
+}
+.pulse-ring::after {
+  animation-delay: 0.8s;
+}
+.pulse-ring--cyan::before,
+.pulse-ring--cyan::after {
+  border-color: var(--cyan-primary);
+}
+.pulse-ring--critical::before,
+.pulse-ring--critical::after {
+  border-color: var(--sev-critical);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SCAN LINE — boot / bus-connect sweep
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes scan-line-sweep {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--cyan-glow) 15%,
+    var(--cyan-primary) 50%,
+    var(--cyan-glow) 85%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 15px rgba(var(--cyan-rgb), 0.4),
+    0 0 45px rgba(var(--cyan-rgb), 0.15);
+  animation: scan-line-sweep 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: transform, opacity;
+  z-index: 10;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SKELETON SHIMMER — evidence/media loading
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes skeleton-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton-shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+}
+.skeleton-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(var(--gold-rgb), 0.06) 25%,
+    rgba(var(--gold-rgb), 0.12) 50%,
+    rgba(var(--gold-rgb), 0.06) 75%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: skeleton-sweep 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOGGLE SWITCH
+   ═══════════════════════════════════════════════════════════════ */
+.toggle-switch {
+  position: relative;
+  width: 28px;
+  height: 14px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+.toggle-switch.active {
+  background: rgba(var(--gold-rgb), 0.25);
+  border-color: var(--gold-primary);
+}
+.toggle-switch::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition: all 0.3s ease;
+}
+.toggle-switch.active::after {
+  left: 15px;
+  background: var(--gold-primary);
+  box-shadow: 0 0 8px rgba(var(--gold-rgb), 0.5);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TACTICAL GRID OVERLAY — camera tile / panel backdrop texture
+   ═══════════════════════════════════════════════════════════════ */
+.tactical-grid {
+  background-image:
+    linear-gradient(var(--border-secondary) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-secondary) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.corner-frame {
+  position: relative;
+}
+.corner-frame::before,
+.corner-frame::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-color: var(--gold-primary);
+  pointer-events: none;
+}
+.corner-frame::before {
+  top: -1px;
+  left: -1px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.corner-frame::after {
+  bottom: -1px;
+  right: -1px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS — ambient status
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes osiris-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.animate-osiris-pulse {
+  animation: osiris-pulse 2s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  :root {
+    --edge-pad: 12px;
+    --panel-gap: 8px;
+  }
+  .desktop-only {
+    display: none !important;
+  }
+}
+@media (max-width: 768px) {
+  :root {
+    --edge-pad: 8px;
+    --panel-gap: 6px;
+  }
+  .glass-panel {
+    border-radius: 12px;
+  }
+}
+@media (max-width: 390px) {
+  :root {
+    --edge-pad: 4px;
+  }
+}

@@ -13,3 +13,4 @@
 {"timestamp": 1787157967.9619486, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_8dce870773", "event_type": "intrusion", "confidence": 0.958, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "cooldown"}
 {"timestamp": 1787157990.9693635, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_321dd6a473", "event_type": "intrusion", "confidence": 0.994, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}
 {"timestamp": 1787158006.974769, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_cf89743dca", "event_type": "intrusion", "confidence": 0.825, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "cooldown"}
+{"timestamp": 1787354209.562308, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_0e388d6d8c", "event_type": "intrusion", "confidence": 0.78, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}

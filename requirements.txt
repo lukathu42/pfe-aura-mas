@@ -12,8 +12,18 @@ librosa>=0.10           # audio loading + DSP fallback
 
 # Agentic explanation layer (optional)
 openai>=1.30
+python-statemachine>=2.3   # explicit FSM for ExplanationAgent's evidence->draft->guardrail pipeline
+instructor>=1.4            # Pydantic-validated structured output on top of the openai client
+tenacity>=8.2               # retry/backoff for transient OpenAI errors (rate limit/timeout/connection)
+opentelemetry-api>=1.20    # tracing spans for LLM-call observability
+opentelemetry-sdk>=1.20    # TracerProvider + ConsoleSpanExporter (no separate exporter package)
 
 # Optional extras (uncomment as needed)
+# anthropic>=0.40             # LLM-as-judge pilot (aura_mas/eval/llm_judge.py),
+#                             # a different model family than the gpt-4.1-mini
+#                             # ExplanationAgent generator -- see
+#                             # docs/ai-enhancement-research.md Section 4.1 and
+#                             # results/explanation_judge_notes.md for why.
 # tensorflow-cpu>=2.21                       # YAMNet audio classification (never plain
 #                                             # `tensorflow` -- pulls CUDA/nvidia-* wheels
 #                                             # even on CPU-only machines). Run
@@ -22,4 +32,3 @@ openai>=1.30
 #                                             # SavedModel (no tensorflow_hub dependency).
 # git+https://github.com/openai/CLIP.git     # CLIP zero-shot anomaly scoring
 # torch torchvision                          # required by CLIP
-# langgraph                                  # full graph orchestration variant
