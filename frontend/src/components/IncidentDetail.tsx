@@ -15,7 +15,7 @@ export function IncidentDetail() {
 
   if (!alert) {
     return (
-      <GlassPanel className="flex-1 flex items-center justify-center">
+      <GlassPanel className="flex-1 min-h-0 flex items-center justify-center">
         <span className="hud-label">Select an incident from the rail</span>
       </GlassPanel>
     );
@@ -31,19 +31,19 @@ export function IncidentDetail() {
   };
 
   return (
-    <GlassPanel className="flex-1 flex flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-secondary)]">
-        <span className="hud-text text-[13px] text-[var(--text-heading)]">
+    <GlassPanel className="flex-1 min-h-0 flex flex-col overflow-hidden">
+      <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3 border-b border-[var(--border-secondary)]">
+        <span className="hud-text text-[13px] text-[var(--text-heading)] truncate">
           {alert.event_type.replace(/_/g, " ")}
         </span>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <SeverityTag severity={alert.severity} />
           <StatusTag status={alert.status} />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto styled-scrollbar p-4 flex flex-col gap-4">
-        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+      <div className="flex-1 min-h-0 overflow-y-auto styled-scrollbar p-4 flex flex-col gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
           <HudRow label="Confidence" value={alert.confidence.toFixed(2)} />
           <HudRow label="Zone" value={alert.zone ?? "site"} />
           <HudRow label="Sensors" value={alert.sensors.join(", ") || "—"} />
@@ -68,7 +68,7 @@ export function IncidentDetail() {
               audio-only incident — no visual evidence
             </div>
           ) : (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
               {alert.evidence.map((path) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -83,7 +83,7 @@ export function IncidentDetail() {
         </div>
       </div>
 
-      <div className="flex items-center gap-2 px-4 py-3 border-t border-[var(--border-secondary)]">
+      <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-2 px-4 py-3 border-t border-[var(--border-secondary)]">
         <TacticalButton
           disabled={busy || alert.status !== "OPEN"}
           onClick={() => run(() => ackAlert(alert.alert_id))}

@@ -20,7 +20,7 @@ function CameraTile({ sensor }: { sensor: ScenarioSensor }) {
   const zoneName = sensor.zones?.[0]?.name ?? "site";
 
   return (
-    <div className="corner-frame relative aspect-video overflow-hidden rounded-lg border border-[var(--border-primary)] bg-black">
+    <div className="corner-frame relative w-full min-h-0 aspect-video lg:aspect-auto lg:h-full overflow-hidden rounded-lg border border-[var(--border-primary)] bg-black">
       <video
         className="h-full w-full object-cover opacity-90"
         src={mediaUrl(sensor.source)}
@@ -55,7 +55,7 @@ function AudioStrip({ sensors }: { sensors: ScenarioSensor[] }) {
   const { recentEventFor } = useAuraData();
   if (sensors.length === 0) return null;
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap gap-2 shrink-0">
       {sensors.map((sensor) => {
         const event = recentEventFor(sensor.id);
         return (
@@ -84,19 +84,19 @@ export function CameraWall() {
   const mics = (scenario?.sensors ?? []).filter((s) => s.type === "audio");
 
   return (
-    <div className="flex flex-col gap-3 h-full">
-      <div className="flex items-center gap-2">
+    <div className="flex flex-col gap-3 h-full min-h-0">
+      <div className="flex items-center gap-2 shrink-0 min-w-0">
         <Camera className="w-4 h-4 text-[var(--gold-primary)]" />
         <span className="hud-text text-[12px] text-[var(--text-heading)]">Camera Wall</span>
-        <span className="hud-label">{cameras.length} SENSORS · SCENARIO REPLAY, NOT LIVE HARDWARE</span>
+        <span className="hud-label truncate">{cameras.length} SENSORS · SCENARIO REPLAY, NOT LIVE HARDWARE</span>
       </div>
 
       {cameras.length === 0 ? (
-        <div className="glass-panel flex-1 flex items-center justify-center">
+        <div className="glass-panel min-h-[240px] lg:min-h-0 lg:flex-1 flex items-center justify-center">
           <span className="hud-label">No camera sensors in active scenario</span>
         </div>
       ) : (
-        <div className={`grid ${gridColsClass(cameras.length)} gap-3 flex-1`}>
+        <div className={`grid ${gridColsClass(cameras.length)} gap-3 lg:flex-1 lg:min-h-0 lg:auto-rows-fr`}>
           {cameras.map((sensor) => (
             <CameraTile key={sensor.id} sensor={sensor} />
           ))}
