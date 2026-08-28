@@ -11,6 +11,7 @@ import { CopilotDrawer } from "@/components/CopilotDrawer";
 import { ReplayToolbar } from "@/components/ReplayToolbar";
 import { SearchDrawer } from "@/components/SearchDrawer";
 import { LiveCameraDrawer } from "@/components/LiveCameraDrawer";
+import { OperationalPanel } from "@/components/OperationalPanel";
 
 export function AuraDashboardView() {
   const [copilotOpen, setCopilotOpen] = useState(false);
@@ -19,6 +20,7 @@ export function AuraDashboardView() {
 
   return (
     <div className="flex flex-col h-full min-h-0 bg-[var(--bg-void)] relative">
+      <OperationalPanel />
       <ReplayToolbar onSearch={() => { setLiveOpen(false); setSearchOpen(true); }} onLive={() => { setSearchOpen(false); setLiveOpen(true); }} />
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-3 p-3 overflow-y-auto lg:overflow-hidden">
         <div className="grid grid-rows-[auto_auto] lg:grid-rows-[minmax(0,3fr)_minmax(0,2fr)] gap-3 flex-[2] min-w-0 lg:min-h-0">

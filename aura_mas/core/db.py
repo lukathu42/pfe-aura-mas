@@ -197,9 +197,16 @@ class AuraDatabase:
             finally:
                 conn.close()
 
-    def record_feedback(self, alert_id: str, action: str, notes: Optional[str] = None) -> float:
-        """Record operator feedback and return the reinforcement reward (+1.0 for ACK, -1.0 for DISMISS)."""
-        reward = 1.0 if action.upper() == "ACKNOWLEDGE" else -1.0
+    def acknowledge_alert(self, alert_id: str) -> bool:
+        """Acknowledgement cannot serve as a learning signal."""
+        return self.update_alert_status(alert_id, "ACKNOWLEDGED")
+
+    def record_feedback(self, alert_id: str, verdict: str, notes: Optional[str] = None) -> float:
+        """Only explicit verdicts may feed later offline calibration."""
+        verdict = verdict.upper()
+        if verdict not in {"CONFIRMED_ANOMALY", "FALSE_ALARM"}:
+            raise ValueError("feedback requires an explicit operator verdict")
+        reward = 1.0 if verdict == "CONFIRMED_ANOMALY" else -1.0
         with self._lock:
             conn = self._get_connection()
             try:
@@ -207,17 +214,23 @@ class AuraDatabase:
                     conn.execute("""
                     INSERT INTO operator_feedback (timestamp, alert_id, action, reward, notes)
                     VALUES (?, ?, ?, ?, ?)
-                    """, (time.time(), alert_id, action.upper(), reward, notes or ""))
-                    # Keep feedback and its status transition atomic on the
-                    # same SQLite connection. Opening a nested writer here
-                    # deadlocks/raises "database is locked".
-                    conn.execute(
-                        "UPDATE alerts SET status = ? WHERE alert_id = ?",
-                        ("ACKNOWLEDGED" if reward > 0 else "DISMISSED", alert_id),
-                    )
+                    """, (time.time(), alert_id, verdict, reward, notes or ""))
             finally:
                 conn.close()
         return reward
+
+    def query_feedback(self, alert_id: str) -> List[Dict[str, Any]]:
+        """Acknowledgement is deliberately absent from this history."""
+        with self._lock:
+            conn = self._get_connection()
+            try:
+                rows = conn.execute("""
+                    SELECT id, timestamp, alert_id, action AS verdict, reward, notes
+                    FROM operator_feedback WHERE alert_id = ? ORDER BY timestamp
+                """, (alert_id,)).fetchall()
+                return [dict(row) for row in rows]
+            finally:
+                conn.close()
 
     def _row_to_alert_dict(self, row: sqlite3.Row) -> Dict[str, Any]:
         return {
