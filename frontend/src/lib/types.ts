@@ -18,6 +18,10 @@ export interface Alert {
   fused_events: string[];
   explanation: string | null;
   status: AlertStatus;
+  priority_score?: number | null;
+  false_positive_risk?: number | null;
+  priority_label?: "HIGH" | "MEDIUM" | "LOW" | null;
+  priority_model_version?: string | null;
 }
 
 export interface AuraEvent {

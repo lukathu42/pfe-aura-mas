@@ -13,10 +13,12 @@ never change it (rule-guarded agentic AI).
 """
 from __future__ import annotations
 
+import json
 import time
 from typing import Dict, Optional
 
 from aura_mas.agents.base import Agent
+from aura_mas.alert_priority import AlertPriorityScorer
 from aura_mas.core.bus import Alert, AlertStore, new_id, now_ts
 
 SEVERITY_MAP = {
@@ -36,11 +38,19 @@ ALERT_THRESHOLDS = {"CRITICAL": 0.45, "WARNING": 0.55, "INFO": 0.70}
 class PolicyAgent(Agent):
     def __init__(self, agent_id: str, bus, store: AlertStore,
                  coordinator=None, explainer=None,
-                 cooldown_seconds: float = 20.0) -> None:
+                 cooldown_seconds: float = 20.0,
+                 priority_scorer: Optional[AlertPriorityScorer] = None,
+                 priority_model_path: Optional[str] = None) -> None:
         super().__init__(agent_id, bus)
         self.store = store
         self.coordinator = coordinator
         self.explainer = explainer
+        self.priority_scorer = priority_scorer
+        if self.priority_scorer is None and priority_model_path:
+            try:
+                self.priority_scorer = AlertPriorityScorer.load(priority_model_path)
+            except FileNotFoundError:
+                self.log.warning("priority model not found: %s", priority_model_path)
         self.cooldown_seconds = cooldown_seconds
         self._last_alert: Dict[str, float] = {}   # (zone,event_type) -> ts
         self.metrics = {"hypotheses": 0, "alerts": 0, "suppressed": 0,
@@ -106,6 +116,10 @@ class PolicyAgent(Agent):
             scene_time_seconds=getattr(hyp, "scene_time_seconds", None),
             contributing_types=getattr(hyp, "contributing_types", [event_type]),
         )
+        if self.priority_scorer:
+            prediction = self.priority_scorer.predict(json.loads(alert.to_json()))
+            for key, value in prediction.as_alert_fields().items():
+                setattr(alert, key, value)
 
         # 6. agentic explanation (downstream, non-blocking for the decision) --
         if self.explainer:
