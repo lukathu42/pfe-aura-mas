@@ -1,0 +1,409 @@
+\chapter{Evaluation and Results}
+\label{chap:evaluation}
+
+\section{Introduction}
+
+This chapter evaluates AURA-MAS at the \emph{system} level, addressing research questions RQ1--RQ5 through a controlled architectural ablation replayed across a nine-scenario corpus. We describe the experimental setup, define the metrics, state the inferential procedure, present quantitative results, and discuss findings, threats to validity, and limitations.
+
+\begin{revisionbox}
+This chapter has been substantially rewritten relative to the first compiled version of this thesis. That version reported a \emph{single run of a single scenario} (\texttt{demo\_site\_01}) and concluded that auction-based coordination improved precision and halved false alerts. A subsequent 373-run campaign (\texttt{results/evaluation\_campaign\_v2\_notes.md}) does not support that conclusion, and the inferential analysis added in Section~\ref{sec:stats_method} shows that \emph{no} pairwise architecture difference in this corpus survives correction for multiple comparisons. The affected claims are corrected explicitly---in Section~\ref{sec:c2_retraction} for coordination and Section~\ref{sec:rq3} for multimodal fusion---rather than silently renumbered. Appendix~\ref{app:corrections} tabulates every old claim against its replacement.
+\end{revisionbox}
+
+\section{Experimental Setup}
+
+\subsection{Evaluation Methodology}
+
+Model-centric metrics (\gls{map}, tracking HOTA) characterize components, not systems; what an operator experiences is determined by the \emph{end-to-end pipeline}: how quickly a real incident becomes an alert, how many false alerts pollute the feed, and what coordination costs the architecture incurs. Following the system-evaluation tradition of ETISEO \cite{nghiem2007etiseo} and contemporary MLOps practice \cite{aicity2025, ruf2021demystifying}, we therefore evaluate complete architectures on \emph{scenario replay}: recorded sensor sources are replayed through the full agent stack, and emitted alerts are scored against a ground-truth manifest. Replay guarantees that all architecture variants observe exactly the same sensory input, isolating the architectural variable---a controlled comparison that live deployment cannot provide.
+
+\subsection{Scenario Corpus}
+\label{sec:corpus}
+
+Evaluation uses nine scenario manifests rather than the single demonstrator scenario of the first version. Each manifest declares its sensors, zone polygons, and ground-truth incident intervals; full listings appear in Appendix~\ref{app:scenarios}. Table~\ref{tab:corpus} summarizes the corpus.
+
+\begin{table}[H]
+\centering
+\caption{Scenario corpus. Sources are real, citably-licensed recordings (Appendix~\ref{app:datasets}); \texttt{loitering\_01} is a deliberate true-negative probe with empty ground truth.}
+\label{tab:corpus}
+\small
+\begin{tabular}{lccp{5.2cm}}
+\toprule
+\textbf{Scenario} & \textbf{Sensors} & \textbf{GT} & \textbf{Purpose / source} \\
+\midrule
+\texttt{intrusion\_01} & 2 cam, 1 mic & 2 & Zone intrusion + audio; pedestrian footage \\
+\texttt{demo\_site\_01} & 2 cam, 1 mic & 3 & Multi-zone demonstrator (\S\ref{sec:demo_case}) \\
+\texttt{combined\_audio\_video\_01} & 1 cam, 1 mic & 2 & Cross-modal corroboration probe \\
+\texttt{abandoned\_object\_01} & 1 cam & 1 & Static-object rule; ABODA \\
+\texttt{fight\_01} & 1 cam & 1 & CLIP semantic anomaly; AIRTLab \cite{bianculli2020violence} \\
+\texttt{audio\_glass\_break\_01} & 1 mic & 1 & Audio-only, \emph{security} family; ESC-50 \cite{piczak2015esc50} \\
+\texttt{audio\_alarm\_siren\_01} & 1 mic & 1 & Audio-only, \emph{hazard} family; ESC-50 \\
+\texttt{audio\_alarm\_clock\_01} & 1 mic & 1 & Audio class discrimination; ESC-50 \\
+\texttt{loitering\_01} & 1 cam & \textbf{0} & True-negative probe; false-alert floor \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two properties of this corpus bear directly on interpretation. First, it is deliberately heterogeneous: three scenarios are audio-only, five are video-only or video-dominant, and one is explicitly cross-modal. Aggregate means over such a corpus mix regimes in which different modalities carry the signal, and Section~\ref{sec:ablation} shows this mixing matters. Second, the corpus is small---nine scenarios---and Section~\ref{sec:power} quantifies exactly what that implies for the conclusions this chapter can support.
+
+\subsection{Architecture Variants}
+
+Four variants are compared:
+
+\begin{itemize}
+    \item \textbf{Centralized}: a single sequential process iterating over sensors---the classical VMS analytics topology (baseline for RQ1);
+    \item \textbf{MAS-nocoord}: concurrent agents, fusion and policy active, coordination disabled (baseline for RQ2);
+    \item \textbf{MAS-rules}: coordination via round-robin task assignment (non-market baseline for RQ2);
+    \item \textbf{MAS-auction}: the full AURA-MAS design with sealed-bid verification auctions.
+\end{itemize}
+
+The first version of this chapter described these variants as differing ``only in architecture---identical models, rules, thresholds, and inputs.'' That statement is not accurate as implemented and is corrected in Section~\ref{sec:threats} under \emph{pacing confound}: the centralized variant additionally runs unpaced and sequentially, which changes the effective temporal width of the wall-clock fusion window and alert cooldown.
+
+Runs were executed on a 4-vCPU CPU-only sandbox (YOLO11n at 5~\gls{fps} per camera).
+
+\subsection{Campaign Structure}
+
+The campaign is a full factorial grid over (scenario $\times$ mode $\times$ modality configuration $\times$ audio backend $\times$ repetition), executed by \texttt{aura\_mas/scripts/run\_campaign.py} as one fresh subprocess per run (Figure~\ref{fig:campaign_grid}). Fresh-subprocess isolation matters because model, tracker, and thread-pool state do not reset cleanly in-process; without it, run order becomes a confound. The campaign totals \textbf{373 runs with zero failures}, of which the 180 audio-visual runs at $N=5$ repetitions under the YAMNet backend form the headline analysis set.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\input{Assets/tikz/fig_campaign_grid.tex}}
+    \caption{Evaluation campaign grid and scoring pipeline. Contribution C5 is this apparatus, not any particular number it produced.}
+    \label{fig:campaign_grid}
+\end{figure}
+
+\subsection{Metrics}
+
+An alert matches a ground-truth incident if it carries the same incident \emph{family} (Appendix~\ref{app:config}) and falls within a $\pm 5$~s tolerance of the incident interval. We report event-level \textbf{precision, recall, and F1}; \textbf{mean time-to-alert} (TTA); \textbf{false alerts per hour} (FA/h); and \textbf{coordination overhead} (count of task/bid/award/verification messages). Section~\ref{sec:threats} documents three measurement limitations of this scheme---family-level matching, greedy assignment, and the FA/h denominator---each of which bounds what the corresponding number can mean.
+
+\subsection{Statistical Methodology}
+\label{sec:stats_method}
+
+The first version of this chapter reported means and standard deviations over $N=5$ repetitions with no interval, test, or effect size. That is insufficient here for a specific reason: on scenarios carrying one to three ground-truth events, per-run F1 takes few distinct values, so a reported ``$0.800\pm0.447$'' describes an outcome that was $1.0$ in four runs and $0.0$ in one---a Bernoulli flip, not a dispersion estimate.
+
+The campaign grid is a \emph{paired} design: every (scenario, repetition) cell is observed under all four modes on identical inputs. The analysis therefore uses the paired difference as its unit and applies:
+
+\begin{itemize}
+  \item \textbf{Wilcoxon signed-rank tests} on matched (scenario, repetition) pairs, rather than a paired $t$-test, because per-run F1 is discrete and bounded;
+  \item \textbf{Holm--Bonferroni correction} across all six pairwise mode comparisons---quoting the smallest of six uncorrected $p$-values would be a multiplicity error;
+  \item \textbf{Cliff's $\delta$} as a non-parametric effect size, reported alongside every $p$-value;
+  \item \textbf{Bootstrap percentile confidence intervals} (10{,}000 resamples, fixed seed) on per-mode means and on paired differences.
+\end{itemize}
+
+All values are produced by \texttt{aura\_mas/scripts/thesis\_stats.py} into \texttt{results/thesis\_stats.json} and emitted directly as \LaTeX{} tables, so no number in this chapter is transcribed by hand. The analysis set comprises $n=45$ fully-observed paired cells (9 scenarios $\times$ 5 repetitions).
+
+\section{Results}
+\label{sec:ablation}
+
+\subsection{Architectural Ablation Across the Corpus}
+
+Table~\ref{tab:per_scenario_f1} reports event-level F1 for every scenario and mode; Figure~\ref{fig:per_scenario_f1} presents the same data as a heatmap.
+
+\begin{table}[H]
+\centering
+\caption{Event-level F1 per scenario and architecture (mean$\pm$sd over $N=5$ repetitions, YAMNet backend). Bold marks the best mode per scenario. $^{\dagger}$\texttt{loitering\_01} has empty ground truth by construction, so F1 is 0 for every mode.}
+\label{tab:per_scenario_f1}
+\scriptsize
+\input{Assets/generated/tab_per_scenario_f1.tex}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.88\textwidth]{Assets/fig_per_scenario_f1.png}
+    \caption{Event-level F1 across the nine-scenario corpus. No mode dominates: the centralized baseline wins on the video-dominant scenarios, while all three MAS variants win on the audio-only scenarios.}
+    \label{fig:per_scenario_f1}
+\end{figure}
+
+The per-scenario view shows a pattern the single-scenario version could not: \textbf{the ranking of architectures depends on which modality carries the signal}. The centralized baseline is best on \texttt{fight\_01}, \texttt{abandoned\_object\_01}, \texttt{intrusion\_01}, and \texttt{combined\_audio\_video\_01}---the video-dominant scenarios. All three MAS variants beat it on \texttt{audio\_glass\_break\_01} (0.800 vs.\ 0.000) and \texttt{audio\_alarm\_siren\_01}. Averaging across such a corpus produces a number whose value is largely determined by the corpus's modality mix, which is a property of the experiment design rather than of the architectures.
+
+With that caveat stated, the marginal means are given in Table~\ref{tab:marginal_f1} and Figure~\ref{fig:mode_ci}.
+
+\begin{table}[H]
+\centering
+\caption{Marginal mean F1 per mode with bootstrap confidence intervals ($n=45$ paired observations per mode).}
+\label{tab:marginal_f1}
+\small
+\input{Assets/generated/tab_marginal_f1.tex}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.78\textwidth]{Assets/fig_mode_ci.png}
+    \caption{Mean event-level F1 with 95\% bootstrap confidence intervals. All four intervals overlap in the shaded band.}
+    \label{fig:mode_ci}
+\end{figure}
+
+On point estimates, the ordering is MAS-nocoord (0.577) $>$ Centralized (0.519) $>$ MAS-rules (0.490) $>$ MAS-auction (0.452). \textbf{The full AURA-MAS configuration has the lowest mean F1 of the four variants on this corpus.} This directly contradicts the first version's conclusion and is reported here as the primary result.
+
+\subsection{Inferential Analysis}
+\label{sec:power}
+
+Point-estimate orderings over 45 observations invite over-reading, so Table~\ref{tab:pairwise_f1} gives the paired tests and Figure~\ref{fig:paired_forest} the corresponding intervals.
+
+\begin{table}[H]
+\centering
+\caption{Pairwise architecture comparisons on F1, paired on (scenario, repetition). $\Delta$~mean is mode~A minus mode~B; $\delta$ is Cliff's delta; $p_{\text{Holm}}$ is Holm--Bonferroni-adjusted across all six comparisons.}
+\label{tab:pairwise_f1}
+\scriptsize
+\input{Assets/generated/tab_pairwise_f1.tex}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Assets/fig_paired_forest.png}
+    \caption{Paired mean differences in F1 with 95\% bootstrap confidence intervals. Every interval either contains zero or, after multiplicity correction, cannot be distinguished from it.}
+    \label{fig:paired_forest}
+\end{figure}
+
+\begin{findingbox}[title={Principal empirical finding}]
+Across the nine-scenario corpus, \textbf{none of the six pairwise architecture comparisons on F1 is statistically significant after Holm--Bonferroni correction}. The largest raw effect---MAS-nocoord over MAS-auction, $\Delta=+0.125$, $p=0.024$---becomes $p_{\text{Holm}}=0.145$, with Cliff's $\delta=+0.146$, a negligible effect size. All four bootstrap confidence intervals overlap substantially.
+
+The correct conclusion is therefore neither that the auction helps nor that it harms, but that \textbf{this campaign cannot distinguish the four architectures on detection quality}. The apparent ordering is within noise.
+\end{findingbox}
+
+This is not a failure of the apparatus but a measurable property of it. Treating the observed MAS-nocoord/MAS-auction difference as the effect of interest, the standardized paired effect size is $d_z=0.35$; detecting it at 80\% power and $\alpha=0.05$ requires approximately \textbf{65 paired observations}, whereas the campaign provides 45 (Figure~\ref{fig:power_curve}). At five repetitions per scenario this corresponds to roughly \textbf{13 scenarios} rather than nine. The study is underpowered by design for effects of this magnitude, and the honest remedy is corpus expansion, not reinterpretation.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.76\textwidth]{Assets/fig_power_curve.png}
+    \caption{Paired observations required for 80\% power as a function of standardized effect size, with this campaign's position marked.}
+    \label{fig:power_curve}
+\end{figure}
+
+A sensitivity check excluding the empty-ground-truth \texttt{loitering\_01} probe leaves the conclusion unchanged: the means rise (nocoord 0.649, centralized 0.584, rules 0.551, auction 0.508) but no comparison becomes significant after correction (\texttt{results/thesis\_stats.json}, key \texttt{sensitivity\_excluding\_probe}).
+
+\subsection{Audio Backend Ablation: DSP Fallback vs.\ YAMNet}
+\label{sec:audio_ablation}
+
+The one manipulation in this campaign with an unambiguous effect is the audio backend. Replaying the three audio-only scenarios under both backends ($N=3$ per cell), the \gls{dsp} fallback scores F1 $=0.000\pm0.000$ in \emph{every} repetition, across all four coordination modes and all three scenarios, while YAMNet reaches $0.6$--$1.0$ on most scenario/mode pairs and a clean $1.000\pm0.000$ on \texttt{audio\_alarm\_clock\_01} (Figure~\ref{fig:audio_backend_ablation}).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Assets/fig_audio_backend_ablation.png}
+    \caption{F1 by audio backend across the three audio-only scenarios.}
+    \label{fig:audio_backend_ablation}
+\end{figure}
+
+This effect must be interpreted mechanically rather than as a detection-quality comparison. The \gls{dsp} path emits a single generic \texttt{audio\_anomaly} event type, which the taxonomy maps to family \emph{violence\_or\_hazard}; the audio-only manifests declare ground truth in the \emph{security} and \emph{hazard} families. Family-level matching therefore \textbf{cannot} score a \gls{dsp} detection as a true positive, no matter how accurately the detector fires on the transient. The measured $0.000$ is a \emph{label-space mismatch}, not evidence that energy-and-flatness scoring fails to detect glass breaking. The defensible claim is narrower than it first appears: under a family-matched alerting protocol, \emph{class-specific} audio typing is what makes the audio modality usable---an argument about protocol design, not about signal processing.
+
+\subsection{Analysis by Research Question}
+
+\textbf{RQ1 (Architecture).} On \texttt{demo\_site\_01}, mean TTA falls from $15.07\pm3.11$~s (centralized) to $2.96\pm0.14$~s (MAS-auction), an 80.4\% reduction. This figure appeared as the headline latency result in the first version. \textbf{It does not generalize.} Across the seven scenarios where all four modes produce a matched alert, the paired means are centralized 9.47~s, MAS-nocoord 8.87~s, MAS-rules 6.60~s, MAS-auction 8.46~s---a 10.7\% reduction from centralized to auction, with $p=0.59$ and no pairwise TTA comparison significant after correction. Figure~\ref{fig:tta_per_scenario} shows why: \texttt{demo\_site\_01} is the only scenario in which the centralized variant is markedly slowest. Even on \texttt{demo\_site\_01} alone, $N=5$ yields $p=0.0625$, which does not reach $\alpha=0.05$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.97\textwidth]{Assets/fig_tta_per_scenario.png}
+    \caption{Mean time-to-alert by scenario. The large centralized/MAS gap is specific to \texttt{demo\_site\_01} (shaded); elsewhere the ordering flattens or reverses. ``n/a'' marks mode/scenario pairs that produced no matched alert.}
+    \label{fig:tta_per_scenario}
+\end{figure}
+
+The mechanism originally offered---removal of head-of-line blocking, since the centralized variant processes sensors sequentially---remains structurally sound and predicts that the effect should grow with sensor count. But it is confounded with pacing (Section~\ref{sec:threats}) and is observed clearly in only one scenario, which happens to be the one with the most sensors. RQ1 is therefore \textbf{not settled} by this evidence.
+
+\textbf{RQ2 (Coordination).} Addressed in Section~\ref{sec:c2_retraction}.
+
+\textbf{RQ3 (Multimodality).}
+\label{sec:rq3}
+Cross-modal fusion functions end-to-end following two independent fixes---audio zone tagging and event-family taxonomy unification (Chapter~\ref{chap:implementation})---that had structurally prevented audio and video events from ever sharing a hypothesis. Four alerts in the campaign carry both a camera and a microphone in their \texttt{sensors} field, confirming the mechanism wires up correctly.
+
+\begin{revisionbox}
+The first version of this chapter stated that on \texttt{combined\_audio\_video\_01} ``the resulting alert's confidence (0.78) reflects the audio+video corroboration bonus of Equation~\ref{eq:noisyor}.'' \textbf{This is incorrect.} Direct inspection of every alert in the campaign (\texttt{results/cross\_modal\_fusion\_audit.md}) shows that the 0.78 alert carries \texttt{sensors: ["cam\_01"]} and exactly one fused event, so neither bonus term---both gated on $|M(H)|>1$ and $|S(H)|>1$---can apply. The value 0.78 is precisely one unaided video event: $1-(1-0.9\times0.867)=0.780$. All 37 alerts at confidence 0.78 in the campaign are single-sensor.
+\end{revisionbox}
+
+The corrected finding is more informative than the original claim. Genuinely cross-modal alerts are \emph{rare}---4 of 240---because audio and video events must land in the same (family, zone) key inside the same 6~s window. More importantly, where fusion does occur its effect on reported confidence is \textbf{not measurable}, because the noisy-OR saturates first. Figure~\ref{fig:fusion_timeline} works through an actual case: four same-camera detections already drive the product to 0.9992, so the two $+0.05$ corroboration bonuses are absorbed entirely by the clamp to $[0,1]$, and a video-only hypothesis reaches the same reported 1.0. All four cross-modal alerts report exactly 1.0.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\input{Assets/tikz/fig_fusion_timeline.tex}}
+    \caption{Hypothesis formation and noisy-OR saturation on \texttt{combined\_audio\_video\_01}. Confidences are the values recorded in the run artifacts.}
+    \label{fig:fusion_timeline}
+\end{figure}
+
+The root cause is that the noisy-OR treats repeated observations of one incident by one sensor as conditionally independent evidence, which they are not. Contribution C3's monotonicity guarantee holds as stated, but at these event confidences it is guaranteed monotonicity in a regime where the quantity has already saturated. A dependence-aware combination rule, or per-sensor evidence pooling before fusion, is the natural correction and is left as future work.
+
+Separately, \texttt{Hypothesis.dominant\_type()} labels all four cross-modal alerts \texttt{intrusion} rather than \texttt{audio\_glass\_break}, because video confidence always outscores audio confidence within the merged hypothesis. A reader of the raw alert log therefore sees no indication that audio contributed---a limitation of single-winner event-type labelling that motivates the \texttt{contributing\_types} field discussed in Chapter~\ref{chap:conclusion}.
+
+\textbf{RQ4 (Agentic explanation).}
+\label{sec:rq4}
+Explanation generation occurs strictly after alert emission by construction, so it cannot affect alerting latency; measured policy decision latency averages 0.3~ms.
+
+\begin{revisionbox}
+The first version stated that ``in replay runs, all accepted reports cited only identifiers present in the event log, i.e., zero uncaught hallucinated citations.'' This claim is \textbf{vacuous as stated}: \texttt{run\_campaign.py} never passes \texttt{--llm}, so across all 373 runs the \gls{llm} path never executed and every \texttt{explanation} field written to disk is the deterministic fallback template (\texttt{results/explanation\_judge\_notes.md}). No report was generated by a model, so none could have been found grounded.
+\end{revisionbox}
+
+The evidence that does exist for C4 is of two kinds. The first is structural: the explanation pipeline is an explicit finite state machine (Figure~\ref{fig:explanation_fsm}) in which no path reaches the \texttt{emitted} state except through a passing guardrail check, and every failure at every stage routes to the deterministic template. This is a property of the control flow, verifiable by inspection and by unit test, independent of any model's behaviour. The second is a single observed datapoint: one post-campaign run against a local \texttt{qwen2.5-vl:3b} endpoint produced a report that the guardrail \textbf{rejected}, falling back to the template (\texttt{aura.guardrail.passed: false}, \texttt{aura.explanation.fallback\_triggered: true} in \texttt{data/otel\_spans.jsonl}). That is the first and only instance of the guardrail acting on genuine generative output. It demonstrates the mechanism fires, and simultaneously that the local model did not produce a usable grounded report. A guardrail evaluated at $n=1$ is not an evaluated guardrail; C4 should be read as a design contribution with structural, not empirical, support.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.98\textwidth}{!}{\input{Assets/tikz/fig_explanation_fsm.tex}}
+    \caption{ExplanationAgent state machine (\texttt{aura\_mas/agents/explanation\_fsm.py}). The guardrail is the sole gate on the \texttt{emitted} state.}
+    \label{fig:explanation_fsm}
+\end{figure}
+
+\textbf{RQ5 (Governance).} This is the research question the campaign supports most cleanly, because it concerns invariants rather than effect sizes. Every exported evidence crop passed through the anonymization choke point in \texttt{aura\_mas/core/privacy.py}; the 1{,}737 evidence files written during the campaign are all anonymized, and Figure~\ref{fig:evidence_grid} shows representative frames spanning all four event types actually produced. No raw frame was persisted or transmitted. Every alert and suppression produced an audit record, verified across all 373 runs, each accompanied by its own audit JSONL file.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.94\textwidth]{Assets/fig_evidence_grid.png}
+    \caption{Anonymized alert evidence written by the privacy choke point during the campaign. Person regions receive graded Gaussian blurring, strongest over the head region; if no person localization is available the module fails closed and blurs the whole frame. Filenames are retained so any panel can be traced to its run.}
+    \label{fig:evidence_grid}
+\end{figure}
+
+Two boundaries on this claim should be stated plainly. First, anonymization \emph{efficacy} is asserted structurally---every export traverses the choke point---but never measured; no re-identification attack was attempted against the blurred crops. Second, the audit stream is append-only by convention, not cryptographically immutable; the word ``immutable'' in the first version overstates it, and Chapter~\ref{chap:conclusion} lists hash-chaining as the concrete remedy.
+
+\section{Coordination: Retraction and Reassessment}
+\label{sec:c2_retraction}
+
+RQ2 asks whether auction-based verification allocation improves alert precision over uncoordinated alerting, and at what communication cost. This section answers it, and in doing so retracts the first version's central claim for contribution C2.
+
+\subsection{What the first version claimed}
+
+The first version reported, from a single run, that auction coordination halved false alerts and restored precision, and concluded that because MAS-rules and MAS-auction pay a similar message cost, ``the difference is attributable to \emph{who} is asked to verify, not merely that verification happens---validating the utility-bid design in which field-of-view overlap and origin-independence, not an arbitrary rotation, dominate the bid.''
+
+\subsection{Why that claim cannot be supported}
+
+\begin{revisionbox}
+The utility-bid claim is \textbf{retracted}. The bid function is $u = b\cdot\kappa\cdot o$, where $o$ is intended to be the camera's field-of-view overlap with the event zone. In the evaluated code, $o$ is read as \texttt{task.get("fov\_overlap", \{\}).get(self.agent\_id, 0.5)} (\texttt{aura\_mas/agents/camera\_agent.py:448}), and the coordinator never populated \texttt{fov\_overlap} when constructing the task. \textbf{Throughout all 373 runs, $o$ was the constant 0.5 for every camera.}
+
+The bid therefore reduced to $b\cdot\kappa$: 0.3 for the originating sensor, 1.0 for any other idle camera. On a two-camera site this deterministically selects ``the other camera''---which is exactly what round-robin does. The mechanism that would have made the claim true was never active, so the claim is not merely unsupported by the v2 data: it is \textbf{untestable} with the code that produced these results.
+\end{revisionbox}
+
+Figure~\ref{fig:auction_sequence} traces the protocol and marks where the inert term enters. This also explains mechanistically why MAS-auction and MAS-rules produce statistically indistinguishable results ($\Delta=+0.038$, $p_{\text{Holm}}=1.000$, $\delta=+0.044$): under an inert overlap term on a two-camera site, they are close to the same allocator.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{\input{Assets/tikz/fig_auction_sequence.tex}}
+    \caption{Auction-based active verification message sequence, annotated with the measurement caveat that the overlap term was inert during evaluation.}
+    \label{fig:auction_sequence}
+\end{figure}
+
+A transport path for \texttt{fov\_overlap} has since been added to the coordinator and replay driver, but no scenario manifest populates the map, so the term remains at its fallback value and no result in this thesis exercises it. Implementing per-scenario overlap---by homography-based zone/frustum intersection, as sketched in Chapter~\ref{chap:conclusion}---is the prerequisite for testing C2 at all.
+
+\subsection{The stability argument, and why it is also not supported}
+
+An intermediate position suggests itself from the data and was considered: on \texttt{demo\_site\_01}, MAS-auction's precision is $0.667\pm0.000$ across five repetitions while MAS-nocoord's is $0.767\pm0.224$, so auction coordination might be defended as buying \emph{predictability} rather than accuracy---a lower mean with far lower variance, which is arguably what an operator building trust in an alert feed wants.
+
+We tested this rather than asserting it. Table~\ref{tab:variance_precision} reports the per-mode precision variances and formal homogeneity tests.
+
+\begin{table}[H]
+\centering
+\caption{Precision dispersion by mode on \texttt{demo\_site\_01} ($N=5$).}
+\label{tab:variance_precision}
+\small
+\input{Assets/generated/tab_variance_precision.tex}
+\end{table}
+
+Levene's test gives $W=1.62$, $p=0.224$; the Fligner--Killeen test gives $\chi^{2}=4.46$, $p=0.216$. Pooled across the whole corpus, Levene gives $p=0.515$. \textbf{The variance difference is not statistically significant either.} Furthermore, MAS-auction's $0.667\pm0.000$ consists of five \emph{identical} values, which is better described as a degenerate constant---the same single hypothesis resolved the same way every time on one scenario---than as demonstrated low variance across operating conditions. Reporting it as a variance advantage would trade an unsupported claim about means for an unsupported claim about spread.
+
+\subsection{What can be said}
+
+The coordination overhead itself is measured cleanly: $5\pm0.0$ messages per run for MAS-auction versus $2\pm0.0$ for MAS-rules and 0 for MAS-nocoord (Figure~\ref{fig:coordination_overhead}). Even here a caveat applies: because every campaign run used the in-process \texttt{LocalBus}, these are counts of synchronous Python function calls, not network messages. The \gls{mqtt} and Redis transports were never exercised in any reported result, so contribution C1's substrate claim is \textbf{unevaluated}, and the ``communication cost'' in RQ2 is not a communication cost in the sense the research question intends.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Assets/fig_coordination_overhead.png}
+    \caption{Coordination message overhead per run, counted as in-process bus publications.}
+    \label{fig:coordination_overhead}
+\end{figure}
+
+The honest answer to RQ2 is therefore: \emph{unresolved}. The protocol is implemented, runs, terminates, and costs a bounded and measured number of messages; whether utility-based allocation outperforms arbitrary allocation remains untested, because the utility function's informative term was inactive.
+
+\section{Discussion}
+
+\subsection{Interpretation}
+
+The first version's interpretation---``speed and predictability come from different architectural mechanisms: concurrency buys responsiveness, while market-based coordination buys stability''---is not supported by the corpus-wide data and is withdrawn. Neither half survives: the latency effect is confined to one scenario and does not reach significance, and the stability effect fails its homogeneity test.
+
+What the evaluation does establish is more modest and, we would argue, more useful:
+
+\begin{enumerate}
+  \item \textbf{Architecture choice is not the dominant factor in this system's detection quality.} Four structurally different coordination topologies produce statistically indistinguishable F1 on a nine-scenario corpus. The variance between scenarios dwarfs the variance between architectures (compare the row spread with the column spread in Figure~\ref{fig:per_scenario_f1}).
+  \item \textbf{Representation choices dominate architecture choices.} The one manipulation with an unmistakable effect---the audio backend---works through the \emph{label space}, not the topology: a detector whose output type cannot match a ground-truth family scores zero regardless of its sensitivity. Similarly, the invisibility of cross-modal corroboration is a consequence of the confidence \emph{representation} saturating, not of the fusion topology.
+  \item \textbf{Several claimed mechanisms were inactive during measurement.} The overlap term in the bid, the \gls{mqtt}/Redis substrate, and the \gls{llm} explanation path were all unexercised in the reported results. Their absence was discoverable only by reading the code against the artifacts, which is itself an argument for the evaluation discipline described next.
+\end{enumerate}
+
+Accordingly, we regard \textbf{C5---the reproducible evaluation apparatus---as the contribution this thesis most solidly delivers}. Fresh-subprocess isolation, repetition indices, a preserved pre-fix baseline CSV, a written methodology-change log mapping every scoring-affecting edit old-to-new (Appendix~\ref{app:methodology}), and the inferential layer added here are what made the negative result visible instead of allowing a favourable single run to stand. An apparatus that can refute its own designer's hypothesis is doing its job.
+
+\subsection{Threats to Validity and Limitations}
+\label{sec:threats}
+
+\textbf{Pacing confound (internal validity).} \texttt{scenarios/replay.py} sets \texttt{realtime = mode != "centralized"}, so MAS modes pace playback to source frame rate while the centralized baseline runs unpaced and processes sensors sequentially to completion. Because \texttt{FusionAgent.window\_seconds} and \texttt{PolicyAgent.cooldown\_seconds} are wall-clock quantities, the effective temporal width of the fusion window and the alert cooldown differ between modes. The RQ1 latency comparison therefore measures pacing policy together with architecture, and is not attributable to architecture alone. A paced centralized variant is the required control and was not run.
+
+\textbf{Strawman baseline (construct validity).} A production video-management system ingests streams concurrently at real time; it does not process them one after another to completion. The sequential baseline is weaker than the real comparator, which biases RQ1 in the MAS variants' favour by construction.
+
+\textbf{Family-level matching cannot distinguish event types.} The matcher compares incident \emph{families}, and the taxonomy assigns \texttt{intrusion}, \texttt{loitering}, \texttt{abandoned\_object}, and \texttt{audio\_glass\_break} all to \emph{security}. On \texttt{demo\_site\_01}, whose three ground-truth entries are all in that family, an \texttt{intrusion} alert can satisfy the \texttt{loitering} entry. The metric answers ``did some security-relevant alert occur near this time,'' not ``was the right event detected.''
+
+\textbf{Tolerance width.} Matching accepts $[t_{start}-5,\,t_{end}+5]$. For \texttt{demo\_site\_01}'s intrusion interval $[3,35]$ on a 55~s scenario, the acceptance window spans roughly 73\% of the run, which limits how much information precision, recall, and TTA can carry on that scenario.
+
+\textbf{Greedy assignment under-credits successful fusion.} The matcher is a first-fit loop over ground truth in manifest order, not an optimal assignment. On \texttt{combined\_audio\_video\_01}, whose manifest lists \texttt{intrusion} before \texttt{audio\_glass\_break} (both \emph{security}), a single successfully-fused alert satisfies the first entry and leaves the second unmatched, capping measured recall below what the system achieved. A Hungarian assignment would remove the order dependence.
+
+\textbf{FA/h is degenerate at these run lengths.} False alerts per hour is $fp/(\text{wall seconds}/3600)$. With runs as short as 9.1~s and false-positive counts in $\{0,1,2,3\}$, the metric reaches 393.9 alerts/hour from a single false positive. Figure~\ref{fig:fa_per_hour_degeneracy} shows the measured values lying exactly on the $fp\times3600/\text{duration}$ hyperbolae: the statistic reports run duration as much as alert quality, and should not be read as an operational false-alarm rate.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.82\textwidth]{Assets/fig_fa_per_hour_degeneracy.png}
+    \caption{False alerts per hour against run duration. Every point lies on an exact hyperbola determined by its integer false-positive count, showing the metric is governed by the denominator.}
+    \label{fig:fa_per_hour_degeneracy}
+\end{figure}
+
+\textbf{Known-false ground truth on the demonstrator scenario.} \texttt{scenarios/loitering\_01.json} records an empirical check on the same clip and zone: the longest continuous single-track presence is 5.5~s, below the 8~s loitering threshold, so the loitering event \texttt{demo\_site\_01} declares at $t=16$--$46$~s is not detectable by the implemented rule. That entry remains in the manifest and mechanically caps recall at $2/3$; 48 of 60 \texttt{demo\_site\_01} rows show exactly one false negative. The numbers in this chapter are reported with the annotation in place, and it should be regarded as a known defect of that scenario rather than a system limitation.
+
+\textbf{Verification examines the wrong frame.} \texttt{CameraAgent.\_verify()} re-analyses \texttt{self.\_last\_frame}, the most recent frame read, whereas the hypothesis under verification was formed from events up to 6~s earlier plus the bid window. Under real-time pacing the verified frame typically postdates the incident. The field is also written by the camera thread and read by the coordinator's callback thread without synchronization. Additionally, \texttt{\_verify()} counts only \texttt{person} detections regardless of hypothesis type, so verifying an \texttt{abandoned\_object} or \texttt{audio\_alarm} hypothesis asks a question unrelated to that hypothesis.
+
+\textbf{Semantic anomaly calibration.} The \gls{clip} zero-shot anomaly scorer measures \gls{auc}~$=0.308$ against held-out labelled frames---\emph{worse than a random classifier}---root-caused to a prompt/scene domain mismatch: the normal prompts describe indoor warehouse scenes while much of the corpus is outdoor street footage. Because \gls{clip} usage is held constant across all four variants, this does not bias the relative architectural comparison, but it means the semantic-anomaly channel contributed an anti-correlated signal, and no claim about \gls{clip}'s standalone usefulness in this deployment is warranted.
+
+\textbf{Unjustified parameters.} More than twenty constants govern the decision path---modality weights $0.9/0.7$, bonuses $0.05$, window 6~s, gray zone $[0.35,0.75)$, thresholds $0.45/0.55/0.70$, cooldown 20~s, verification $\pm0.15/-0.20$, tolerance $\pm5$~s, dwell 8~s, static 10~s, \gls{iou} 0.6, and the per-class audio thresholds (Appendix~\ref{app:config}). None was tuned on a held-out split and only the \gls{clip} anomaly threshold was swept. No sensitivity analysis is offered, so the reported operating point should be treated as one arbitrary point in a large unexplored space.
+
+\textbf{No seed control.} No random seed, thread count, or determinism flag is set anywhere. Run-to-run variation was observed and is handled by repetition rather than elimination, which inflates the variance against which all effects are measured and thus further reduces power.
+
+\textbf{Scale.} Nine scenarios, at most three sensors, and runs of 8--73~s. Absolute values are demonstrator-scale; the corpus is too small to resolve the effects the research questions ask about, as Section~\ref{sec:power} quantifies.
+
+\subsection{The Demonstrator Scenario as a Case Study}
+\label{sec:demo_case}
+
+\texttt{demo\_site\_01} remains useful as an illustration of the full pipeline exercising every mechanism---multi-sensor concurrency, cross-modal fusion, gray-zone verification, thresholds, cooldowns, anonymization, and explanation---within a single 55~s replay. Table~\ref{tab:ablation} reproduces its per-mode results for that purpose.
+
+\begin{table}[H]
+\centering
+\caption{Single-scenario results on \texttt{demo\_site\_01} ($N=5$; mean$\pm$sd). \textbf{Retained as an illustrative case study only.} These values are not representative of the corpus: see Table~\ref{tab:per_scenario_f1} and Section~\ref{sec:power}.}
+\label{tab:ablation}
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Mode} & \textbf{F1} & \textbf{Precision} & \textbf{Recall} & \textbf{TTA (s)} & \textbf{FA/h} & \textbf{Msgs} \\
+\midrule
+Centralized  & 0.773$\pm$0.059 & 0.933$\pm$0.149 & 0.667$\pm$0.000 & 15.07$\pm$3.11 & 7.4$\pm$16.5  & 0  \\
+MAS-nocoord  & 0.781$\pm$0.204 & 0.767$\pm$0.224 & 0.800$\pm$0.182 & 5.60$\pm$3.14 & 29.8$\pm$36.5 & 0  \\
+MAS-rules    & 0.629$\pm$0.053 & 0.600$\pm$0.091 & 0.667$\pm$0.000 & 3.64$\pm$0.27 & 61.4$\pm$21.4 & 2$\pm$0.0  \\
+MAS-auction  & 0.667$\pm$0.000 & 0.667$\pm$0.000 & 0.667$\pm$0.000 & 2.96$\pm$0.14 & 52.6$\pm$5.9 & 5$\pm$0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Read as a case study, this scenario is instructive precisely because it is misleading in isolation: it is the one scenario where the MAS latency advantage is large, the one where a known-false ground-truth entry caps recall, and the one whose three ground-truth events all collapse into a single incident family. It is a good demonstration and a poor experiment, and the distinction is the methodological lesson of this chapter.
+
+Figures~\ref{fig:detection_quality} and \ref{fig:system_metrics} present the corpus-pooled detection-quality and responsiveness views retained from the first version, now understood in light of the inferential analysis above.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Assets/fig_detection_quality.png}
+    \caption{Detection quality pooled across scenarios and repetitions (error bars are pooled sample standard deviations, not confidence intervals; cf.\ Figure~\ref{fig:mode_ci}).}
+    \label{fig:detection_quality}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Assets/fig_system_metrics.png}
+    \caption{Pooled time-to-alert and false alerts per hour. The FA/h panel should be read with Figure~\ref{fig:fa_per_hour_degeneracy} in mind.}
+    \label{fig:system_metrics}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Assets/fig_modality_ablation.png}
+    \caption{Vision-only versus audio-visual F1 across the audio-capable scenarios.}
+    \label{fig:modality_ablation}
+\end{figure}
+
+\section{Conclusion}
+
+Evaluated across nine scenarios with 373 runs and a paired inferential analysis, the results are as follows. The hierarchical \gls{mas} is \emph{not} demonstrably faster to alert than a centralized pipeline once more than one scenario is considered (RQ1: unresolved, confounded by pacing). Auction-based coordination is \emph{not} shown to improve precision or false-alert rate, and its central mechanism was inactive during measurement, making the claim untestable as implemented (RQ2: retracted, unresolved). Cross-modal fusion works but its contribution to confidence is unmeasurable because the noisy-OR saturates, and cross-modal alerts are rare (RQ3: mechanism confirmed, effect not measurable). The explanation guardrail is structurally sound and fired correctly on the single occasion a real model was tried, but was never exercised during the campaign (RQ4: design supported, empirically unevaluated). The privacy and audit pipeline held across all 373 runs, subject to efficacy being asserted rather than measured (RQ5: supported).
+
+Three of five research questions therefore return negative or unresolved verdicts. The apparatus that produced those verdicts---and that made them visible where a single favourable run had concealed them---is the result this chapter is most confident in. The final chapter revises the contribution claims accordingly and sets out what each unresolved question would require.

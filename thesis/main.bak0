@@ -1,0 +1,344 @@
+\documentclass[openany,12pt,oneside]{extreport}
+
+% Packages
+% Encoding and Language Support
+% (polyglossia/bidi must be loaded LAST; see end of preamble)
+
+% Font and Formatting
+\usepackage{lmodern}                 % Latin Modern fonts
+\usepackage{amsmath}                 % AMS Math packages
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{romannum}                % Roman numeral support
+\usepackage{indentfirst}             % Indent first paragraph
+\usepackage{extsizes}                % Extended sizes for fonts
+
+% Graphics and Colors
+\usepackage{graphicx}                % Enhanced graphics support
+\usepackage{xcolor}                  % Enhanced color support
+\usepackage{subfigure}               % Subfigure support
+\usepackage[table]{xcolor}           % Color support for tables
+\colorlet{darkgreen}{green!60!black}
+\colorlet{red70}{red!70}
+\colorlet{pink70red}{pink!70!red}
+
+% Hyperlinks
+\usepackage{hyperref}                % Hyperlink support
+\hypersetup{
+  colorlinks = true,                 % Enable colored links
+  urlcolor = black,                   % URL color
+  linkcolor = black,                  % Link color
+  citecolor = black                   % Citation color
+}
+
+% Tables
+\usepackage{tabularx}                % Extra features for tabular environment
+\usepackage{array}                   % Array and tabular environments
+\usepackage{booktabs}                % Enhancements for tabular
+\usepackage{multirow}                % Multi-row support
+\usepackage{tabu}                    % Flexible tabular support
+
+% Floating elements
+\usepackage{float}                   % Enhanced floating support
+\usepackage{wrapfig}                 % Wrap text around figures
+
+% Captions
+\usepackage{caption}                 % Customisation of captions
+
+% Glossaries and Acronyms
+\usepackage[acronym, automake]{glossaries} % Glossaries and acronyms support
+\makeglossaries
+
+% Lists
+\usepackage{listofitems}             % Handling lists of items
+
+% Diagrams and Plots
+\usepackage{tikz}                    % TikZ for drawing
+\usetikzlibrary{matrix,chains,positioning,decorations.pathreplacing,arrows,arrows.meta}
+\usetikzlibrary{calc,fit}            % coordinate arithmetic + node fitting (v3 diagrams)
+%\usetikzlibrary{pgfplots}            % PGFPlots for plotting
+\tikzset{>=latex}                    % Set default arrow style
+
+% Revision notices (v3 update: corrections to previously published claims are
+% rendered visibly rather than silently overwritten -- see Appendix G)
+\usepackage[most]{tcolorbox}
+\newtcolorbox{revisionbox}[1][]{%
+  colback=red!3, colframe=red!55!black, boxrule=0.7pt, arc=2pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries\small, title={Revision notice}, #1}
+\newtcolorbox{findingbox}[1][]{%
+  colback=blue!3, colframe=blue!45!black, boxrule=0.7pt, arc=2pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries\small, #1}
+
+% Page Layout
+\usepackage[top=1.3cm, bottom=1.5cm, left=2.5cm, right=2.5cm, headheight=15pt]{geometry} % Page margins
+\usepackage{fancyhdr}                % Fancy headers and footers
+
+% Chapter and Section Titles
+\usepackage[Glenn]{fncychap}         % Fancy chapter headers
+\usepackage{titlesec}                % Custom section titles
+\def\toclevel@subsubsubsection{4}    % Sub-sub-subsections in TOC
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\setcounter{secnumdepth}{4}          % Numbering depth
+\setcounter{tocdepth}{4}             % TOC depth
+
+% Miscellaneous
+\usepackage{pdflscape}               % Landscape support in PDF
+\usepackage{footmisc}                % Footnote support
+\usepackage[outline]{contour}        % Contour support for text
+\contourlength{1.4pt}
+\usepackage[normalem]{ulem}          % Underlining support
+
+% Language support (polyglossia loads bidi, which must come after all other packages)
+\usepackage{polyglossia}             % Multiple language support
+\setdefaultlanguage{english}         % Set default language to English
+\setotherlanguage{arabic}            % Set secondary language to Arabic
+\newfontfamily\arabicfont[Script=Arabic]{Noto Sans Arabic} % Arabic font
+
+% Bibliography (after polyglossia to satisfy biblatex)
+\usepackage[backend=bibtex,sorting=none]{biblatex}
+\addbibresource{Bibliography/bibliography.bib}
+\title{AURA-MAS: Agentic and Multi-Agent Intelligent Surveillance --- A Privacy-Aware, Edge-First Multi-Agent System for Multimodal Event Detection, Coordination, and Explainable Alerting}
+
+% Custom Commands
+\newcommand{\challenge}[2]{
+\vspace{1ex}
+\textbf{Research task {#1}}: \emph{#2}
+\vspace{1ex}}
+\newcommand{\task}[2]{\challenge{#1}{#2}}
+\newcommand{\taskref}[1]{\textbf{Task~}\ref{#1}}
+\newcounter{tasknmbr}
+\newcounter{tasklabel}
+\renewcommand{\thetasklabel}{\textbf{\thetasknmbr}}
+\newenvironment{taskenv}{
+\begin{list}{\textbf{Task }\thetasklabel:}{\usecounter{tasklabel}\stepcounter{tasknmbr}\item\em}}{\\[-7pt]\end{list}}
+
+% Acronyms
+\newacronym{ai}{AI}{Artificial Intelligence}
+\newacronym{mas}{MAS}{Multi-Agent System}
+\newacronym{llm}{LLM}{Large Language Model}
+\newacronym{vlm}{VLM}{Vision-Language Model}
+\newacronym{cnn}{CNN}{Convolutional Neural Network}
+\newacronym{yolo}{YOLO}{You Only Look Once}
+\newacronym{vad}{VAD}{Video Anomaly Detection}
+\newacronym{sed}{SED}{Sound Event Detection}
+\newacronym{mqtt}{MQTT}{Message Queuing Telemetry Transport}
+\newacronym{qos}{QoS}{Quality of Service}
+\newacronym{cnp}{CNP}{Contract Net Protocol}
+\newacronym{bdi}{BDI}{Belief--Desire--Intention}
+\newacronym{fipa}{FIPA}{Foundation for Intelligent Physical Agents}
+\newacronym{acl}{ACL}{Agent Communication Language}
+\newacronym{marl}{MARL}{Multi-Agent Reinforcement Learning}
+\newacronym{gdpr}{GDPR}{General Data Protection Regulation}
+\newacronym{iou}{IoU}{Intersection over Union}
+\newacronym{map}{mAP}{mean Average Precision}
+\newacronym{fps}{FPS}{Frames Per Second}
+\newacronym{roc}{ROC}{Receiver Operating Characteristic}
+\newacronym{auc}{AUC}{Area Under the Curve}
+\newacronym{rtsp}{RTSP}{Real-Time Streaming Protocol}
+\newacronym{clip}{CLIP}{Contrastive Language--Image Pre-training}
+\newacronym{api}{API}{Application Programming Interface}
+\newacronym{json}{JSON}{JavaScript Object Notation}
+\newacronym{dsp}{DSP}{Digital Signal Processing}
+\newacronym{ttA}{TTA}{Time-To-Alert}
+\newacronym{reid}{Re-ID}{Person Re-Identification}
+\newacronym{iot}{IoT}{Internet of Things}
+\newacronym{rag}{RAG}{Retrieval-Augmented Generation}
+
+\begin{document}
+
+\begin{titlepage}
+
+\centering
+\begin{Arabic}
+    {\normalsize \textsc{الجمهورية الشعبية الديمقراطية الجزائرية}} \\[1mm]
+\end{Arabic}
+{\normalsize \textbf{People's Democratic Republic of Algeria}} \\[1mm]
+
+\begin{Arabic}
+    {\normalsize \textsc{وزارة التعليم العالي و البحث العلمي}} \\[1mm]
+\end{Arabic}
+{\normalsize \textbf{Ministry of Higher Education and Scientific Research}}\\
+
+\begin{Arabic}
+    {\normalsize \textbf{المدرسة العليا للإعلام الآلي \textenglish{8} ماي \textenglish{1945} - سيدي بلعباس}}\\[1mm]
+\end{Arabic}
+{\normalsize \textbf{Higher School of Computer Science \\[1mm] 8 Mai 1945 - Sidi Bel Abbes}}\\
+
+\vspace{0.5cm}
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=3.5cm]{Assets/Logo_ESI_SBA.png}
+\end{figure}
+
+\vspace{0.3cm}
+
+\Large \textbf{Master's Thesis} \\
+\vspace{0.4cm}
+{\normalsize To obtain the diploma of \textbf{Master's Degree}} \\
+{\normalsize Field of Study: \textbf{Computer Science}} \\
+{\normalsize Specialization: \textbf{Intelligence Artificielle et Science de Données (IASD)}} \\
+\vspace{0.4cm}
+
+\Large \textbf{Theme}\\
+\rule{15cm}{0.2mm}\\
+\vspace{0.4cm}
+\centering
+{\textbf{AURA-MAS: Agentic and Multi-Agent Intelligent Surveillance\\ \normalsize A Privacy-Aware, Edge-First Multi-Agent System for Multimodal Event Detection,\\ Inter-Sensor Coordination, and Explainable Alerting}}\\
+\rule{15cm}{0.2mm}\\
+\vspace{0.2cm}
+
+\normalsize Presented by\\
+{\normalsize \textbf{ZEDDOUN Lokmane}}\\
+
+\vspace{0.2cm}
+
+{\normalsize Defended on: \textbf{28 June, 2026}}\\
+{\normalsize \textit{In front of the jury composed of:}}\\
+\vspace{0.2cm}
+\begin{center}
+    {\normalsize \textbf{Dr. BEZZAOUCHA Fatima Souad} \hfill President} \\
+    {\normalsize \textbf{Dr. CHIKH Asma} \hfill Examiner} \\
+    % {\normalsize \textbf{Pr. AMAR BENSABER Djamel} \hfill Supervisor} \\
+    {\normalsize \textbf{Dr. ABDELHAK Soumia} \hfill Incubator Representative} \\
+\end{center}
+
+\vspace{0.5cm}
+
+\normalsize \textit{Academic Year: 2025/2026}
+\end{titlepage}
+
+\pagenumbering{arabic}
+
+\newpage
+% Acknowledgement
+\vspace*{4cm}
+\begin{center}
+    {\Large \bf Acknowledgement}
+\end{center} \vskip 0.5cm \vskip 0.5cm
+
+In the name of Allah, the Most Gracious, the Most Merciful.
+
+First, I thank Allah for giving me the strength, patience, and determination to complete this work.
+
+I would like to express my respect and gratitude to my supervisor for the supervision and guidance provided throughout this project.
+
+I also thank the teachers and staff of Higher School of Computer Science of Sidi Bel Abbès for the knowledge and education they provided during my studies.
+
+Finally, I am deeply grateful to my family and friends for their continuous support, encouragement, and prayers during this academic journey. \vskip 0.5cm
+
+% ================================================================
+% Abstract (English)
+% ================================================================
+\newpage
+\vspace*{3cm}
+\begin{center}
+    {\Large\bf Abstract}
+\end{center} \vskip 1cm
+
+Conventional video surveillance remains largely centralized and passive: streams from many cameras converge on a control room where overloaded human operators must notice rare critical events, a paradigm that scales poorly and reacts slowly. This thesis proposes and evaluates \textbf{AURA-MAS} (Agentic Understanding \& Response Architecture), a privacy-aware, edge-first \emph{hierarchical multi-agent system} for intelligent site surveillance that detects, corroborates, verifies, and explains security-relevant events with a human operator kept firmly in the loop.
+
+At the edge layer, autonomous perception agents process video (YOLO11 detection with ByteTrack multi-object tracking, declarative zone rules, and CLIP-based zero-shot semantic anomaly scoring) and audio (sound event classification with a signal-processing fallback), publishing structured events---never raw footage---on a lightweight MQTT/Redis message bus. At the coordination layer, a fusion agent aggregates events into incident hypotheses using spatio-temporal late fusion with noisy-OR confidence combination; a coordinator agent resolves uncertain ``gray-zone'' hypotheses through auction-based task allocation inspired by the Contract Net Protocol, tasking the best-placed camera to actively verify the incident; and a deterministic policy agent applies auditable thresholds, severity mapping, and alert hysteresis. A rule-guarded \emph{agentic} explanation layer built on large language models then transforms accepted alerts into grounded natural-language incident reports whose evidence citations are mechanically checked against the actual event log, ensuring that generative components can never fabricate evidence nor influence the alert decision itself.
+
+The complete system is implemented in Python and evaluated on multi-sensor replay scenarios with ground-truth annotations. An architectural ablation shows that the distributed multi-agent design reduces mean time-to-alert by approximately 36\% relative to a centralized sequential baseline, while auction-based coordination halves the false-alert rate compared to uncoordinated operation, at the cost of a modest, quantified message overhead. The thesis also contributes a reproducible evaluation methodology (event-level F1, time-to-alert, false alerts per hour, coordination overhead) and a privacy-by-design pipeline (edge-local processing, automatic anonymization of all exported evidence, and an immutable audit trail) aligned with GDPR principles and the risk-based logic of the EU AI Act.
+
+\vskip 0.5cm
+\providecommand{\keywords}[1] {
+  \small
+  \textbf{\textit{Keywords---}} #1
+}
+\keywords{Intelligent Surveillance, Multi-Agent Systems, Agentic AI, Large Language Models, Object Detection, Multimodal Fusion, Auction-Based Coordination, Contract Net Protocol, Edge Computing, Explainable AI, Privacy by Design, Video Anomaly Detection}
+
+% ================================================================
+% Résumé (French)
+% ================================================================
+\newpage
+\vspace*{3cm}
+\begin{center}
+    {\Large\bf Résumé}
+\end{center} \vskip 1cm
+
+La vidéosurveillance conventionnelle demeure largement centralisée et passive~: les flux de nombreuses caméras convergent vers une salle de contrôle où des opérateurs surchargés doivent remarquer des événements critiques rares, un paradigme qui passe mal à l'échelle et réagit lentement. Cette thèse propose et évalue \textbf{AURA-MAS}, un \emph{système multi-agents hiérarchique}, respectueux de la vie privée et orienté \emph{edge}, pour la surveillance intelligente de sites~: il détecte, corrobore, vérifie et explique les événements de sécurité tout en maintenant l'opérateur humain au centre de la décision.
+
+Au niveau de la périphérie, des agents de perception autonomes traitent la vidéo (détection YOLO11 avec suivi multi-objets ByteTrack, règles de zones déclaratives et score d'anomalie sémantique zero-shot fondé sur CLIP) et l'audio (classification d'événements sonores avec repli en traitement du signal), en publiant des événements structurés --- jamais de flux bruts --- sur un bus de messages léger MQTT/Redis. Au niveau de la coordination, un agent de fusion agrège les événements en hypothèses d'incident par fusion tardive spatio-temporelle avec combinaison de confiance noisy-OR~; un agent coordinateur résout les hypothèses incertaines par allocation de tâches aux enchères inspirée du protocole Contract Net, en chargeant la caméra la mieux placée de vérifier activement l'incident~; et un agent de politique déterministe applique des seuils auditables, une cartographie de sévérité et une hystérésis d'alerte. Une couche d'explication \emph{agentique} encadrée par des règles, fondée sur les grands modèles de langage, transforme ensuite les alertes acceptées en rapports d'incident en langage naturel dont les citations de preuves sont vérifiées mécaniquement par rapport au journal d'événements réel.
+
+Le système complet est implémenté en Python et évalué sur des scénarios de rejeu multi-capteurs annotés. Une ablation architecturale montre que la conception multi-agents distribuée réduit le temps moyen d'alerte d'environ 36\% par rapport à une base centralisée séquentielle, tandis que la coordination par enchères divise par deux le taux de fausses alertes par rapport à un fonctionnement non coordonné, au prix d'un surcoût de messages modeste et quantifié. La thèse contribue également une méthodologie d'évaluation reproductible et un pipeline de protection de la vie privée dès la conception (traitement local en périphérie, anonymisation automatique de toutes les preuves exportées et journal d'audit immuable), aligné sur les principes du RGPD et la logique fondée sur les risques de l'AI Act européen.
+
+\vskip 0.5cm
+{\small \textbf{\textit{Mots-clés~:}} Surveillance intelligente, Systèmes multi-agents, IA agentique, Grands modèles de langage, Détection d'objets, Fusion multimodale, Coordination par enchères, Protocole Contract Net, Informatique en périphérie, IA explicable, Protection de la vie privée dès la conception, Détection d'anomalies vidéo}
+
+% ================================================================
+% ملخص (Arabic)
+% ================================================================
+\newpage
+\vspace*{3cm}
+\begin{center}
+    {\Large\bf \begin{Arabic}ملخص\end{Arabic}}
+\end{center} \vskip 1cm
+
+\begin{Arabic}
+لا تزال المراقبة بالفيديو التقليدية مركزية وسلبية إلى حد كبير: تتدفق بثوث كاميرات عديدة نحو غرفة تحكم يتعين فيها على مشغلين مثقلين ملاحظة أحداث حرجة نادرة، وهو نموذج ضعيف التوسع وبطيء الاستجابة. تقترح هذه الأطروحة وتقيّم نظام \textenglish{AURA-MAS}، وهو \emph{نظام متعدد الوكلاء هرمي} يحترم الخصوصية ويعمل على حافة الشبكة، للمراقبة الذكية للمواقع: يكتشف الأحداث الأمنية ويعززها ويتحقق منها ويشرحها مع إبقاء المشغل البشري في قلب القرار.
+
+على مستوى الحافة، يعالج وكلاء إدراك مستقلون الفيديو (كشف \textenglish{YOLO11} مع تتبع متعدد الأجسام \textenglish{ByteTrack} وقواعد مناطق تصريحية ودرجة شذوذ دلالية بلا أمثلة قائمة على \textenglish{CLIP}) والصوت (تصنيف الأحداث الصوتية مع بديل قائم على معالجة الإشارة)، وينشرون أحداثاً مهيكلة --- وليس تدفقات خام أبداً --- عبر ناقل رسائل خفيف \textenglish{MQTT/Redis}. وعلى مستوى التنسيق، يجمّع وكيل الدمج الأحداث في فرضيات حوادث عبر دمج متأخر زماني-مكاني، ويحل وكيل التنسيق الفرضيات غير المؤكدة عبر تخصيص المهام بالمزاد المستوحى من بروتوكول \textenglish{Contract Net}، بتكليف الكاميرا الأنسب بالتحقق النشط من الحادث، بينما يطبق وكيل السياسة الحتمي عتبات قابلة للتدقيق وخريطة خطورة وتباطؤ الإنذارات. ثم تحوّل طبقة شرح \emph{وكيلية} مقيدة بالقواعد ومبنية على النماذج اللغوية الكبيرة الإنذارات المقبولة إلى تقارير حوادث بلغة طبيعية تُفحص استشهاداتها بالأدلة آلياً مقابل سجل الأحداث الفعلي.
+
+نُفذ النظام الكامل بلغة بايثون وقُيّم على سيناريوهات إعادة تشغيل متعددة الحساسات ذات حقيقة أرضية. تُظهر دراسة الاستئصال المعمارية أن التصميم الموزع متعدد الوكلاء يقلل متوسط زمن الإنذار بنحو \textenglish{36\%} مقارنة بخط أساس مركزي تسلسلي، بينما تخفض التنسيقات بالمزاد معدل الإنذارات الكاذبة إلى النصف مقارنة بالتشغيل غير المنسق، مقابل حمل رسائل متواضع ومقاس. كما تسهم الأطروحة بمنهجية تقييم قابلة لإعادة الإنتاج وخط أنابيب لحماية الخصوصية منذ التصميم (معالجة محلية على الحافة، إخفاء هوية تلقائي لجميع الأدلة المصدَّرة، وسجل تدقيق غير قابل للتغيير) بما يتماشى مع مبادئ اللائحة العامة لحماية البيانات ومنطق قانون الذكاء الاصطناعي الأوروبي القائم على المخاطر.
+
+\vskip 0.5cm
+{\small \textbf{الكلمات المفتاحية:} المراقبة الذكية، الأنظمة متعددة الوكلاء، الذكاء الاصطناعي الوكيلي، النماذج اللغوية الكبيرة، كشف الأجسام، الدمج متعدد الوسائط، التنسيق بالمزاد، بروتوكول \textenglish{Contract Net}، الحوسبة الطرفية، الذكاء الاصطناعي القابل للتفسير، الخصوصية منذ التصميم، كشف الشذوذ في الفيديو.}
+\end{Arabic}
+
+\newpage
+
+\tableofcontents
+\listoffigures
+\listoftables
+\printglossary[type=\acronymtype, title=Acronyms]
+\clearpage
+
+% ================================================================
+% PART I - Introduction
+% ================================================================
+\part{Introduction}
+\input{Chapters/chapter1}
+
+% ================================================================
+% PART II - Background and State of the Art
+% ================================================================
+\part{Background and State of the Art}
+\input{Chapters/chapter2}
+\input{Chapters/chapter3}
+\input{Chapters/chapter_sota}
+
+% ================================================================
+% PART III - Contribution: Design of AURA-MAS
+% ================================================================
+\part{Contribution: Design of AURA-MAS}
+\input{Chapters/chapter4}
+
+% ================================================================
+% PART IV - Implementation
+% ================================================================
+\part{Implementation}
+\input{Chapters/chapter5}
+
+% ================================================================
+% PART V - Evaluation and Results
+% ================================================================
+\part{Evaluation and Results}
+\input{Chapters/chapter6}
+
+% ================================================================
+% PART VII - Conclusion
+% ================================================================
+\part{Conclusion}
+\input{Chapters/chapter7}
+
+% ================================================================
+% Bibliography
+% ================================================================
+\printbibliography[heading=bibintoc, title={References}]
+
+\end{document}

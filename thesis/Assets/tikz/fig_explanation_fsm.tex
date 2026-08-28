@@ -1,0 +1,58 @@
+% ============================================================================
+% ExplanationAgent finite state machine
+% Source of truth: aura_mas/agents/explanation_fsm.py (python-statemachine)
+%   states      : collecting (initial), describing, drafting,
+%                 checking_guardrail, emitted (final), fallback (final)
+%   transitions : collect_done (conditional on use_vision), describe_done,
+%                 draft_done, guardrail_passed, guardrail_failed, fail (from
+%                 every non-final state)
+% Referenced as fig:explanation_fsm.
+% ============================================================================
+\begin{tikzpicture}[
+	font=\small,
+	node distance=15mm and 21mm,
+	st/.style={draw=black!70, fill=black!4, rounded corners=3pt,
+			minimum height=9mm, minimum width=25mm, align=center,
+			font=\small},
+	final/.style={st, draw=darkgreen!75, fill=darkgreen!8, very thick},
+	bad/.style={st, draw=red!70, fill=red!7, very thick},
+	tr/.style={-{Latex[length=2.2mm]}, thick, black!75},
+	failtr/.style={-{Latex[length=2mm]}, thick, red!65, dashed},
+	lbl/.style={font=\scriptsize, inner sep=1.5pt, fill=white},
+	ann/.style={font=\scriptsize\itshape, black!55, align=left},
+	]
+
+	\node[st] (collect) {\texttt{collecting}\\[-1pt]{\scriptsize\itshape initial}};
+	\node[st, right=of collect] (describe) {\texttt{describing}\\[-1pt]{\scriptsize VLM frame caption}};
+	\node[st, right=of describe] (draft) {\texttt{drafting}\\[-1pt]{\scriptsize LLM structured report}};
+	\node[st, below=18mm of draft] (guard) {\texttt{checking\_guardrail}};
+	\node[final, left=34mm of guard] (emit) {\texttt{emitted}\\[-1pt]{\scriptsize\itshape final}};
+	\node[bad, below=14mm of guard] (fall) {\texttt{fallback}\\[-1pt]{\scriptsize deterministic template}};
+
+	% happy path
+	\draw[tr] (collect) -- node[lbl,above]{\texttt{collect\_done}}
+	node[lbl,below]{\scriptsize\texttt{use\_vision}} (describe);
+	\draw[tr] (describe) -- node[lbl,above]{\texttt{describe\_done}} (draft);
+	\draw[tr] (draft) -- node[lbl,right]{\texttt{draft\_done}} (guard);
+	\draw[tr] (guard) -- node[lbl,above]{\texttt{guardrail\_passed}} (emit);
+	\draw[tr] (guard) -- node[lbl,left]{\texttt{guardrail\_failed}} (fall);
+
+	% conditional bypass when vision disabled
+	\draw[tr] (collect.north) to[out=35,in=145]
+	node[lbl,above,pos=0.5]{\texttt{collect\_done} \ \scriptsize\texttt{unless use\_vision}}
+	(draft.north);
+
+	% fail edges from every non-final state
+	\draw[failtr] (collect.south) to[out=-70,in=170] (fall.west);
+	\draw[failtr] (describe.south) to[out=-90,in=150] (fall.north west);
+	\draw[failtr] (draft.east) to[out=-40,in=20] (fall.east);
+
+	\node[ann, anchor=north west, text width=13.4cm] at ($(fall.south west)+(-2.9,-0.5)$)
+	{Dashed red: the \texttt{fail} transition, available from \emph{every}
+		non-final state. No path reaches \texttt{emitted} except through a
+		passing guardrail check --- the structural property behind
+		contribution~C4. The guardrail rejects any report citing an
+		\texttt{evidence\_id} absent from the alert; a structurally invalid
+		response is \emph{not} retried, it routes straight to fallback.};
+
+\end{tikzpicture}

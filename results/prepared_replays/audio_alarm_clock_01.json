@@ -1,0 +1,122 @@
+{
+  "schema_version": 2,
+  "scenario": "audio_alarm_clock_01",
+  "mode": "mas-auction",
+  "duration_seconds": 21,
+  "source_run": "results/run_audio_alarm_clock_01_mas-auction-demo.json",
+  "metadata": {
+    "title": "Alarm / Siren",
+    "anomaly_type": "audio_alarm",
+    "anomaly_key": "alarm_siren",
+    "sample_id": "01",
+    "sample_label": "Clock alarm",
+    "site_context": "semi-closed site",
+    "tags": [
+      "alarm_siren",
+      "prepared replay"
+    ],
+    "camera_count": 0,
+    "has_context": true,
+    "detected_event_types": [
+      "audio_alarm"
+    ],
+    "description": "A clock alarm is classified as a site hazard.",
+    "dataset": "ESC-50 \u2014 clock_alarm",
+    "attribution": "Piczak, ESC-50 (2015), CC BY-NC 3.0; non-commercial thesis use"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_37d2282b0c",
+      "timestamp": 1787859026.6174505,
+      "severity": "WARNING",
+      "event_type": "audio_alarm",
+      "confidence": 0.614,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_7c81f68c92"
+      ],
+      "scene_time_seconds": 15.0,
+      "explanation": "[WARNING] audio alarm detected in zone 'site' with fused confidence 0.61, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_alarm"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_audio_alarm_clock_01_deterministic",
+        "scenario": "audio_alarm_clock_01",
+        "summary": "A clock alarm is classified as a site hazard.",
+        "object_labels": [],
+        "safety_observations": [
+          "audio_alarm"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          15.0
+        ],
+        "generated_at": 1787859032.2588148
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 16.888,
+      "payload": {
+        "event_id": "ev_7c81f68c92",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859019.6413596,
+        "event_type": "audio_alarm",
+        "confidence": 0.877,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 15.0,
+        "extra": {
+          "yamnet_class": "Alarm",
+          "yamnet_rank": 0,
+          "n_candidates": 1
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 23.865,
+      "payload": {
+        "alert_id": "alt_37d2282b0c",
+        "timestamp": 1787859026.6174505,
+        "severity": "WARNING",
+        "event_type": "audio_alarm",
+        "confidence": 0.614,
+        "zone": null,
+        "sensors": [
+          "mic_01"
+        ],
+        "evidence": [],
+        "fused_events": [
+          "ev_7c81f68c92"
+        ],
+        "scene_time_seconds": 15.0,
+        "explanation": "[WARNING] audio alarm detected in zone 'site' with fused confidence 0.61, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "audio_alarm"
+        ]
+      }
+    }
+  ]
+}

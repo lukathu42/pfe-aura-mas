@@ -49,6 +49,27 @@ The Contract Net Protocol (\gls{cnp}) introduced by Smith \cite{smith1980contrac
 
 Auctions are particularly well suited to camera verification tasks because a camera's utility for verifying an event is inherently \emph{local, private knowledge}---its field-of-view overlap with the event zone, its current processing load, whether it originated the initial detection---which the bidder can compute cheaply and truthfully summarize as a scalar bid. AURA-MAS therefore adopts a single-round, sealed-bid auction (Section~\ref{sec:design_coordination}) with a fixed bidding window, and retains a round-robin scheduler as an ablation baseline.
 
+\subsection{Task-Allocation Scope and Null Baselines}
+
+The allocation instance in this thesis is intentionally small: one uncertain
+hypothesis is offered to a set of cameras, one camera is selected, and the
+decision is immediate. It is therefore closer to a single-task,
+single-assignment allocation problem than to a continuous fleet-planning
+problem. This scope matters when interpreting a market mechanism. At a
+two-camera site, a deterministic round-robin or ``other camera'' rule is a
+strong and transparent null: a complex allocation protocol must exploit real
+information about viewpoint, load, or expected evidence to beat it. If that
+information is absent, using an auction changes message flow without proving a
+better decision.
+
+For larger sites, assignment can be formulated as a utility matrix over tasks
+and cameras and solved by a Hungarian-style centralized matcher, or by
+distributed bundle methods. Neither is implemented here. They are useful
+future baselines precisely because they distinguish the question ``should a
+camera verify?'' from ``which camera is best placed to verify?'' The campaign
+audit in Chapter~\ref{chap:evaluation} shows why this distinction cannot be
+assumed from the presence of an auction alone.
+
 \subsection{Alternative Approaches}
 
 Two alternatives deserve mention. \emph{Centralized optimization} (e.g., Hungarian assignment over a global utility matrix) yields optimal allocations but requires the center to know all utilities, reintroducing the communication and single-point-of-failure costs that \gls{mas} avoid; recent work explores submodular optimization for multi-camera collaborative perception \cite{liu2026submodular}. \emph{Multi-agent reinforcement learning} (\gls{marl}) learns coordination policies end-to-end, with algorithms such as QMIX \cite{rashid2018qmix} and MADDPG \cite{lowe2017multiagent} demonstrating strong results in simulated cooperative sensing and patrolling \cite{zheng2026multiuav, yang2025multiagent}; standardized environments (PettingZoo \cite{terry2021pettingzoo}) and scalable training stacks (RLlib \cite{liang2018rllib}) exist. However, \gls{marl} policies are data-hungry, hard to certify, and opaque---undesirable properties for a safety- and legally-sensitive system. We therefore position \gls{marl}-based active sensing as future work (Chapter~\ref{chap:conclusion}) and keep the deployed coordination mechanism auditable.
@@ -69,4 +90,4 @@ The central obstacle to deploying generative models in safety-critical loops is 
 
 \section{Conclusion}
 
-This chapter defined the agent abstraction, motivated the \gls{mas} architecture for distributed surveillance, selected auction-based task allocation as the coordination mechanism on grounds of efficiency and auditability, and framed agentic AI as a rule-guarded explanation layer rather than a decision maker. The next chapter reviews the perception techniques that edge agents rely upon.
+This chapter introduced agents, multi-agent coordination, and agentic AI. It explains why AURA-MAS uses an auction for verification and keeps the explanation layer outside the alert decision. The next chapter reviews the perception methods used at the edge.

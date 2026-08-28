@@ -3,7 +3,7 @@
 
 \section{Introduction}
 
-This chapter describes the concrete realization of the AURA-MAS design as an open, tested Python codebase of approximately 2{,}500 lines. We present the technology stack, the repository organization, the key algorithms of each component, and the engineering decisions that keep the system runnable on commodity hardware without any model training.
+This chapter describes the concrete realization of the AURA-MAS design as an open, tested Python codebase with 4{,}376 tracked Python lines (5{,}188 when uncommitted working-tree files are included). The evaluated configuration is the tracked code; the larger count is reported only to make the repository state explicit. We present the technology stack, the repository organization, the key algorithms of each component, and the engineering decisions that keep the system runnable on commodity hardware without any model training.
 
 \section{Technology Stack}
 
@@ -23,14 +23,14 @@ Audio & YAMNet \cite{tensorflow_yamnet} / librosa DSP fallback & Pretrained 521-
 Event bus & MQTT (Mosquitto, paho-mqtt) \cite{light2017mosquitto} & Low-latency pub/sub, QoS, wildcards \\
 Durable store & Redis Streams & Replayable alert/audit log \\
 Explanation & OpenAI-compatible chat API & Works with GPT-4o-mini, Qwen-VL, local Ollama \\
-Dashboard & Streamlit & Rapid operator console development \\
+Dashboard & Streamlit and Next.js console & Operator-facing alert views for prototyping and wall-display use \\
 Testing & pytest & Offline tests without models \\
 Deployment & Docker Compose & One-command broker setup \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Two portability decisions deserve emphasis. First, the bus is abstracted behind a minimal interface (\texttt{publish}, \texttt{subscribe} with MQTT-style wildcards); a \texttt{LocalBus} implementation with identical semantics allows the entire system, including the auction protocol, to run and be tested in a single process with zero infrastructure. Second, every heavyweight dependency has a graceful degradation path: no TensorFlow $\rightarrow$ \gls{dsp} audio fallback; no CLIP $\rightarrow$ rules-only camera agent; no \gls{llm} endpoint $\rightarrow$ template explanations. The demonstrator therefore runs anywhere, and each upgrade is a configuration change rather than a code change.
+The bus is hidden behind a small interface, \texttt{publish} and \texttt{subscribe} with MQTT-style wildcards. \texttt{LocalBus} implements the same interface, so the system and the auction can run in one process without external services. Heavy dependencies also have fallbacks: the audio agent uses \gls{dsp} when TensorFlow is unavailable, the camera agent can run rules without CLIP, and the explanation agent uses a template without an \gls{llm} endpoint. These choices keep the demonstrator runnable on a machine without the full production stack.
 
 \section{Repository Organization}
 
@@ -46,8 +46,9 @@ aura_mas/
   eval/       metrics.py  (event-level F1, time-to-alert, FAR/h, overhead)
   dashboard/  app.py      (Streamlit operator console)
   scripts/    make_synthetic_clips.py  probe_zones.py  make_figures.py
-  tests/      test_pipeline.py  (6 offline tests, <1 s, no models)
-scenarios/*.json   configs/   docker-compose.yml   requirements.txt
+  tests/      offline unit and integration tests (26 tests; model-free subset available)
+frontend/     Next.js operator console
+scenarios/*.json   docker-compose.yml   requirements.txt
 \end{verbatim}
 
 \section{Core Components}
@@ -64,7 +65,7 @@ scenarios/*.json   configs/   docker-compose.yml   requirements.txt
 
 \subsection{CameraAgent}
 
-The camera loop reads frames, strides to the target inference rate, and calls \texttt{model.track(persist=True, tracker="bytetrack.yaml")}, yielding boxes with stable track identifiers in one call. The \texttt{ZoneRuleEngine} maintains dwell-time dictionaries keyed by (track, zone) and static-object records keyed by track, firing each rule at most once per key. The optional \texttt{ClipAnomalyScorer} encodes three ``normal'' and five ``anomalous'' text prompts once at startup; per sampled frame, the anomaly score is the softmax mass on anomalous prompts. For coordination, the agent subscribes to task announcements, computes its bid utility, and on award performs verification by re-running detection at \texttt{imgsz=960, conf=0.25} on its most recent frame, reporting the maximum person confidence found.
+The camera loop reads frames, strides to the target inference rate, and calls \texttt{model.track(persist=True, tracker="bytetrack.yaml")}, yielding boxes with stable track identifiers in one call. The \texttt{ZoneRuleEngine} maintains dwell-time dictionaries keyed by (track, zone) and static-object records keyed by track, firing each rule at most once per key. The optional \texttt{ClipAnomalyScorer} encodes three ``normal'' and five ``anomalous'' text prompts once at startup; per sampled frame, the anomaly score is the softmax mass on anomalous prompts. It is retained as an experimental component, not a validated detector: its calibration AUC is 0.308 (Chapter~\ref{chap:evaluation}). For coordination, the agent subscribes to task announcements, computes its bid utility, and on award performs verification by re-running detection at \texttt{imgsz=960, conf=0.25} on its most recent frame, reporting the maximum person confidence found.
 
 \subsection{FusionAgent and CoordinatorAgent}
 
@@ -80,16 +81,30 @@ The explanation pipeline is implemented as four explicit methods (\texttt{collec
 
 \section{Scenario Replay and Baselines}
 
-\texttt{scenarios/replay.py} instantiates the full system from a \gls{json} manifest declaring sensors, zone polygons, and ground-truth events, then runs one of four modes: \texttt{mas-auction}, \texttt{mas-rules} (round-robin), \texttt{mas-nocoord} (coordination disabled), or \texttt{centralized}. The centralized baseline processes sensor sources \emph{sequentially in a single process}---the same models and rules, but no agent parallelism---isolating the architectural variable. Camera agents pace themselves to source real-time in MAS modes, so wall-clock alert timestamps are meaningful; every run serializes alerts, ground truth, and per-agent metrics to a result \gls{json}.
+\texttt{scenarios/replay.py} instantiates the full system from a \gls{json} manifest declaring sensors, zone polygons, and ground-truth events, then runs one of four modes: \texttt{mas-auction}, \texttt{mas-rules} (round-robin), \texttt{mas-nocoord} (coordination disabled), or \texttt{centralized}. The centralized baseline processes sensor sources \emph{sequentially in a single process}. The modes do not isolate architecture perfectly: \texttt{replay.py} paces MAS modes but not the centralized mode, while fusion windows and cooldowns are measured in wall-clock time. Time-to-alert comparisons must therefore be interpreted as confounded rather than as a pure concurrency measurement. Every run serializes alerts, ground truth, and per-agent metrics to a result \gls{json}.
 
 \section{Evaluation Tooling and Dashboard}
 
-\texttt{eval/metrics.py} matches alerts to ground-truth events by incident family and time tolerance ($\pm 5$~s), computing event-level precision/recall/F1, mean time-to-alert, false alerts per hour, and coordination overhead, and emits a summary CSV. The Streamlit console renders the alert feed with severity filtering, incident detail with the agentic report and anonymized evidence gallery, and acknowledge/dismiss buttons that write operator audit records---closing the human-in-the-loop requirement.
+\texttt{eval/metrics.py} matches alerts to ground-truth events by incident family and time tolerance ($\pm 5$~s), computing event-level precision/recall/F1, mean time-to-alert, false alerts per hour, and coordination overhead, and emits a summary CSV. The Streamlit console renders the alert feed with severity filtering, incident detail with the agentic report and anonymized evidence gallery, and acknowledge/dismiss buttons that write operator audit records. A separate Next.js console in \texttt{frontend/} provides an incident rail and wall-oriented view. Zone geometry and scenario-specific thresholds live in \texttt{scenarios/*.json}; the previously documented top-level \texttt{configs/} directory does not exist.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{Assets/shot_streamlit_console.png}
+\caption{Live Streamlit operator-console capture reading local alert JSONL files. The view shows three open alerts: two CRITICAL intrusion alerts in \texttt{zone\_A} and one WARNING anomaly alert. This is a live interface capture, not a 373-run MQTT/Redis measurement.}
+\label{fig:streamlit-console}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{Assets/shot_frontend_console.png}
+\caption{Live Next.js operator-console capture for the \texttt{combined\_audio\_video\_01} replay. The status indicators describe the running local environment and must not be read as evidence that MQTT or Redis was exercised in the campaign, which used \texttt{LocalBus}.}
+\label{fig:nextjs-console}
+\end{figure}
 
 \section{Testing}
 
-Six offline tests validate the decision chain without any ML model: wildcard bus routing; monotone corroboration of the noisy-OR fusion; auction selection of the best bidder with end-to-end verification round; policy thresholds and cooldown suppression; metric computation on a synthetic run; and the guardrail hallucination probe. The suite executes in under one second, enabling test-driven iteration on coordination logic independently of perception.
+The repository contains 26 offline tests. The model-free subset validates wildcard bus routing, monotone noisy-OR behaviour, auction best-bidder selection, policy thresholds and cooldown suppression, metric computation, and the guardrail hallucination probe. This supports test-driven iteration on coordination logic independently of perception, but it does not substitute for campaign evidence about performance.
 
 \section{Conclusion}
 
-The implementation realizes every design element of Chapter~\ref{chap:design} in portable Python, with graceful degradation, single-process testability, and complete run serialization for reproducible evaluation---the subject of the next chapter.
+The implementation provides the components described in Chapter~\ref{chap:design}, together with fallbacks, single-process tests, and serialized run artifacts. The next chapter evaluates those artifacts.

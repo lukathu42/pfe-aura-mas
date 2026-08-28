@@ -1,0 +1,23 @@
+{
+  "name": "abandoned_object_03",
+  "duration_seconds": 58,
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/LeftBag.mp4",
+      "abandoned_seconds": 0.5,
+      "detection_conf": 0.15,
+      "zones": []
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "abandoned_object",
+      "zone": null,
+      "t_start": 5.0,
+      "t_end": 57.0
+    }
+  ],
+  "notes": "Real research footage; declared detector settings and event window must be confirmed by the exact pipeline before defence use."
+}

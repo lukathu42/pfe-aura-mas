@@ -1,0 +1,82 @@
+{
+  "name": "perimeter_chain_02",
+  "duration_seconds": 20,
+  "fov_overlap": {
+    "restricted_shop_boundary": {
+      "cam_01": 0.9,
+      "cam_02": 0.9
+    }
+  },
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/EnterExitCrossingPaths2cor.mp4",
+      "loiter_seconds": 999.0,
+      "zones": [
+        {
+          "name": "restricted_shop_boundary",
+          "type": "restricted",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "camera",
+      "id": "cam_02",
+      "source": "data/clips_real/caviar/EnterExitCrossingPaths2front.mp4",
+      "detection_conf": 0.15,
+      "loiter_seconds": 999.0,
+      "zones": [
+        {
+          "name": "restricted_shop_boundary",
+          "type": "restricted",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "intrusion",
+      "zone": "restricted_shop_boundary",
+      "t_start": 1.0,
+      "t_end": 19.0
+    }
+  ],
+  "notes": "Official synchronized CAVIAR views and XML annotations; candidate thresholds are accepted only after an exact pipeline probe produces the declared event."
+}

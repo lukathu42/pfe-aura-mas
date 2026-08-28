@@ -1,0 +1,84 @@
+{
+  "name": "zone_occupancy_03",
+  "duration_seconds": 90,
+  "fov_overlap": {
+    "retail_corridor": {
+      "cam_01": 0.9,
+      "cam_02": 0.9
+    }
+  },
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/OneStopMoveEnter2cor.mp4",
+      "loiter_seconds": 999.0,
+      "zones": [
+        {
+          "name": "retail_corridor",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ],
+          "max_occupancy": 2
+        }
+      ]
+    },
+    {
+      "type": "camera",
+      "id": "cam_02",
+      "source": "data/clips_real/caviar/OneStopMoveEnter2front.mp4",
+      "detection_conf": 0.15,
+      "loiter_seconds": 999.0,
+      "zones": [
+        {
+          "name": "retail_corridor",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ],
+          "max_occupancy": 2
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "zone_occupancy",
+      "zone": "retail_corridor",
+      "t_start": 1.0,
+      "t_end": 89.0
+    }
+  ],
+  "notes": "Official synchronized CAVIAR views and XML annotations; candidate thresholds are accepted only after an exact pipeline probe produces the declared event."
+}

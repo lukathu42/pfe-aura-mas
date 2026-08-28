@@ -1,0 +1,47 @@
+{
+  "name": "person_down_01",
+  "duration_seconds": 41,
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/Rest_FallOnFloor.mp4",
+      "person_down_seconds": 0.6,
+      "detection_conf": 0.15,
+      "zones": [
+        {
+          "name": "monitored_area",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ],
+          "down_aspect_ratio": 1.05
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "person_down",
+      "zone": "monitored_area",
+      "t_start": 1.0,
+      "t_end": 40.0
+    }
+  ],
+  "notes": "Real research footage; declared detector settings and event window must be confirmed by the exact pipeline before defence use."
+}

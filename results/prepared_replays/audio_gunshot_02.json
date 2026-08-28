@@ -1,0 +1,147 @@
+{
+  "schema_version": 2,
+  "scenario": "audio_gunshot_02",
+  "mode": "mas-auction",
+  "duration_seconds": 18,
+  "source_run": "results/run_audio_gunshot_02_mas-auction-demo.json",
+  "metadata": {
+    "title": "Gunshot-like Impulse",
+    "anomaly_type": "audio_gunshot",
+    "anomaly_key": "gunshot_impulse",
+    "sample_id": "02",
+    "sample_label": "Gunshot fold 7",
+    "site_context": "semi-closed site",
+    "tags": [
+      "gunshot",
+      "gun fire",
+      "weapon discharge",
+      "impulse",
+      "prepared replay"
+    ],
+    "camera_count": 0,
+    "has_context": true,
+    "detected_event_types": [
+      "audio_gunshot"
+    ],
+    "description": "A second official fold tests gunshot-class consistency under different acoustics.",
+    "dataset": "UrbanSound8K \u2014 147317 fold 7",
+    "attribution": "Salamon et al., UrbanSound8K (2014), CC BY-NC 4.0; non-commercial thesis use"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_ff9b18164b",
+      "timestamp": 1787859149.3707707,
+      "severity": "CRITICAL",
+      "event_type": "audio_gunshot",
+      "confidence": 0.552,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_1705bbcb23"
+      ],
+      "scene_time_seconds": 15.0,
+      "explanation": "[CRITICAL] audio gunshot detected in zone 'site' with fused confidence 0.55, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_gunshot"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_audio_gunshot_02_deterministic",
+        "scenario": "audio_gunshot_02",
+        "summary": "A second official fold tests gunshot-class consistency under different acoustics.",
+        "object_labels": [],
+        "safety_observations": [
+          "audio_gunshot"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          15.0
+        ],
+        "generated_at": 1787859152.714147
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 15.134,
+      "payload": {
+        "event_id": "ev_1705bbcb23",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859142.882229,
+        "event_type": "audio_gunshot",
+        "confidence": 0.789,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 15.0,
+        "extra": {
+          "yamnet_class": "Gunshot, gunfire",
+          "yamnet_rank": 0,
+          "n_candidates": 3
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 21.623,
+      "payload": {
+        "alert_id": "alt_ff9b18164b",
+        "timestamp": 1787859149.3707707,
+        "severity": "CRITICAL",
+        "event_type": "audio_gunshot",
+        "confidence": 0.552,
+        "zone": null,
+        "sensors": [
+          "mic_01"
+        ],
+        "evidence": [],
+        "fused_events": [
+          "ev_1705bbcb23"
+        ],
+        "scene_time_seconds": 15.0,
+        "explanation": "[CRITICAL] audio gunshot detected in zone 'site' with fused confidence 0.55, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "audio_gunshot"
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 16.0,
+      "wall_offset_seconds": 16.044,
+      "payload": {
+        "event_id": "ev_5b4293bae5",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859143.792007,
+        "event_type": "audio_explosion",
+        "confidence": 0.283,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 16.0,
+        "extra": {
+          "yamnet_class": "Explosion",
+          "yamnet_rank": 0,
+          "n_candidates": 1
+        }
+      }
+    }
+  ]
+}

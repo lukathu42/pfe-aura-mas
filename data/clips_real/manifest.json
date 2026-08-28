@@ -7,14 +7,34 @@
       "source_url": "https://github.com/airtlab/A-Dataset-for-Automatic-Violence-Detection-in-Videos",
       "license": "Free for research and educational purposes (dataset release agreement)",
       "citation": "M. Bianculli, N. Falcionelli, P. Sernani, S. Tomassini, P. Contardo, M. Lombardi, A.F. Dragoni, A dataset for automatic violence detection in videos, Data in Brief 33 (2020). doi:10.1016/j.dib.2020.106587.",
-      "notes": "violent/cam1/1.mp4, simulated brawl actions (kicks, punches, slapping), ~4.8s, 1920x1080@30fps"
+      "notes": "violent/cam1/1.mp4, simulated brawl actions (kicks, punches, slapping), ~4.8s, 1920x1080@30fps",
+      "sha256": "4c94625d8b6c4a6b75e67fa1a1a605f88e452e2688bf0883dac7973d77a0c6a8",
+      "duration_seconds": 4.833,
+      "dataset_id": "AIRTLab violence dataset",
+      "clip_id": "violent_1",
+      "contributor": "Bianculli et al., Data in Brief 33 (2020)",
+      "normalization": "Original source"
+    },
+    {
+      "path": "violence/violent_1_demo.mp4",
+      "source": "AIRTLab violence dataset, normalized from violent/cam1/1.mp4 above",
+      "source_url": "https://github.com/airtlab/A-Dataset-for-Automatic-Violence-Detection-in-Videos",
+      "license": "Free for research and educational purposes (dataset release agreement)",
+      "sha256": "c77b1b53f7972d18565696a223a11a4d2a1460b454f916ba81fdf5a7ab59e00b",
+      "notes": "Browser-compatible 854x480 H.264 Main yuv420p MP4 normalization for prepared playback; 4.833s with the original scene-time origin. The inference scenario remains unchanged."
     },
     {
       "path": "violence/violent_10.mp4",
       "source": "same as above",
       "source_url": "https://github.com/airtlab/A-Dataset-for-Automatic-Violence-Detection-in-Videos",
       "license": "Free for research and educational purposes",
-      "notes": "violent/cam1/10.mp4, ~6.2s"
+      "notes": "violent/cam1/10.mp4, ~6.2s",
+      "sha256": "7a20d7f9140a87b59d811581d061a9056655f5236a71ea908c1cc8dcd333ae7f",
+      "duration_seconds": 6.2,
+      "dataset_id": "AIRTLab violence dataset",
+      "clip_id": "violent_10",
+      "contributor": "Bianculli et al., Data in Brief 33 (2020)",
+      "normalization": "Original source"
     },
     {
       "path": "violence/nonviolent_1.mp4",
@@ -28,7 +48,21 @@
       "source": "ABODA - Abandoned Object Dataset (Lin et al.)",
       "source_url": "https://github.com/kevinlin311tw/ABODA",
       "license": "Public research dataset, no explicit per-file license stated in repo; used for non-commercial academic evaluation",
-      "notes": "73s indoor hallway sequence. No frame-level GT ships with ABODA; approximate onset (~21s, person leaves after placing an object; motion resumes ~46-49s from a passerby) estimated via aura_mas/scripts/estimate_motion_windows.py, sanity-checked against extracted frames."
+      "notes": "73s indoor hallway sequence. No frame-level GT ships with ABODA; approximate onset (~21s, person leaves after placing an object; motion resumes ~46-49s from a passerby) estimated via aura_mas/scripts/estimate_motion_windows.py, sanity-checked against extracted frames.",
+      "sha256": "a4b089eddc52631421c3bb834b62de95d11ac78684a69b69305ed9299e1477db",
+      "duration_seconds": 73.04,
+      "dataset_id": "ABODA",
+      "clip_id": "video1",
+      "contributor": "Lin et al., ABODA",
+      "normalization": "Original AVI"
+    },
+    {
+      "path": "abandoned_object/video1_demo.mp4",
+      "source": "ABODA - Abandoned Object Dataset (Lin et al.), normalized from video1.avi above",
+      "source_url": "https://github.com/kevinlin311tw/ABODA",
+      "license": "Public research dataset, no explicit per-file license stated in repo; used for non-commercial academic evaluation",
+      "sha256": "d6e03ab714ec7dad8bc967b0e548ef311b98f1e52d5f0dfd33bbefd832ea1657",
+      "notes": "Browser-compatible H.264 yuv420p MP4 normalization for prepared replay only; 73.04s and identical scene-time origin. The inference scenario remains unchanged and continues to use video1.avi."
     },
     {
       "path": "audio/glass_breaking_esc50.wav",
@@ -51,10 +85,577 @@
       "source_url": "https://github.com/karolpiczak/ESC-50",
       "license": "CC BY-NC 3.0",
       "notes": "category 'siren', 5s"
+    },
+    {
+      "path": "caviar/",
+      "source": "CAVIAR Test Case Scenarios, Lisbon shopping-centre synchronized camera set",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/",
+      "license": "Creative Commons BY-SA; acknowledge EC-funded CAVIAR project / IST 2001 37540",
+      "citation": "EC-funded CAVIAR project, IST 2001 37540, Context Aware Vision using Image-based Active Recognition.",
+      "fetched": "2026-08-26",
+      "normalization": "Official raw 384x288 MPEG-1 streams decoded at the documented 25 fps and transcoded without trimming to H.264 yuv420p MP4 (CRF 23, faststart). Paired views have identical frame counts; official XML annotations are retained under caviar/annotations/.",
+      "assets": [
+        {
+          "path": "caviar/EnterExitCrossingPaths1cor.mp4",
+          "original": "CAVIARDATA2/EnterExitCrossingPaths1cor/EnterExitCrossingPaths1cor.mpg",
+          "duration_seconds": 15.32,
+          "sha256": "daa89b5154ec65e2070ee2123590f7dbc7fbb13158b42c8bf7a5ca5ab4efd82a",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "EnterExitCrossingPaths1cor",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/EnterExitCrossingPaths1cor/EnterExitCrossingPaths1cor.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/EnterExitCrossingPaths1front.mp4",
+          "original": "CAVIARDATA2/EnterExitCrossingPaths1front/EnterExitCrossingPaths1front.mpg",
+          "duration_seconds": 15.32,
+          "sha256": "837fb12986e708e5c47ed85261e0cbe36d0ec0d879c3c246c8f9249a9c5f5fd7",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "EnterExitCrossingPaths1front",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/EnterExitCrossingPaths1front/EnterExitCrossingPaths1front.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/OneShopOneWait1cor.mp4",
+          "original": "CAVIARDATA2/OneShopOneWait1cor/OneShopOneWait1cor.mpg",
+          "duration_seconds": 55.08,
+          "sha256": "0ef263f33e9fdd737d3731952e1d575f1667a76b028df065ef203d3e0949b3ac",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "OneShopOneWait1cor",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneShopOneWait1cor/OneShopOneWait1cor.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/OneShopOneWait1front.mp4",
+          "original": "CAVIARDATA2/OneShopOneWait1front/OneShopOneWait1front.mpg",
+          "duration_seconds": 55.08,
+          "sha256": "5db9cd536afc847f20c169520e6f8f7a6056a0b24132703054a030b5fa640707",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "OneShopOneWait1front",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneShopOneWait1front/OneShopOneWait1front.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/ThreePastShop1cor.mp4",
+          "original": "CAVIARDATA2/ThreePastShop1cor/ThreePastShop1cor.mpg",
+          "duration_seconds": 66.0,
+          "sha256": "cb472397822586f179f1f2c4cacde02d0357c759d71f354aaa197d66654d5bd4",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "ThreePastShop1cor",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/ThreePastShop1cor/ThreePastShop1cor.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/ThreePastShop1front.mp4",
+          "original": "CAVIARDATA2/ThreePastShop1front/ThreePastShop1front.mpg",
+          "duration_seconds": 66.0,
+          "sha256": "507003ecf3f89c79d4fd914a4659882b0844e7f6984b8e0fd8bfa3b5c2d46505",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "ThreePastShop1front",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/ThreePastShop1front/ThreePastShop1front.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/OneLeaveShopReenter1cor.mp4",
+          "original": "CAVIARDATA2/OneLeaveShopReenter1cor/OneLeaveShopReenter1cor.mpg",
+          "duration_seconds": 15.6,
+          "sha256": "778f30b13e1370776ab851638b5453bbf426455edfed845e12c80ebf4cb62327",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "OneLeaveShopReenter1cor",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneLeaveShopReenter1cor/OneLeaveShopReenter1cor.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        },
+        {
+          "path": "caviar/OneLeaveShopReenter1front.mp4",
+          "original": "CAVIARDATA2/OneLeaveShopReenter1front/OneLeaveShopReenter1front.mpg",
+          "duration_seconds": 15.6,
+          "sha256": "f156983049c63e5d0903da8f50f824f314874c04f78e6d34cc046ca361875a7f",
+          "dataset_id": "CAVIAR/CAVIARDATA2",
+          "clip_id": "OneLeaveShopReenter1front",
+          "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneLeaveShopReenter1front/OneLeaveShopReenter1front.mpg",
+          "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+          "license": "Creative Commons BY-SA",
+          "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin"
+        }
+      ]
     }
   ],
   "substitutions_from_original_plan": [
     "W1.2 named UCF-Crime and ESC-50/UrbanSound8K explicitly. UCF-Crime and the CUHK Avenue dataset (the plan's own documented fallback) were both impractical here: UCF-Crime requires a gated multi-GB download, and the official Avenue mirror (cse.cuhk.edu.hk) served at ~40 KB/s in this environment (~5h for 813MB) against an 18GB free-disk budget. Substituted GitHub-hosted, directly downloadable, citable academic datasets covering the same event categories the schedule scenarios need (violence/fight, abandoned object) instead of blocking on a single slow mirror, per the plan's own 'never spend more than one day blocked on a single component' rule.",
     "'scream' has no ESC-50 category; substituted 'siren' (present) as an additional hazard-style audio event. Glass-break and alarm categories are covered by real ESC-50 recordings rather than the previous synthetic glass_break.wav."
-  ]
+  ],
+  "catalogue_v2_assets": [
+    {
+      "path": "abandoned_object/video3.avi",
+      "dataset_id": "ABODA",
+      "clip_id": "video3",
+      "source_url": "https://github.com/kevinlin311tw/ABODA",
+      "contributor": "Lin et al., ABODA",
+      "license": "Public research dataset; non-commercial academic evaluation",
+      "normalization": "Original AVI",
+      "sha256": "359b79b1a889f345423ea7990540de8ac4f049c5c71da3cb6bf513347714b72f",
+      "duration_seconds": 87.02
+    },
+    {
+      "path": "audio/2-106881-A-39_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "2-106881-A-39",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/2-106881-A-39.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "7c15811a9c73bd222c9dbe09352a98cb6fd9b281b793bddd17acc378adee0016",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/2-43802-A-42_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "2-43802-A-42",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/2-43802-A-42.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "4d5cd9aba7382dd5432a4e053804c49c24d501f4d07df36976bfab7d6d093240",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/3-203371-A-39_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "3-203371-A-39",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/3-203371-A-39.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "76b2bd9712b86ae16f9fbbd33a9311560c7ad97c603be1ded72f19c439701225",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/clock_alarm_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "clock_alarm",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/clock_alarm.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "de82dddaa37f160adaa73301d10a3cefe27728f8a467e2d2e0816711de418a75",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/distress/fsd50k_180300_with_baseline.wav",
+      "dataset_id": "FSD50K",
+      "clip_id": "180300",
+      "source_url": "https://freesound.org/s/180300/",
+      "contributor": "jorickhoofd",
+      "license": "CC BY 3.0",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16; event unchanged",
+      "sha256": "d372bdda5bdf59e83ac6d94e545116a7ef4aa920b31712acc95fdbdcdadcc5f5",
+      "duration_seconds": 18.914
+    },
+    {
+      "path": "audio/distress/fsd50k_328813_with_baseline.wav",
+      "dataset_id": "FSD50K",
+      "clip_id": "328813",
+      "source_url": "https://freesound.org/s/328813/",
+      "contributor": "SAMAMM101",
+      "license": "CC0 1.0",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16; event unchanged",
+      "sha256": "ece559e358c7a4e2da41beef2d204faa4e59b5dca57c80b2f81f63cfb7133696",
+      "duration_seconds": 18.839
+    },
+    {
+      "path": "audio/distress/fsd50k_48052_with_baseline.wav",
+      "dataset_id": "FSD50K",
+      "clip_id": "48052",
+      "source_url": "https://freesound.org/s/48052/",
+      "contributor": "JohnnyDiamond",
+      "license": "CC BY 3.0",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16; event unchanged",
+      "sha256": "894f7e7aea0fb6a9c3bde2bbad5a3cc0accdb4003ae5b36b6e40949d33c58097",
+      "duration_seconds": 23.885
+    },
+    {
+      "path": "audio/glass_breaking_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "glass_breaking",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/glass_breaking.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "b847d3b0985d3127565734ea6d9c46ba78a32b184198f2ad558f3edc66a182a5",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/gunshot/urbansound8k_fold10_157207-6-0-0_with_baseline.wav",
+      "dataset_id": "UrbanSound8K",
+      "clip_id": "157207",
+      "fold": 10,
+      "source_url": "https://freesound.org/s/157207/",
+      "contributor": "poissonmort",
+      "license": "CC BY 4.0",
+      "normalization": "Official excerpt plus 15 s seeded measured quiet baseline; mono PCM16",
+      "sha256": "a0ab657c11d1d4e0fa832a3d480da8f26ca7118470ef660503b0e18bdece472a",
+      "duration_seconds": 17.928
+    },
+    {
+      "path": "audio/gunshot/urbansound8k_fold1_102305-6-0-0_with_baseline.wav",
+      "dataset_id": "UrbanSound8K",
+      "clip_id": "102305",
+      "fold": 1,
+      "source_url": "https://freesound.org/s/102305/",
+      "contributor": "Saturnvandel",
+      "license": "CC BY 3.0",
+      "normalization": "Official excerpt plus 15 s seeded measured quiet baseline; mono PCM16",
+      "sha256": "72409cfc1a741a5284b0f5fba6ddb8db8027153e1afbbfbca4626158fde47d42",
+      "duration_seconds": 17.612
+    },
+    {
+      "path": "audio/gunshot/urbansound8k_fold8_131571-6-0-0_with_baseline.wav",
+      "dataset_id": "UrbanSound8K",
+      "clip_id": "131571",
+      "fold": 8,
+      "source_url": "https://freesound.org/s/131571/",
+      "contributor": "deleted_user_389799",
+      "license": "CC BY 3.0",
+      "normalization": "Official excerpt plus 15 s seeded measured quiet baseline; mono PCM16",
+      "sha256": "7e7a7bd4c9ff229970f921f8fa62b2d6e8e37da882ff71f0c6d9ba3432f4644f",
+      "duration_seconds": 16.903
+    },
+    {
+      "path": "audio/siren_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "siren",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/siren.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "d46999b10171eeb392f1ea34d871a386b538203d8d683ab798d261538ce79b1b",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "caviar/EnterExitCrossingPaths2cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "EnterExitCrossingPaths2cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/EnterExitCrossingPaths2cor/EnterExitCrossingPaths2cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "6338350c1e8675e2e0b0e0a283ae866ee8e4fe903dbdb5161303180104bdd752",
+      "duration_seconds": 19.4
+    },
+    {
+      "path": "caviar/EnterExitCrossingPaths2front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "EnterExitCrossingPaths2front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/EnterExitCrossingPaths2front/EnterExitCrossingPaths2front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "dbcf3eb195cbc4deb86f135f08f36a05563254a173aa1f5d03850571fbbc7c43",
+      "duration_seconds": 19.4
+    },
+    {
+      "path": "caviar/Fight_Chase.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "Fight_Chase",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/Fight_Chase/Fight_Chase.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "b4db8bbbd6bbdfea7ced67bf53a6d06044c9221cd379886a285bb895c781a4da",
+      "duration_seconds": 17.52
+    },
+    {
+      "path": "caviar/Fight_OneManDown.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "Fight_OneManDown",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/Fight_OneManDown/Fight_OneManDown.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "dd64002bb8c56439acc15025990b452d4ed44e3d37d9c6c3eedb65e8b53fb5ed",
+      "duration_seconds": 38.64
+    },
+    {
+      "path": "caviar/Fight_RunAway1.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "Fight_RunAway1",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/Fight_RunAway1/Fight_RunAway1.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "80b7942b3e6c003279467ee105706a2d6419594b0010b69d9950f41372b2f4dd",
+      "duration_seconds": 22.32
+    },
+    {
+      "path": "caviar/Fight_RunAway2.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "Fight_RunAway2",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/Fight_RunAway2/Fight_RunAway2.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "d0ebf8c000dec94469aaf9c00816d8979d758299d43709d7a67e4f17914e7226",
+      "duration_seconds": 22.32
+    },
+    {
+      "path": "caviar/LeftBag.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "LeftBag",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/LeftBag/LeftBag.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "6d8679e12eb5e9b91daa88f453f24adf16087d72efdda06fcee4e0e5e84ed012",
+      "duration_seconds": 57.88
+    },
+    {
+      "path": "caviar/OneLeaveShopReenter2cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneLeaveShopReenter2cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneLeaveShopReenter2cor/OneLeaveShopReenter2cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "d536e609dcfb247c5232081d25a11ce644099e4bface612b801b30c9e13612b3",
+      "duration_seconds": 22.4
+    },
+    {
+      "path": "caviar/OneLeaveShopReenter2front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneLeaveShopReenter2front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneLeaveShopReenter2front/OneLeaveShopReenter2front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "90f1f4f00f1b4d1e06f673ac993587b3259d5c76dcf914c74bc124604523fa72",
+      "duration_seconds": 22.4
+    },
+    {
+      "path": "caviar/OneShopOneWait2cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneShopOneWait2cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneShopOneWait2cor/OneShopOneWait2cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "7fbba37e02994361d19d3206ebd6c86017d4626957c94b6b2ece8e1e3011247b",
+      "duration_seconds": 58.48
+    },
+    {
+      "path": "caviar/OneShopOneWait2front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneShopOneWait2front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneShopOneWait2front/OneShopOneWait2front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "c4bbad5425b2336c8e10b6ec680cd64846b54343a872d0eb2c5382051d98a1a7",
+      "duration_seconds": 58.48
+    },
+    {
+      "path": "caviar/OneStopMoveEnter2cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneStopMoveEnter2cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneStopMoveEnter2cor/OneStopMoveEnter2cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "e3868aad46c84ea3d75d099e1ab5f8a49f465fe260fd0a9da35bdd814eccf62a",
+      "duration_seconds": 89.48
+    },
+    {
+      "path": "caviar/OneStopMoveEnter2front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneStopMoveEnter2front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneStopMoveEnter2front/OneStopMoveEnter2front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "78c487d75f49bb14e31073f94ee52d5bdde2cc9f204f8e1d551126cc26cb73dc",
+      "duration_seconds": 89.48
+    },
+    {
+      "path": "caviar/OneStopMoveNoEnter1cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneStopMoveNoEnter1cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneStopMoveNoEnter1cor/OneStopMoveNoEnter1cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "a2403870bac2e2971605a53fb58431012b557d3aabcfde1b6d1ee572f2fbb94a",
+      "duration_seconds": 66.6
+    },
+    {
+      "path": "caviar/OneStopMoveNoEnter1front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "OneStopMoveNoEnter1front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/OneStopMoveNoEnter1front/OneStopMoveNoEnter1front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "97fb9c3894ca8eb0632ce7a0cc34cd338220b88252fbdc8c17661dcc74812f30",
+      "duration_seconds": 66.6
+    },
+    {
+      "path": "caviar/Rest_FallOnFloor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "Rest_FallOnFloor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/Rest_FallOnFloor/Rest_FallOnFloor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "408ac3d6768a4b758b60dfd81e17ec1ae72a098eda2307094df3bdc4094de58b",
+      "duration_seconds": 40.6
+    },
+    {
+      "path": "caviar/Rest_SlumpOnFloor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA1",
+      "clip_id": "Rest_SlumpOnFloor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA1/Rest_SlumpOnFloor/Rest_SlumpOnFloor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "982c4dcc6c58222aa8a8673e5221934326f8b765f6f5fd0361660ec6f5040c57",
+      "duration_seconds": 36.76
+    },
+    {
+      "path": "caviar/ThreePastShop2cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "ThreePastShop2cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/ThreePastShop2cor/ThreePastShop2cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "73b797a201ebf76352410e525b9a442bec79bd35a8ae30f47dadf1a866dfe7d3",
+      "duration_seconds": 60.84
+    },
+    {
+      "path": "caviar/ThreePastShop2front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "ThreePastShop2front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/ThreePastShop2front/ThreePastShop2front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "359c86da82241299b281bb6b6e16b6f837fc5e082eb4169062101e11b4eb074b",
+      "duration_seconds": 60.84
+    },
+    {
+      "path": "caviar/TwoEnterShop1cor.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "TwoEnterShop1cor",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/TwoEnterShop1cor/TwoEnterShop1cor.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "92e4872ccf5bcc9954484822f02ea1fb2389b5495e215ec4aa84455ae9d0c85b",
+      "duration_seconds": 65.8
+    },
+    {
+      "path": "caviar/TwoEnterShop1front.mp4",
+      "dataset_id": "CAVIAR/CAVIARDATA2",
+      "clip_id": "TwoEnterShop1front",
+      "source_url": "https://groups.inf.ed.ac.uk/vision/DATASETS/CAVIAR/CAVIARDATA2/TwoEnterShop1front/TwoEnterShop1front.mpg",
+      "contributor": "EC-funded CAVIAR project / IST 2001 37540",
+      "license": "Creative Commons BY-SA",
+      "normalization": "MPEG-1 decoded at source frame rate; H.264 CRF 23 yuv420p faststart; no trim and unchanged scene-time origin",
+      "sha256": "c1c196ed6b8b99630ee234c5f3f05dfae5ad1ac1ec88e4569aac64997e87e6c7",
+      "duration_seconds": 65.8
+    },
+    {
+      "path": "audio/distress/fsd50k_169628_with_baseline.wav",
+      "dataset_id": "FSD50K",
+      "clip_id": "169628",
+      "source_url": "https://freesound.org/s/169628/",
+      "contributor": "Dinsfire",
+      "license": "CC0 1.0",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16; event unchanged",
+      "sha256": "2eaecd8848e9e65f891c0a829b231d01e61ba8fbf0d6004eac9b00befca0549a",
+      "duration_seconds": 21.6
+    },
+    {
+      "path": "audio/distress/fsd50k_9429_with_baseline.wav",
+      "dataset_id": "FSD50K",
+      "clip_id": "9429",
+      "source_url": "https://freesound.org/s/9429/",
+      "contributor": "thanvannispen",
+      "license": "CC BY 3.0",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16; event unchanged",
+      "sha256": "c1f40dbb72f3e1a9edd2db37c2a88c9e7bd8586e15985e87d0c148cc199f77b2",
+      "duration_seconds": 17.875
+    },
+    {
+      "path": "audio/gunshot/urbansound8k_fold6_111048-6-0-0_with_baseline.wav",
+      "dataset_id": "UrbanSound8K",
+      "clip_id": "111048",
+      "fold": 6,
+      "source_url": "https://freesound.org/s/111048/",
+      "contributor": "GaryQ",
+      "license": "CC0 1.0",
+      "normalization": "Official excerpt plus 15 s seeded measured quiet baseline; mono PCM16",
+      "sha256": "a4ba9148e4289365bfde530571aff9472034a724235059f3b4a068e49cec2e47",
+      "duration_seconds": 16.315
+    },
+    {
+      "path": "audio/gunshot/urbansound8k_fold7_147317-6-0-0_with_baseline.wav",
+      "dataset_id": "UrbanSound8K",
+      "clip_id": "147317",
+      "fold": 7,
+      "source_url": "https://freesound.org/s/147317/",
+      "contributor": "udikagan",
+      "license": "CC0 1.0",
+      "normalization": "Official excerpt plus 15 s seeded measured quiet baseline; mono PCM16",
+      "sha256": "8545376b9c2aac4303d1a21cd57b073794653f7d1a13e0099ec99b07508aca11",
+      "duration_seconds": 16.291
+    },
+    {
+      "path": "audio/2-141563-A-39_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "2-141563-A-39",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/2-141563-A-39.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "921d36ec15fcbb519fb8f2eb05b60d30b306992cc55ef04a00286180d6c36845",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/3-216280-A-39_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "3-216280-A-39",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/3-216280-A-39.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "547ac0bb2009b84677025510fb1e56776761576d7d31e3983a6cb94baf2c4b4d",
+      "duration_seconds": 20.0
+    },
+    {
+      "path": "audio/3-51376-A-42_with_baseline.wav",
+      "dataset_id": "ESC-50",
+      "clip_id": "3-51376-A-42",
+      "source_url": "https://github.com/karolpiczak/ESC-50/blob/master/audio/3-51376-A-42.wav",
+      "contributor": "Karol J. Piczak / source contributor recorded in ESC-50 metadata",
+      "license": "CC BY-NC 3.0; non-commercial thesis use",
+      "normalization": "15 s seeded measured quiet baseline prepended; PCM16",
+      "sha256": "e4ea85ccd9431ee9dc98147a3ca6790f50e2efd14fea99acdbc9f84b746a3f80",
+      "duration_seconds": 20.0
+    }
+  ],
+  "catalogue_schema_version": 2,
+  "catalogue_media_budget_bytes": 262144000
 }

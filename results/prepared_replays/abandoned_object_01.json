@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "scenario": "abandoned_object_01",
+  "mode": "mas-auction",
+  "duration_seconds": 78,
+  "source_run": "results/run_abandoned_object_01_mas-auction-demo.json",
+  "metadata": {
+    "title": "Abandoned Object",
+    "anomaly_type": "abandoned_object",
+    "description": "A stationary unattended item persists after its owner leaves the monitored area.",
+    "dataset": "ABODA \u2014 video1",
+    "attribution": "ABODA public research dataset (non-commercial academic evaluation)",
+    "display_sources": {
+      "cam_01": "data/clips_real/abandoned_object/video1_demo.mp4"
+    }
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_5108f1849e",
+      "timestamp": 1787773082.0292308,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.63,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787773075_664d9e.jpg"
+      ],
+      "fused_events": [
+        "ev_b73e3df8ec"
+      ],
+      "scene_time_seconds": 46.44644644644645,
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.63, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "abandoned_object"
+      ]
+    },
+    {
+      "alert_id": "alt_3f33080ada",
+      "timestamp": 1787773104.0328202,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.63,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787773098_634cd1.jpg"
+      ],
+      "fused_events": [
+        "ev_8725c7f1e6"
+      ],
+      "scene_time_seconds": 68.66866866866867,
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.63, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "abandoned_object"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "event",
+      "scene_time_seconds": 46.44644644644645,
+      "wall_offset_seconds": 46.252,
+      "payload": {
+        "event_id": "ev_b73e3df8ec",
+        "sensor_id": "cam_01",
+        "timestamp": 1787773075.731192,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 23,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787773075_664d9e.jpg",
+        "scene_time_seconds": 46.44644644644645,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 46.44644644644645,
+      "wall_offset_seconds": 52.551,
+      "payload": {
+        "alert_id": "alt_5108f1849e",
+        "timestamp": 1787773082.0292308,
+        "severity": "WARNING",
+        "event_type": "abandoned_object",
+        "confidence": 0.63,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_abandoned_object_1787773075_664d9e.jpg"
+        ],
+        "fused_events": [
+          "ev_b73e3df8ec"
+        ],
+        "scene_time_seconds": 46.44644644644645,
+        "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.63, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "abandoned_object"
+        ]
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 68.66866866866867,
+      "wall_offset_seconds": 68.475,
+      "payload": {
+        "event_id": "ev_8725c7f1e6",
+        "sensor_id": "cam_01",
+        "timestamp": 1787773097.953334,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 43,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787773098_634cd1.jpg",
+        "scene_time_seconds": 68.66866866866867,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 68.66866866866867,
+      "wall_offset_seconds": 74.554,
+      "payload": {
+        "alert_id": "alt_3f33080ada",
+        "timestamp": 1787773104.0328202,
+        "severity": "WARNING",
+        "event_type": "abandoned_object",
+        "confidence": 0.63,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_abandoned_object_1787773098_634cd1.jpg"
+        ],
+        "fused_events": [
+          "ev_8725c7f1e6"
+        ],
+        "scene_time_seconds": 68.66866866866867,
+        "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.63, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "abandoned_object"
+        ]
+      }
+    }
+  ]
+}

@@ -248,3 +248,17 @@ the available disk before being caught.
 - This is thesis material: don't silently rewrite evaluation numbers,
   chapter text, or research findings. Surface discrepancies to the user
   instead of "fixing" them unilaterally — academic integrity matters here.
+
+## Agent skills
+
+### Issue tracker
+
+Issues and specs are tracked in GitHub Issues for `lukathu42/pfe-aura-mas` using the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Triage uses the default canonical labels: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Domain documentation uses the single-context layout: root `CONTEXT.md` plus root `docs/adr/`. See `docs/agents/domain.md`.

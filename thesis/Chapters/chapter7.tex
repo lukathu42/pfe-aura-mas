@@ -3,32 +3,123 @@
 
 \section{Summary of the Work}
 
-This thesis set out to reorganize intelligent surveillance around two converging paradigms---multi-agent systems and agentic AI---under explicit privacy and governance constraints. Starting from the observation that centralized video analytics concentrates bandwidth, risk, and operator overload while modern perception has become commoditized, we designed, implemented, and evaluated \textbf{AURA-MAS}: a hierarchical multi-agent architecture in which edge perception agents (YOLO11 + ByteTrack + zone rules + \gls{clip} zero-shot anomaly scoring for video; \gls{sed} or \gls{dsp} scoring for audio) publish structured events on a lightweight \gls{mqtt}/Redis substrate; a fusion agent forms spatio-temporal incident hypotheses under a monotone noisy-OR confidence model; a coordinator agent resolves uncertain hypotheses through sealed-bid verification auctions derived from the Contract Net Protocol; a deterministic policy agent holds exclusive alerting authority with full audit; and a rule-guarded \gls{llm} explanation agent produces evidence-checked natural-language incident reports strictly downstream of the decision.
+AURA-MAS separates surveillance into a sequence of identifiable steps. Camera
+and audio agents emit structured events. The fusion agent groups related events
+into hypotheses, the coordinator may request verification, and the policy agent
+makes the alert decision. Explanations are generated only after that decision.
+This arrangement keeps raw video at the edge and prevents generative output
+from changing the alert path.
 
-The complete prototype---approximately 2{,}500 lines of tested Python with graceful degradation paths and single-process testability---was evaluated through a four-way architectural ablation on replayable multi-sensor scenarios. The results answer the research questions posed in Chapter~\ref{chap:introduction}: agent concurrency reduced mean time-to-alert by $\approx$36\% relative to an equivalent centralized pipeline (RQ1); auction-based coordination halved false alerts per hour relative to uncoordinated operation and outperformed round-robin assignment, at a cost of ten messages and $0.5$~s per scenario (RQ2); audio-visual fusion contributed incidents invisible to video alone (RQ3); the guarded explanation layer produced zero uncaught hallucinated citations while adding zero decision latency (RQ4); and the privacy pipeline---edge-local processing, fail-closed anonymization, immutable audit---held structurally throughout (RQ5).
+The final evaluation used 373 replay runs across nine scenario manifests. It
+also kept the pre-fix baseline and documented every change between the two
+measurement pipelines in Appendix~\ref{app:methodology}. The results do not
+support a performance ranking of the four architectures. After paired Wilcoxon
+tests and Holm--Bonferroni correction, none of the six pairwise F1 differences
+is statistically significant.
+
+RQ1 remains unresolved. The 80.4\% reduction in time-to-alert occurred only
+in \texttt{demo\_site\_01} ($n=5$, $p=0.0625$). Across the seven scenarios
+with all four modes, the reduction was 10.7\% ($p=0.59$). The replay driver
+also paces MAS modes but not the centralized mode, so the comparison mixes
+architecture with wall-clock behaviour of the fusion window and cooldown.
+
+RQ2 cannot validate the auction as a spatial allocation method. The campaign
+manifests did not supply field-of-view overlap, so the bid's informative term
+always used its 0.5 fallback. In a two-camera setting, that does not test
+whether the selected camera has the best viewpoint. The no-coordination and
+auction comparison is not significant after correction.
+
+RQ3 confirms that cross-modal fusion can occur. Four of 240 campaign alerts
+include both a camera and a microphone. Its effect on confidence cannot be
+estimated from this corpus, however. The often-cited 0.78 alert was a
+single-camera video alert, and repeated events from one camera make the
+noisy-OR score reach one before an audio contribution can be seen.
+
+RQ4 is supported as a design property, not as a campaign result. Unit tests
+and one post-campaign run show that the guardrail can reject an unsupported
+report. The campaign itself never enabled \texttt{--llm}, so all 373
+explanations came from the deterministic template. RQ5 has the clearest
+evidence: the campaign wrote 1,737 anonymized crops and 373 audit files. The
+audit log is append-only, not cryptographically immutable, and the usefulness
+of the alerts for operators remains unmeasured.
 
 \section{Contributions Revisited}
 
-The five contributions announced in Chapter~\ref{chap:introduction} were delivered as follows: \textbf{C1}, the three-layer architecture with seven agent roles and formal message schemas (Chapter~\ref{chap:design}); \textbf{C2}, the auction-based active verification protocol with its round-robin and no-coordination ablation baselines (Chapters~\ref{chap:design}--\ref{chap:evaluation}); \textbf{C3}, the reliability-weighted noisy-OR fusion with corroboration bonuses and its monotonicity guarantee (Chapter~\ref{chap:design}); \textbf{C4}, the decision-decoupled, evidence-grounded agentic explanation pattern with mechanical guardrails (Chapter~\ref{chap:implementation}); and \textbf{C5}, the replayable system-level evaluation methodology and ablation results (Chapter~\ref{chap:evaluation}). Beyond the artifacts themselves, we believe the two architectural patterns---\emph{market-based uncertainty resolution} and \emph{guarded generativity}---are transferable to other safety-sensitive agentic systems, from industrial monitoring to autonomous inspection.
+The final evaluation narrows the claims for the five contributions announced
+in Chapter~\ref{chap:introduction}.
+
+\begin{description}
+    \item[C1 --- Architecture.] The system implements six agents and an
+    operator console that separate perception, coordination, policy,
+    explanation, and oversight. MQTT and Redis are available as transports,
+    but the campaign used \texttt{LocalBus}, so it did not measure network
+    cost.
+
+    \item[C2 --- Active verification auction.] The task, bid, award, and
+    verification flow is implemented and testable. Because campaign manifests
+    left the spatial utility term unpopulated, the reported results do not show
+    an advantage over round-robin allocation.
+
+    \item[C3 --- Late fusion.] The noisy-OR implementation is monotone and
+    accepts multi-sensor input. At the observed operating confidences it can
+    saturate, and repeated events from one camera violate the model's
+    independence assumption.
+
+    \item[C4 --- Guarded explanation.] The finite-state workflow and evidence
+    checks keep explanations separate from alert decisions. The campaign did
+    not exercise the LLM path, so it provides no evidence about explanation
+    quality or groundedness in normal operation.
+
+    \item[C5 --- Evaluation apparatus.] Replay manifests, isolated
+    subprocesses, repetition plumbing, serialized audit artifacts, the
+    preserved baseline, and the methodology-change log make the results
+    reproducible, including the negative findings.
+\end{description}
 
 \section{Limitations}
 
-The honest boundaries of this work are those detailed in Section~7.4 of Chapter~\ref{chap:evaluation}: demonstrator-scale scenarios (two cameras, one microphone, sixty seconds), a perception ceiling set by small pretrained models on public footage, a single site topology exercising single-item auctions only, and groundedness---but not yet operator-perceived usefulness---as the evaluated property of explanations. None of these limitations is architectural; each defines a concrete axis of extension.
+The paired analysis has only about nine scenario-level observations. The
+observed no-coordination versus auction effect ($d_z=0.347$) would need about
+65 paired observations for 80\% power, or roughly 13 scenarios at the current
+repetition design. More than twenty implementation parameters influence the
+results, but the project has no full held-out tuning protocol or seed control.
+
+The metrics also set limits on interpretation. Event-family matching with a
+$\pm5$ s tolerance is a system-level measure, not a per-frame detection or
+tracking measure. The corpus has no per-frame track ground truth, so HOTA,
+MOTA, and IDF1 cannot be calculated. False alerts per hour are unstable for
+runs that last only seconds.
+
+This remains a demonstrator-scale evaluation. Only \texttt{demo\_site\_01}
+is a multi-zone manifest from the campaign; later exploratory multi-zone
+manifests are outside the 373-run evidence. The CLIP anomaly scorer has an AUC
+of 0.308 in its calibration note. A post-campaign appearance-descriptor
+prototype was withheld from the evaluated configuration. It produced no
+recorded Re-ID matches and did not persist Re-ID features, so the thesis keeps
+the stated exclusion of person re-identification.
 
 \section{Future Work}
 
-Five directions follow naturally.
+The auction requires field-of-view overlap derived from camera calibration or
+homography, followed by a comparison with a paced centralized control and
+stronger allocation baselines such as Hungarian assignment. Verification
+should examine evidence from the same time as the hypothesis. Fusion should
+pool dependent observations before combining them.
 
-\textbf{Scale and realism.} Extend the scenario library with VIRAT/MEVA-derived manifests and synthetic scenario generation, moving from one scripted scenario to statistically meaningful multi-scenario campaigns with confidence intervals; deploy agents on physical single-board devices to measure true edge resource envelopes.
+The scenario corpus should grow to at least thirteen independent scenarios,
+with controlled seeds, held-out parameter selection, and richer annotations.
+Per-frame track ground truth would permit HOTA, MOTA, and IDF1. A physical
+deployment could then measure MQTT/Redis transport cost, edge resources, and
+operator response instead of relying on in-process replay.
 
-\textbf{Learned coordination.} Replace or hybridize the hand-crafted bid function with \gls{marl}-learned policies (QMIX, MADDPG) trained in simulation on the replay infrastructure, using the auction as a safe fallback---combining learned efficiency with auditable guarantees, and testing whether learned coordination preserves the precision gains at larger camera counts.
-
-\textbf{Active sensing.} Extend verification actions beyond re-analysis to physical actuation---pan-tilt-zoom re-pointing, drone repositioning---turning the verification auction into a full active-perception market with multi-item and combinatorial variants.
-
-\textbf{Richer agentic reasoning.} Allow the explanation agent to correlate incidents across time (``third loitering event at this entry this week''), query historical audit streams through retrieval-augmented generation, and draft structured handover reports---while preserving the decision-decoupling invariant; evaluate usefulness with operator studies and LLM-as-judge protocols.
-
-\textbf{Certification pathway.} Formalize the audit stream and policy engine against the concrete documentation and logging requirements of the EU AI Act for high-risk systems, producing a compliance-artifact generator---a step toward surveillance AI that is not merely capable, but certifiable.
+The explanation pipeline needs a campaign with \texttt{--llm} enabled, the
+judge scaffolding executed, and an operator study that separates groundedness
+from usefulness. A hash chain or signed audit store would make the present
+append-only log tamper-evident.
 
 \section{Closing Remarks}
 
-The trajectory of surveillance AI is often framed as a race toward ever-stronger perception. This thesis argues---and demonstrates at prototype scale---that the more consequential frontier is \emph{organizational}: how distributed perception is coordinated, how uncertainty is resolved before it reaches a human, how generative intelligence is confined to roles where it helps without harming, and how privacy and accountability are made structural rather than aspirational. Multi-agent architectures, market-based coordination, and guarded agentic explanation together offer a template for surveillance systems---and safety-critical AI systems generally---that are faster, more precise, and more trustworthy than the centralized pipelines they replace.
+The campaign did not confirm the strongest claims from the first
+demonstration. It did leave a traceable record of why they failed, what was
+measured, and what should be tested next. That record is necessary before the
+prototype can support stronger claims.

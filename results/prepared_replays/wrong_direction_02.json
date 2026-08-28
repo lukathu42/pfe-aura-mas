@@ -1,0 +1,284 @@
+{
+  "schema_version": 2,
+  "scenario": "wrong_direction_02",
+  "mode": "mas-auction",
+  "duration_seconds": 23,
+  "source_run": "results/run_wrong_direction_02_mas-auction-demo.json",
+  "metadata": {
+    "title": "Wrong-direction Movement",
+    "anomaly_type": "wrong_direction",
+    "anomaly_key": "wrong_direction",
+    "sample_id": "02",
+    "sample_label": "Leave and re-enter 2",
+    "site_context": "semi-closed site",
+    "tags": [
+      "wrong_direction",
+      "prepared replay"
+    ],
+    "camera_count": 2,
+    "has_context": true,
+    "detected_event_types": [
+      "wrong_direction"
+    ],
+    "description": "A second re-entry is measured against camera-specific flow axes.",
+    "dataset": "CAVIAR \u2014 OneLeaveShopReenter2",
+    "attribution": "EC-funded CAVIAR project / IST 2001 37540 (CC BY-SA)"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_d5c585aab2",
+      "timestamp": 1787858750.063676,
+      "severity": "WARNING",
+      "event_type": "wrong_direction",
+      "confidence": 0.623,
+      "zone": "one_way_shop_exit",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_wrong_direction_1787858742_1bdb98.jpg"
+      ],
+      "fused_events": [
+        "ev_0d645513c7"
+      ],
+      "scene_time_seconds": 8.4,
+      "explanation": "[WARNING] wrong direction detected in zone 'one_way_shop_exit' with fused confidence 0.62, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "wrong_direction"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 1.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_wrong_direction_02_deterministic",
+        "scenario": "wrong_direction_02",
+        "summary": "A second re-entry is measured against camera-specific flow axes.",
+        "object_labels": [],
+        "safety_observations": [
+          "wrong_direction"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          1.0
+        ],
+        "generated_at": 1787858775.69123
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 14.279,
+      "payload": {
+        "event_id": "ev_0d645513c7",
+        "sensor_id": "cam_01",
+        "timestamp": 1787858742.1030116,
+        "event_type": "wrong_direction",
+        "confidence": 0.859,
+        "modality": "video",
+        "zone": "one_way_shop_exit",
+        "track_id": 35,
+        "evidence_path": "data/evidence/cam_01_wrong_direction_1787858742_1bdb98.jpg",
+        "scene_time_seconds": 8.4,
+        "extra": {
+          "reid_feat": [
+            0.13182863593101501,
+            0.01567193493247032,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.01982038840651512,
+            0.0,
+            0.0,
+            0.0,
+            0.2194070965051651,
+            0.0,
+            0.0,
+            0.0,
+            0.2687276005744934,
+            0.0,
+            0.0,
+            0.0,
+            0.4060874879360199,
+            0.173313170671463,
+            0.0041484534740448,
+            0.0,
+            0.2570485472679138,
+            0.0186944417655468,
+            0.0,
+            0.0,
+            0.0008497472736053169,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.00042487363680265844,
+            0.0,
+            0.0,
+            0.0,
+            0.09177271276712418,
+            0.0,
+            0.0,
+            0.0,
+            0.31440648436546326,
+            0.0038238626439124346,
+            0.0,
+            0.0,
+            0.3883345127105713,
+            0.09389707446098328,
+            0.0,
+            0.0,
+            0.5595362186431885,
+            0.058203019201755524,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.000281173997791484,
+            0.0,
+            0.0,
+            0.0,
+            0.1265282928943634,
+            0.029242096468806267,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "kind": "task",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 20.324,
+      "payload": {
+        "task_id": "task_99999f5160",
+        "type": "verify",
+        "hypothesis_id": "hyp_7164e33cdd",
+        "event_type": "wrong_direction",
+        "zone": "one_way_shop_exit",
+        "origin_sensor": "cam_01",
+        "scene_time_seconds": 8.4,
+        "fov_overlap": {
+          "cam_01": 0.9,
+          "cam_02": 0.9
+        },
+        "timestamp": 1787858748.1484208
+      }
+    },
+    {
+      "kind": "bid",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 20.325,
+      "payload": {
+        "task_id": "task_99999f5160",
+        "agent_id": "cam_01",
+        "bid": 0.27,
+        "timestamp": 1787858748.148646
+      }
+    },
+    {
+      "kind": "bid",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 20.325,
+      "payload": {
+        "task_id": "task_99999f5160",
+        "agent_id": "cam_02",
+        "bid": 0.9,
+        "timestamp": 1787858748.1488059
+      }
+    },
+    {
+      "kind": "award",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 21.325,
+      "payload": {
+        "task_id": "task_99999f5160",
+        "winner": "cam_02",
+        "timestamp": 1787858749.1493573
+      }
+    },
+    {
+      "kind": "verification",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 22.236,
+      "payload": {
+        "task_id": "task_99999f5160",
+        "agent_id": "cam_02",
+        "verified": false,
+        "verification_score": 0.0,
+        "timestamp": 1787858750.0599682
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 22.24,
+      "payload": {
+        "alert_id": "alt_d5c585aab2",
+        "timestamp": 1787858750.063676,
+        "severity": "WARNING",
+        "event_type": "wrong_direction",
+        "confidence": 0.623,
+        "zone": "one_way_shop_exit",
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_wrong_direction_1787858742_1bdb98.jpg"
+        ],
+        "fused_events": [
+          "ev_0d645513c7"
+        ],
+        "scene_time_seconds": 8.4,
+        "explanation": "[WARNING] wrong direction detected in zone 'one_way_shop_exit' with fused confidence 0.62, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "wrong_direction"
+        ]
+      }
+    }
+  ]
+}

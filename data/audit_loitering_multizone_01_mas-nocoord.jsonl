@@ -1,0 +1,5 @@
+{"timestamp": 1787752566.991834, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_d046c531c0", "event_type": "loitering", "confidence": 0.575, "severity": "INFO", "decision": "SUPPRESS", "reason": "threshold"}
+{"timestamp": 1787752586.016394, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_9001b8dc1f", "event_type": "loitering", "confidence": 0.819, "severity": "INFO", "decision": "ALERT", "reason": "accepted"}
+{"timestamp": 1787752605.0500178, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_5124636ea2", "event_type": "loitering", "confidence": 0.817, "severity": "INFO", "decision": "SUPPRESS", "reason": "cooldown"}
+{"timestamp": 1787773536.8566818, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_24c6413702", "event_type": "loitering", "confidence": 1.0, "severity": "INFO", "decision": "ALERT", "reason": "accepted"}
+{"timestamp": 1787773548.860134, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_6147928c9b", "event_type": "loitering", "confidence": 0.9, "severity": "INFO", "decision": "SUPPRESS", "reason": "cooldown"}

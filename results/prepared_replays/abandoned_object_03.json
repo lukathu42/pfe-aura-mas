@@ -1,0 +1,188 @@
+{
+  "schema_version": 2,
+  "scenario": "abandoned_object_03",
+  "mode": "mas-auction",
+  "duration_seconds": 58,
+  "source_run": "results/run_abandoned_object_03_mas-auction-demo.json",
+  "metadata": {
+    "title": "Abandoned Object",
+    "anomaly_type": "abandoned_object",
+    "anomaly_key": "abandoned_object",
+    "sample_id": "03",
+    "sample_label": "CAVIAR left bag",
+    "site_context": "semi-closed site",
+    "tags": [
+      "abandoned_object",
+      "prepared replay"
+    ],
+    "camera_count": 1,
+    "has_context": true,
+    "detected_event_types": [
+      "abandoned_object"
+    ],
+    "description": "A person leaves a bag in a public indoor lobby.",
+    "dataset": "CAVIAR \u2014 LeftBag",
+    "attribution": "EC-funded CAVIAR project / IST 2001 37540 (CC BY-SA)"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_7d4904280b",
+      "timestamp": 1787847123.6448858,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.981,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787847110_e3307a.jpg",
+        "data/evidence/cam_01_abandoned_object_1787847112_b15148.jpg",
+        "data/evidence/cam_01_abandoned_object_1787847115_350f49.jpg",
+        "data/evidence/cam_01_abandoned_object_1787847117_a77836.jpg"
+      ],
+      "fused_events": [
+        "ev_5fd341cfd4",
+        "ev_d623851829",
+        "ev_60c11e2c28",
+        "ev_1db0bb88fd"
+      ],
+      "scene_time_seconds": 4.0,
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.98, corroborated by 4 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "abandoned_object"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "event",
+      "scene_time_seconds": 4.0,
+      "wall_offset_seconds": 8.962,
+      "payload": {
+        "event_id": "ev_5fd341cfd4",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847109.9725864,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 13,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787847110_e3307a.jpg",
+        "scene_time_seconds": 4.0,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "context",
+      "scene_time_seconds": 5.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_abandoned_object_03_deterministic",
+        "scenario": "abandoned_object_03",
+        "summary": "A person leaves a bag in a public indoor lobby.",
+        "object_labels": [],
+        "safety_observations": [
+          "abandoned_object"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          5.0
+        ],
+        "generated_at": 1787847166.8705516
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 7.6,
+      "wall_offset_seconds": 11.076,
+      "payload": {
+        "event_id": "ev_d623851829",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847112.0857868,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 24,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787847112_b15148.jpg",
+        "scene_time_seconds": 7.6,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 14.6,
+      "wall_offset_seconds": 14.721,
+      "payload": {
+        "event_id": "ev_60c11e2c28",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847115.730907,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 41,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787847115_350f49.jpg",
+        "scene_time_seconds": 14.6,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 16.4,
+      "wall_offset_seconds": 16.259,
+      "payload": {
+        "event_id": "ev_1db0bb88fd",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847117.2689834,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 46,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787847117_a77836.jpg",
+        "scene_time_seconds": 16.4,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 16.4,
+      "wall_offset_seconds": 22.635,
+      "payload": {
+        "alert_id": "alt_7d4904280b",
+        "timestamp": 1787847123.6448858,
+        "severity": "WARNING",
+        "event_type": "abandoned_object",
+        "confidence": 0.981,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_abandoned_object_1787847110_e3307a.jpg",
+          "data/evidence/cam_01_abandoned_object_1787847112_b15148.jpg",
+          "data/evidence/cam_01_abandoned_object_1787847115_350f49.jpg",
+          "data/evidence/cam_01_abandoned_object_1787847117_a77836.jpg"
+        ],
+        "fused_events": [
+          "ev_5fd341cfd4",
+          "ev_d623851829",
+          "ev_60c11e2c28",
+          "ev_1db0bb88fd"
+        ],
+        "scene_time_seconds": 4.0,
+        "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.98, corroborated by 4 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "abandoned_object"
+        ]
+      }
+    }
+  ]
+}

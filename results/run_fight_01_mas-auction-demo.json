@@ -1,0 +1,102 @@
+{
+  "scenario": "fight_01",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": null,
+  "tag": "mas-auction",
+  "t_start": 1787774794.4080424,
+  "wall_seconds": 12.816402673721313,
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 0.5,
+      "t_end": 4.5
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787774802.5520122,
+      "alert_id": "alt_52abd42708",
+      "timestamp": 1787774802.55198,
+      "severity": "WARNING",
+      "event_type": "anomaly",
+      "confidence": 0.625,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_anomaly_1787774796_4cf629.jpg"
+      ],
+      "fused_events": [
+        "ev_34f4afab5c"
+      ],
+      "scene_time_seconds": 2.0,
+      "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.62, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "anomaly"
+      ]
+    }
+  ],
+  "agent_metrics": {
+    "cam_01": {
+      "frames": 24,
+      "detections": 65,
+      "events": 1,
+      "infer_ms": [
+        65.71078300476074,
+        50.894975662231445,
+        43.315887451171875,
+        44.3575382232666,
+        55.2825927734375,
+        61.034440994262695,
+        56.600332260131836,
+        62.145233154296875,
+        51.645517349243164,
+        146.80719375610352,
+        43.604135513305664,
+        73.02021980285645,
+        63.57002258300781,
+        61.64669990539551,
+        64.22734260559082,
+        68.51768493652344,
+        66.60676002502441,
+        77.69179344177246,
+        62.31284141540527,
+        63.83109092712402,
+        67.24119186401367,
+        65.18030166625977,
+        57.123661041259766,
+        42.530059814453125
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": [],
+      "bandit_decisions": 0,
+      "feedback_updates": 0
+    },
+    "fusion": {
+      "events_in": 1,
+      "hypotheses_out": 1,
+      "reid_matches": 0
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 1,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.013589859008789062
+      ]
+    }
+  }
+}

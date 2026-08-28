@@ -1,0 +1,20 @@
+{
+  "name": "audio_gunshot_02",
+  "duration_seconds": 18,
+  "sensors": [
+    {
+      "type": "audio",
+      "id": "mic_01",
+      "source": "data/clips_real/audio/gunshot/urbansound8k_fold7_147317-6-0-0_with_baseline.wav"
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "audio_gunshot",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 16.4
+    }
+  ],
+  "notes": "UrbanSound8K fold 7 / Freesound 147317 by udikagan, CC0; audio-class label only."
+}

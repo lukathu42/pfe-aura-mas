@@ -1,0 +1,175 @@
+{
+  "schema_version": 2,
+  "scenario": "fight_02",
+  "mode": "mas-auction",
+  "duration_seconds": 7,
+  "source_run": "results/run_fight_02_mas-auction-demo.json",
+  "metadata": {
+    "title": "Violence / Fighting",
+    "anomaly_type": "anomaly",
+    "anomaly_key": "violence",
+    "sample_id": "02",
+    "sample_label": "AIRTLab fight 10",
+    "site_context": "semi-closed site",
+    "tags": [
+      "violence",
+      "prepared replay"
+    ],
+    "camera_count": 1,
+    "has_context": true,
+    "detected_event_types": [
+      "anomaly"
+    ],
+    "description": "A distinct staged fight varies actors and motion.",
+    "dataset": "AIRTLab \u2014 violent/cam1/10",
+    "attribution": "Bianculli et al., Data in Brief 33 (2020), doi:10.1016/j.dib.2020.106587",
+    "display_sources": {
+      "cam_01": "data/clips_real/violence/violent_10_demo.mp4"
+    }
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_3c0fba43f9",
+      "timestamp": 1787846263.8957958,
+      "severity": "WARNING",
+      "event_type": "anomaly",
+      "confidence": 0.975,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_anomaly_1787846253_217a87.jpg",
+        "data/evidence/cam_01_anomaly_1787846256_166069.jpg",
+        "data/evidence/cam_01_anomaly_1787846257_407583.jpg"
+      ],
+      "fused_events": [
+        "ev_5175070c3f",
+        "ev_ec892c7574",
+        "ev_e7f9b9240c"
+      ],
+      "scene_time_seconds": 2.0,
+      "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.97, corroborated by 3 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "anomaly"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 0.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_fight_02_deterministic",
+        "scenario": "fight_02",
+        "summary": "A distinct staged fight varies actors and motion.",
+        "object_labels": [],
+        "safety_observations": [
+          "anomaly"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          0.0
+        ],
+        "generated_at": 1787846265.5883033
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 2.0,
+      "wall_offset_seconds": 2.452,
+      "payload": {
+        "event_id": "ev_5175070c3f",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846252.9038694,
+        "event_type": "anomaly",
+        "confidence": 0.728,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846253_217a87.jpg",
+        "scene_time_seconds": 2.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 5.0,
+      "wall_offset_seconds": 6.006,
+      "payload": {
+        "event_id": "ev_ec892c7574",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846256.457716,
+        "event_type": "anomaly",
+        "confidence": 0.928,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846256_166069.jpg",
+        "scene_time_seconds": 5.0,
+        "extra": {
+          "clip_label": "a person falling on the ground"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 6.0,
+      "wall_offset_seconds": 6.753,
+      "payload": {
+        "event_id": "ev_e7f9b9240c",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846257.2050161,
+        "event_type": "anomaly",
+        "confidence": 0.622,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846257_407583.jpg",
+        "scene_time_seconds": 6.0,
+        "extra": {
+          "clip_label": "a person falling on the ground"
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 6.0,
+      "wall_offset_seconds": 13.444,
+      "payload": {
+        "alert_id": "alt_3c0fba43f9",
+        "timestamp": 1787846263.8957958,
+        "severity": "WARNING",
+        "event_type": "anomaly",
+        "confidence": 0.975,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_anomaly_1787846253_217a87.jpg",
+          "data/evidence/cam_01_anomaly_1787846256_166069.jpg",
+          "data/evidence/cam_01_anomaly_1787846257_407583.jpg"
+        ],
+        "fused_events": [
+          "ev_5175070c3f",
+          "ev_ec892c7574",
+          "ev_e7f9b9240c"
+        ],
+        "scene_time_seconds": 2.0,
+        "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.97, corroborated by 3 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "anomaly"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+{"timestamp": 1787773319.8805003, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_5dacf72957", "event_type": "loitering", "confidence": 0.9, "severity": "INFO", "decision": "ALERT", "reason": "accepted"}
+{"timestamp": 1787773328.8845658, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_6bf3c3a74a", "event_type": "loitering", "confidence": 1.0, "severity": "INFO", "decision": "SUPPRESS", "reason": "cooldown"}
+{"timestamp": 1787773342.8888044, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_ee475b44a4", "event_type": "loitering", "confidence": 0.9, "severity": "INFO", "decision": "ALERT", "reason": "accepted"}

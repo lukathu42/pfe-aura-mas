@@ -37,6 +37,8 @@
 \usepackage{booktabs}                % Enhancements for tabular
 \usepackage{multirow}                % Multi-row support
 \usepackage{tabu}                    % Flexible tabular support
+\usepackage{longtable}               % Multi-page evidence tables
+\usepackage{fancyvrb}                % Verbatim scenario-manifest appendices
 
 % Floating elements
 \usepackage{float}                   % Enhanced floating support
@@ -55,8 +57,21 @@
 % Diagrams and Plots
 \usepackage{tikz}                    % TikZ for drawing
 \usetikzlibrary{matrix,chains,positioning,decorations.pathreplacing,arrows,arrows.meta}
+\usetikzlibrary{calc,fit}            % coordinate arithmetic + node fitting (v3 diagrams)
 %\usetikzlibrary{pgfplots}            % PGFPlots for plotting
 \tikzset{>=latex}                    % Set default arrow style
+
+% Revision notices (v3 update: corrections to previously published claims are
+% rendered visibly rather than silently overwritten -- see Appendix G)
+\usepackage[most]{tcolorbox}
+\newtcolorbox{revisionbox}[1][]{%
+  colback=red!3, colframe=red!55!black, boxrule=0.7pt, arc=2pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries\small, title={Revision notice}, #1}
+\newtcolorbox{findingbox}[1][]{%
+  colback=blue!3, colframe=blue!45!black, boxrule=0.7pt, arc=2pt,
+  left=5pt, right=5pt, top=4pt, bottom=4pt,
+  fonttitle=\bfseries\small, #1}
 
 % Page Layout
 \usepackage[top=1.3cm, bottom=1.5cm, left=2.5cm, right=2.5cm, headheight=15pt]{geometry} % Page margins
@@ -137,65 +152,65 @@
 
 \begin{titlepage}
 
-\centering
-\begin{Arabic}
-    {\normalsize \textsc{الجمهورية الشعبية الديمقراطية الجزائرية}} \\[1mm]
-\end{Arabic}
-{\normalsize \textbf{People's Democratic Republic of Algeria}} \\[1mm]
+	\centering
+	\begin{Arabic}
+		{\normalsize \textsc{الجمهورية الشعبية الديمقراطية الجزائرية}} \\[1mm]
+	\end{Arabic}
+	{\normalsize \textbf{People's Democratic Republic of Algeria}} \\[1mm]
 
-\begin{Arabic}
-    {\normalsize \textsc{وزارة التعليم العالي و البحث العلمي}} \\[1mm]
-\end{Arabic}
-{\normalsize \textbf{Ministry of Higher Education and Scientific Research}}\\
+	\begin{Arabic}
+		{\normalsize \textsc{وزارة التعليم العالي و البحث العلمي}} \\[1mm]
+	\end{Arabic}
+	{\normalsize \textbf{Ministry of Higher Education and Scientific Research}}\\
 
-\begin{Arabic}
-    {\normalsize \textbf{المدرسة العليا للإعلام الآلي \textenglish{8} ماي \textenglish{1945} - سيدي بلعباس}}\\[1mm]
-\end{Arabic}
-{\normalsize \textbf{Higher School of Computer Science \\[1mm] 8 Mai 1945 - Sidi Bel Abbes}}\\
+	\begin{Arabic}
+		{\normalsize \textbf{المدرسة العليا للإعلام الآلي \textenglish{8} ماي \textenglish{1945} - سيدي بلعباس}}\\[1mm]
+	\end{Arabic}
+	{\normalsize \textbf{Higher School of Computer Science \\[1mm] 8 Mai 1945 - Sidi Bel Abbes}}\\
 
-\vspace{0.5cm}
+	\vspace{0.5cm}
 
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=3.5cm]{Assets/Logo_ESI_SBA.png}
-\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=3.5cm]{Assets/Logo_ESI_SBA.png}
+	\end{figure}
 
-\vspace{0.3cm}
+	\vspace{0.3cm}
 
-\Large \textbf{Master's Thesis} \\
-\vspace{0.4cm}
-{\normalsize To obtain the diploma of \textbf{Master's Degree}} \\
-{\normalsize Field of Study: \textbf{Computer Science}} \\
-{\normalsize Specialization: \textbf{Intelligence Artificielle et Science de Données (IASD)}} \\
-\vspace{0.4cm}
+	\Large \textbf{Master's Thesis} \\
+	\vspace{0.4cm}
+	{\normalsize To obtain the diploma of \textbf{Master's Degree}} \\
+	{\normalsize Field of Study: \textbf{Computer Science}} \\
+	{\normalsize Specialization: \textbf{Intelligence Artificielle et Science de Données (IASD)}} \\
+	\vspace{0.4cm}
 
-\Large \textbf{Theme}\\
-\rule{15cm}{0.2mm}\\
-\vspace{0.4cm}
-\centering
-{\textbf{AURA-MAS: Agentic and Multi-Agent Intelligent Surveillance\\ \normalsize A Privacy-Aware, Edge-First Multi-Agent System for Multimodal Event Detection,\\ Inter-Sensor Coordination, and Explainable Alerting}}\\
-\rule{15cm}{0.2mm}\\
-\vspace{0.2cm}
+	\Large \textbf{Theme}\\
+	\rule{15cm}{0.2mm}\\
+	\vspace{0.4cm}
+	\centering
+	{\textbf{AURA-MAS: Agentic and Multi-Agent Intelligent Surveillance\\ \normalsize A Privacy-Aware, Edge-First Multi-Agent System for Multimodal Event Detection,\\ Inter-Sensor Coordination, and Explainable Alerting}}\\
+	\rule{15cm}{0.2mm}\\
+	\vspace{0.2cm}
 
-\normalsize Presented by\\
-{\normalsize \textbf{ZEDDOUN Lokmane}}\\
+	\normalsize Presented by\\
+	{\normalsize \textbf{ZEDDOUN Lokmane}}\\
 
-\vspace{0.2cm}
+	\vspace{0.2cm}
 
-{\normalsize Defended on: \textbf{28 June, 2026}}\\
-{\normalsize \textit{In front of the jury composed of:}}\\
-\vspace{0.2cm}
-\begin{center}
-    {\normalsize \textbf{Dr. BEZZAOUCHA Fatima Souad} \hfill President} \\
-    {\normalsize \textbf{Dr. CHIKH Asma} \hfill Examiner} \\
-    % {\normalsize \textbf{Pr. AMAR BENSABER Djamel} \hfill Supervisor} \\
-    {\normalsize \textbf{Dr. ABDELHAK Soumia} \hfill Incubator Representative} \\
-\end{center}
+	{\normalsize Defended on: \textbf{28 June, 2026}}\\
+	{\normalsize \textit{In front of the jury composed of:}}\\
+	\vspace{0.2cm}
+	\begin{center}
+		{\normalsize \textbf{Dr. BEZZAOUCHA Fatima Souad} \hfill President} \\
+		{\normalsize \textbf{Dr. CHIKH Asma} \hfill Examiner} \\
+		% {\normalsize \textbf{Pr. AMAR BENSABER Djamel} \hfill Supervisor} \\
+		{\normalsize \textbf{Dr. ABDELHAK Soumia} \hfill Incubator Representative} \\
+	\end{center}
 
-\vspace{0.5cm}
+	\vspace{0.5cm}
 
-\normalsize \textit{Academic Year: 2025/2026}
+	\normalsize \textit{Academic Year: 2025/2026}
 \end{titlepage}
 
 \pagenumbering{arabic}
@@ -204,7 +219,7 @@
 % Acknowledgement
 \vspace*{4cm}
 \begin{center}
-    {\Large \bf Acknowledgement}
+	{\Large \bf Acknowledgement}
 \end{center} \vskip 0.5cm \vskip 0.5cm
 
 In the name of Allah, the Most Gracious, the Most Merciful.
@@ -223,19 +238,19 @@ Finally, I am deeply grateful to my family and friends for their continuous supp
 \newpage
 \vspace*{3cm}
 \begin{center}
-    {\Large\bf Abstract}
+	{\Large\bf Abstract}
 \end{center} \vskip 1cm
 
-Conventional video surveillance remains largely centralized and passive: streams from many cameras converge on a control room where overloaded human operators must notice rare critical events, a paradigm that scales poorly and reacts slowly. This thesis proposes and evaluates \textbf{AURA-MAS} (Agentic Understanding \& Response Architecture), a privacy-aware, edge-first \emph{hierarchical multi-agent system} for intelligent site surveillance that detects, corroborates, verifies, and explains security-relevant events with a human operator kept firmly in the loop.
+Conventional video surveillance often sends many camera streams to a control room, where a small team must notice rare critical events. This thesis presents \textbf{AURA-MAS} (Agentic Understanding \& Response Architecture), a privacy-aware, edge-first \emph{hierarchical multi-agent system} for site surveillance. The system detects security-relevant events, combines related evidence, can request verification, and presents the result to a human operator.
 
-At the edge layer, autonomous perception agents process video (YOLO11 detection with ByteTrack multi-object tracking, declarative zone rules, and CLIP-based zero-shot semantic anomaly scoring) and audio (sound event classification with a signal-processing fallback), publishing structured events---never raw footage---on a lightweight MQTT/Redis message bus. At the coordination layer, a fusion agent aggregates events into incident hypotheses using spatio-temporal late fusion with noisy-OR confidence combination; a coordinator agent resolves uncertain ``gray-zone'' hypotheses through auction-based task allocation inspired by the Contract Net Protocol, tasking the best-placed camera to actively verify the incident; and a deterministic policy agent applies auditable thresholds, severity mapping, and alert hysteresis. A rule-guarded \emph{agentic} explanation layer built on large language models then transforms accepted alerts into grounded natural-language incident reports whose evidence citations are mechanically checked against the actual event log, ensuring that generative components can never fabricate evidence nor influence the alert decision itself.
+At the edge, video agents use YOLO11 detection, ByteTrack tracking, zone rules, and optional CLIP-based anomaly scoring. Audio agents classify sound events and fall back to signal processing when required. They publish structured events rather than raw footage on an MQTT/Redis-compatible bus. A fusion agent groups events into hypotheses with a noisy-OR confidence score. For uncertain hypotheses, the coordinator can run a Contract Net-inspired auction to select a camera for verification. A deterministic policy agent applies thresholds, severity rules, and cooldowns. An explanation layer runs after the alert decision and checks every cited evidence identifier against the event log before presenting a report.
 
-The complete system is implemented in Python and evaluated on multi-sensor replay scenarios with ground-truth annotations. An architectural ablation shows that the distributed multi-agent design reduces mean time-to-alert by approximately 36\% relative to a centralized sequential baseline, while auction-based coordination halves the false-alert rate compared to uncoordinated operation, at the cost of a modest, quantified message overhead. The thesis also contributes a reproducible evaluation methodology (event-level F1, time-to-alert, false alerts per hour, coordination overhead) and a privacy-by-design pipeline (edge-local processing, automatic anonymization of all exported evidence, and an immutable audit trail) aligned with GDPR principles and the risk-based logic of the EU AI Act.
+The Python implementation was evaluated in a 373-run campaign over nine annotated replay scenarios. Paired Wilcoxon tests with Holm--Bonferroni correction found no statistically significant event-level F1 difference among the four architectures. The auction is implemented, but its field-of-view term was inactive during measurement, so the campaign does not validate the intended spatial allocation. Cross-modal fusion occurs, but repeated evidence from one camera saturates noisy-OR before its confidence effect can be isolated. The explanation guardrail rejects unsupported evidence references, and the privacy pipeline anonymizes exported evidence while keeping an append-only decision log. The thesis therefore places most confidence in its evaluation apparatus: isolated subprocesses, repeated runs, a preserved pre-fix baseline, and a written methodology-change log.
 
 \vskip 0.5cm
 \providecommand{\keywords}[1] {
-  \small
-  \textbf{\textit{Keywords---}} #1
+	\small
+	\textbf{\textit{Keywords---}} #1
 }
 \keywords{Intelligent Surveillance, Multi-Agent Systems, Agentic AI, Large Language Models, Object Detection, Multimodal Fusion, Auction-Based Coordination, Contract Net Protocol, Edge Computing, Explainable AI, Privacy by Design, Video Anomaly Detection}
 
@@ -245,17 +260,17 @@ The complete system is implemented in Python and evaluated on multi-sensor repla
 \newpage
 \vspace*{3cm}
 \begin{center}
-    {\Large\bf Résumé}
+	{\Large\bf Résumé}
 \end{center} \vskip 1cm
 
 La vidéosurveillance conventionnelle demeure largement centralisée et passive~: les flux de nombreuses caméras convergent vers une salle de contrôle où des opérateurs surchargés doivent remarquer des événements critiques rares, un paradigme qui passe mal à l'échelle et réagit lentement. Cette thèse propose et évalue \textbf{AURA-MAS}, un \emph{système multi-agents hiérarchique}, respectueux de la vie privée et orienté \emph{edge}, pour la surveillance intelligente de sites~: il détecte, corrobore, vérifie et explique les événements de sécurité tout en maintenant l'opérateur humain au centre de la décision.
 
 Au niveau de la périphérie, des agents de perception autonomes traitent la vidéo (détection YOLO11 avec suivi multi-objets ByteTrack, règles de zones déclaratives et score d'anomalie sémantique zero-shot fondé sur CLIP) et l'audio (classification d'événements sonores avec repli en traitement du signal), en publiant des événements structurés --- jamais de flux bruts --- sur un bus de messages léger MQTT/Redis. Au niveau de la coordination, un agent de fusion agrège les événements en hypothèses d'incident par fusion tardive spatio-temporelle avec combinaison de confiance noisy-OR~; un agent coordinateur résout les hypothèses incertaines par allocation de tâches aux enchères inspirée du protocole Contract Net, en chargeant la caméra la mieux placée de vérifier activement l'incident~; et un agent de politique déterministe applique des seuils auditables, une cartographie de sévérité et une hystérésis d'alerte. Une couche d'explication \emph{agentique} encadrée par des règles, fondée sur les grands modèles de langage, transforme ensuite les alertes acceptées en rapports d'incident en langage naturel dont les citations de preuves sont vérifiées mécaniquement par rapport au journal d'événements réel.
 
-Le système complet est implémenté en Python et évalué sur des scénarios de rejeu multi-capteurs annotés. Une ablation architecturale montre que la conception multi-agents distribuée réduit le temps moyen d'alerte d'environ 36\% par rapport à une base centralisée séquentielle, tandis que la coordination par enchères divise par deux le taux de fausses alertes par rapport à un fonctionnement non coordonné, au prix d'un surcoût de messages modeste et quantifié. La thèse contribue également une méthodologie d'évaluation reproductible et un pipeline de protection de la vie privée dès la conception (traitement local en périphérie, anonymisation automatique de toutes les preuves exportées et journal d'audit immuable), aligné sur les principes du RGPD et la logique fondée sur les risques de l'AI Act européen.
+Le système complet est implémenté en Python et évalué par une campagne de 373 exécutions sur neuf scénarios de rejeu annotés. Des tests de Wilcoxon appariés avec correction de Holm--Bonferroni ne mettent en évidence aucune différence statistiquement significative entre les quatre architectures pour la F1 au niveau événement. Le mécanisme d'enchères est implémenté, mais son terme informatif de recouvrement de champ de vision était inactif durant la mesure~: il n'est donc pas validé tel qu'il est spécifié. La fusion multimodale se déclenche, mais son effet pratique sur la confiance ne peut être isolé car des preuves répétées de la même caméra saturent le noisy-OR. Le garde-fou d'explication et le pipeline de protection de la vie privée constituent des contributions structurelles~: le premier rejette les références de preuves non étayées, tandis que le second maintient l'anonymisation des preuves exportées et une journalisation des décisions en ajout seul. La contribution empirique la plus solide est ainsi l'appareil d'évaluation lui-même~: isolation par sous-processus, répétitions, conservation d'une base pré-correction et journal écrit des changements méthodologiques.
 
 \vskip 0.5cm
-{\small \textbf{\textit{Mots-clés~:}} Surveillance intelligente, Systèmes multi-agents, IA agentique, Grands modèles de langage, Détection d'objets, Fusion multimodale, Coordination par enchères, Protocole Contract Net, Informatique en périphérie, IA explicable, Protection de la vie privée dès la conception, Détection d'anomalies vidéo}
+	{\small \textbf{\textit{Mots-clés~:}} Surveillance intelligente, Systèmes multi-agents, IA agentique, Grands modèles de langage, Détection d'objets, Fusion multimodale, Coordination par enchères, Protocole Contract Net, Informatique en périphérie, IA explicable, Protection de la vie privée dès la conception, Détection d'anomalies vidéo}
 
 % ================================================================
 % ملخص (Arabic)
@@ -263,18 +278,18 @@ Le système complet est implémenté en Python et évalué sur des scénarios de
 \newpage
 \vspace*{3cm}
 \begin{center}
-    {\Large\bf \begin{Arabic}ملخص\end{Arabic}}
+	{\Large\bf \begin{Arabic}ملخص\end{Arabic}}
 \end{center} \vskip 1cm
 
 \begin{Arabic}
-لا تزال المراقبة بالفيديو التقليدية مركزية وسلبية إلى حد كبير: تتدفق بثوث كاميرات عديدة نحو غرفة تحكم يتعين فيها على مشغلين مثقلين ملاحظة أحداث حرجة نادرة، وهو نموذج ضعيف التوسع وبطيء الاستجابة. تقترح هذه الأطروحة وتقيّم نظام \textenglish{AURA-MAS}، وهو \emph{نظام متعدد الوكلاء هرمي} يحترم الخصوصية ويعمل على حافة الشبكة، للمراقبة الذكية للمواقع: يكتشف الأحداث الأمنية ويعززها ويتحقق منها ويشرحها مع إبقاء المشغل البشري في قلب القرار.
+	لا تزال المراقبة بالفيديو التقليدية مركزية وسلبية إلى حد كبير: تتدفق بثوث كاميرات عديدة نحو غرفة تحكم يتعين فيها على مشغلين مثقلين ملاحظة أحداث حرجة نادرة، وهو نموذج ضعيف التوسع وبطيء الاستجابة. تقترح هذه الأطروحة وتقيّم نظام \textenglish{AURA-MAS}، وهو \emph{نظام متعدد الوكلاء هرمي} يحترم الخصوصية ويعمل على حافة الشبكة، للمراقبة الذكية للمواقع: يكتشف الأحداث الأمنية ويعززها ويتحقق منها ويشرحها مع إبقاء المشغل البشري في قلب القرار.
 
-على مستوى الحافة، يعالج وكلاء إدراك مستقلون الفيديو (كشف \textenglish{YOLO11} مع تتبع متعدد الأجسام \textenglish{ByteTrack} وقواعد مناطق تصريحية ودرجة شذوذ دلالية بلا أمثلة قائمة على \textenglish{CLIP}) والصوت (تصنيف الأحداث الصوتية مع بديل قائم على معالجة الإشارة)، وينشرون أحداثاً مهيكلة --- وليس تدفقات خام أبداً --- عبر ناقل رسائل خفيف \textenglish{MQTT/Redis}. وعلى مستوى التنسيق، يجمّع وكيل الدمج الأحداث في فرضيات حوادث عبر دمج متأخر زماني-مكاني، ويحل وكيل التنسيق الفرضيات غير المؤكدة عبر تخصيص المهام بالمزاد المستوحى من بروتوكول \textenglish{Contract Net}، بتكليف الكاميرا الأنسب بالتحقق النشط من الحادث، بينما يطبق وكيل السياسة الحتمي عتبات قابلة للتدقيق وخريطة خطورة وتباطؤ الإنذارات. ثم تحوّل طبقة شرح \emph{وكيلية} مقيدة بالقواعد ومبنية على النماذج اللغوية الكبيرة الإنذارات المقبولة إلى تقارير حوادث بلغة طبيعية تُفحص استشهاداتها بالأدلة آلياً مقابل سجل الأحداث الفعلي.
+	على مستوى الحافة، يعالج وكلاء إدراك مستقلون الفيديو (كشف \textenglish{YOLO11} مع تتبع متعدد الأجسام \textenglish{ByteTrack} وقواعد مناطق تصريحية ودرجة شذوذ دلالية بلا أمثلة قائمة على \textenglish{CLIP}) والصوت (تصنيف الأحداث الصوتية مع بديل قائم على معالجة الإشارة)، وينشرون أحداثاً مهيكلة --- وليس تدفقات خام أبداً --- عبر ناقل رسائل خفيف \textenglish{MQTT/Redis}. وعلى مستوى التنسيق، يجمّع وكيل الدمج الأحداث في فرضيات حوادث عبر دمج متأخر زماني-مكاني، ويحل وكيل التنسيق الفرضيات غير المؤكدة عبر تخصيص المهام بالمزاد المستوحى من بروتوكول \textenglish{Contract Net}، بتكليف الكاميرا الأنسب بالتحقق النشط من الحادث، بينما يطبق وكيل السياسة الحتمي عتبات قابلة للتدقيق وخريطة خطورة وتباطؤ الإنذارات. ثم تحوّل طبقة شرح \emph{وكيلية} مقيدة بالقواعد ومبنية على النماذج اللغوية الكبيرة الإنذارات المقبولة إلى تقارير حوادث بلغة طبيعية تُفحص استشهاداتها بالأدلة آلياً مقابل سجل الأحداث الفعلي.
 
-نُفذ النظام الكامل بلغة بايثون وقُيّم على سيناريوهات إعادة تشغيل متعددة الحساسات ذات حقيقة أرضية. تُظهر دراسة الاستئصال المعمارية أن التصميم الموزع متعدد الوكلاء يقلل متوسط زمن الإنذار بنحو \textenglish{36\%} مقارنة بخط أساس مركزي تسلسلي، بينما تخفض التنسيقات بالمزاد معدل الإنذارات الكاذبة إلى النصف مقارنة بالتشغيل غير المنسق، مقابل حمل رسائل متواضع ومقاس. كما تسهم الأطروحة بمنهجية تقييم قابلة لإعادة الإنتاج وخط أنابيب لحماية الخصوصية منذ التصميم (معالجة محلية على الحافة، إخفاء هوية تلقائي لجميع الأدلة المصدَّرة، وسجل تدقيق غير قابل للتغيير) بما يتماشى مع مبادئ اللائحة العامة لحماية البيانات ومنطق قانون الذكاء الاصطناعي الأوروبي القائم على المخاطر.
+	نُفذ النظام الكامل بلغة بايثون وقُيّم من خلال حملة تضم \textenglish{373} تشغيلًا عبر تسعة سيناريوهات إعادة تشغيل مشروحة. ولا تُظهر اختبارات \textenglish{Wilcoxon} المزدوجة مع تصحيح \textenglish{Holm--Bonferroni} فروقًا ذات دلالة إحصائية بين البنى الأربع في مقياس \textenglish{F1} على مستوى الحدث. آلية المزاد منفذة، لكن حدّها المعلوماتي لتداخل مجال الرؤية كان غير نشط أثناء القياس، ومن ثم لم تُثبت صلاحيتها كما حُددت. يعمل الدمج متعدد الوسائط، لكن لا يمكن عزل أثره العملي على الثقة لأن الأدلة المتكررة من الكاميرا نفسها تُشبع نموذج \textenglish{noisy-OR}. وتمثل حماية شرح التنبيهات وخط أنابيب الخصوصية مساهمتين بنيويتين: الأول يرفض مراجع الأدلة غير المدعومة، والثاني يحافظ على إخفاء هوية الأدلة المصدَّرة وسجل قرارات تراكمي. لذلك فإن أقوى مساهمة تجريبية هي جهاز التقييم نفسه: عزل العمليات الفرعية، والتكرارات، وخط أساس محفوظ قبل الإصلاح، وسجل مكتوب لتغيرات المنهجية.
 
-\vskip 0.5cm
-{\small \textbf{الكلمات المفتاحية:} المراقبة الذكية، الأنظمة متعددة الوكلاء، الذكاء الاصطناعي الوكيلي، النماذج اللغوية الكبيرة، كشف الأجسام، الدمج متعدد الوسائط، التنسيق بالمزاد، بروتوكول \textenglish{Contract Net}، الحوسبة الطرفية، الذكاء الاصطناعي القابل للتفسير، الخصوصية منذ التصميم، كشف الشذوذ في الفيديو.}
+	\vskip 0.5cm
+		{\small \textbf{الكلمات المفتاحية:} المراقبة الذكية، الأنظمة متعددة الوكلاء، الذكاء الاصطناعي الوكيلي، النماذج اللغوية الكبيرة، كشف الأجسام، الدمج متعدد الوسائط، التنسيق بالمزاد، بروتوكول \textenglish{Contract Net}، الحوسبة الطرفية، الذكاء الاصطناعي القابل للتفسير، الخصوصية منذ التصميم، كشف الشذوذ في الفيديو.}
 \end{Arabic}
 
 \newpage
@@ -322,6 +337,12 @@ Le système complet est implémenté en Python et évalué sur des scénarios de
 % ================================================================
 \part{Conclusion}
 \input{Chapters/chapter7}
+
+% ================================================================
+% Appendices: evidence and reproducibility record
+% ================================================================
+\appendix
+\input{Chapters/appendix}
 
 % ================================================================
 % Bibliography

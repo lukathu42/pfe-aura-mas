@@ -100,14 +100,14 @@ function RoundCard({ round }: { round: CoordinationRound }) {
  * thesis's actual novel mechanism, so this is the one place worth real
  * motion budget. */
 export function CoordinationConsole() {
-  const { rounds } = useAuraData();
+  const { rounds, replay } = useAuraData();
 
   return (
     <GlassPanel className="flex flex-col overflow-hidden h-full">
       <div className="flex items-center gap-2 px-3 py-2 border-b border-[var(--border-secondary)]">
         <Gavel className="w-3.5 h-3.5 text-[var(--gold-primary)]" />
         <span className="hud-text text-[11px] text-[var(--text-primary)]">Coordination Console</span>
-        <HudLabel>Auction protocol, live</HudLabel>
+        <HudLabel>{replay ? "Recorded auction trace" : "Auction protocol, live"}</HudLabel>
       </div>
       <div className="flex-1 overflow-y-auto styled-scrollbar p-2 flex flex-col gap-2">
         {rounds.length === 0 && (

@@ -1,0 +1,222 @@
+{
+  "schema_version": 2,
+  "scenario": "rapid_movement_03",
+  "mode": "mas-auction",
+  "duration_seconds": 18,
+  "source_run": "results/run_rapid_movement_03_mas-auction-demo.json",
+  "metadata": {
+    "title": "Rapid Movement",
+    "anomaly_type": "rapid_movement",
+    "anomaly_key": "rapid_movement",
+    "sample_id": "03",
+    "sample_label": "Fight chase",
+    "site_context": "semi-closed site",
+    "tags": [
+      "rapid_movement",
+      "prepared replay"
+    ],
+    "camera_count": 1,
+    "has_context": true,
+    "detected_event_types": [
+      "rapid_movement"
+    ],
+    "description": "A chase creates a sustained rapid-movement window.",
+    "dataset": "CAVIAR \u2014 Fight_Chase",
+    "attribution": "EC-funded CAVIAR project / IST 2001 37540 (CC BY-SA)"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_0be6480dec",
+      "timestamp": 1787847359.6562266,
+      "severity": "WARNING",
+      "event_type": "rapid_movement",
+      "confidence": 0.648,
+      "zone": "monitored_area",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_rapid_movement_1787847352_fcaad6.jpg"
+      ],
+      "fused_events": [
+        "ev_99638e511b"
+      ],
+      "scene_time_seconds": 0.8,
+      "explanation": "[WARNING] rapid movement detected in zone 'monitored_area' with fused confidence 0.65, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "rapid_movement"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "event",
+      "scene_time_seconds": 0.8,
+      "wall_offset_seconds": 0.616,
+      "payload": {
+        "event_id": "ev_99638e511b",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847352.7035768,
+        "event_type": "rapid_movement",
+        "confidence": 0.72,
+        "modality": "video",
+        "zone": "monitored_area",
+        "track_id": 1,
+        "evidence_path": "data/evidence/cam_01_rapid_movement_1787847352_fcaad6.jpg",
+        "scene_time_seconds": 0.8,
+        "extra": {
+          "reid_feat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.5699083209037781,
+            0.04891208931803703,
+            0.03105093538761139,
+            0.00027478704578243196,
+            0.07089505344629288,
+            0.00906797219067812,
+            0.0,
+            0.0,
+            0.008518397808074951,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.504564642906189,
+            0.15497848391532898,
+            0.2133607715368271,
+            0.0010614964412525296,
+            0.09588851034641266,
+            0.0007076642941683531,
+            0.0,
+            0.0,
+            0.003184489207342267,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.546967625617981,
+            0.1409042924642563,
+            0.026824232190847397,
+            0.00030832449556328356,
+            0.11531336605548859,
+            0.016957847401499748,
+            0.0009249735157936811,
+            0.00030832449556328356,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "normalized_speed": 0.0438
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 0.8,
+      "wall_offset_seconds": 7.569,
+      "payload": {
+        "alert_id": "alt_0be6480dec",
+        "timestamp": 1787847359.6562266,
+        "severity": "WARNING",
+        "event_type": "rapid_movement",
+        "confidence": 0.648,
+        "zone": "monitored_area",
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_rapid_movement_1787847352_fcaad6.jpg"
+        ],
+        "fused_events": [
+          "ev_99638e511b"
+        ],
+        "scene_time_seconds": 0.8,
+        "explanation": "[WARNING] rapid movement detected in zone 'monitored_area' with fused confidence 0.65, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "rapid_movement"
+        ]
+      }
+    },
+    {
+      "kind": "context",
+      "scene_time_seconds": 1.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_rapid_movement_03_deterministic",
+        "scenario": "rapid_movement_03",
+        "summary": "A chase creates a sustained rapid-movement window.",
+        "object_labels": [],
+        "safety_observations": [
+          "rapid_movement"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          1.0
+        ],
+        "generated_at": 1787847377.504184
+      }
+    }
+  ]
+}

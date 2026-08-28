@@ -1,0 +1,22 @@
+{
+  "name": "fight_03",
+  "duration_seconds": 18,
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/Fight_Chase.mp4",
+      "enable_clip": true,
+      "zones": []
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 0.0,
+      "t_end": 17.5
+    }
+  ],
+  "notes": "Real research footage; declared detector settings and event window must be confirmed by the exact pipeline before defence use."
+}

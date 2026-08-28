@@ -1,0 +1,85 @@
+% ============================================================================
+% Fusion hypothesis formation and the noisy-OR saturation effect
+% Source of truth:
+%   aura_mas/agents/fusion_agent.py       hypothesis keying, noisy-OR, bonuses
+%   results/run_combined_audio_video_01_centralized-r1.json  (the cross-modal alert)
+%   results/cross_modal_fusion_audit.md   (why 0.78 is NOT a fused value)
+% Referenced as fig:fusion_timeline.
+% ============================================================================
+\begin{tikzpicture}[
+	font=\small,
+	ev/.style={draw=black!65, rounded corners=1.5pt, minimum height=5.2mm,
+			inner xsep=3pt, font=\scriptsize},
+	vid/.style={ev, fill=blue!14},
+	aud/.style={ev, fill=orange!22},
+	axis/.style={-{Latex[length=2mm]}, thick, black!70},
+	win/.style={draw=darkgreen!65, fill=darkgreen!7, rounded corners=2pt,
+			dashed, thick},
+	hyp/.style={draw=black!70, fill=black!4, rounded corners=2.5pt,
+			align=left, font=\scriptsize, inner sep=3.5pt},
+	lbl/.style={font=\scriptsize, black!70},
+	calc/.style={font=\scriptsize, align=left},
+	warn/.style={draw=red!65, fill=red!7, rounded corners=1.5pt,
+			font=\scriptsize, align=left, inner sep=3pt},
+	]
+
+	% ---- time axis ----------------------------------------------------------
+	\def\x0{0}      % t = 14 s
+	\def\xmax{12.4} % t = 22 s
+	\draw[axis] (\x0,0) -- (\xmax,0);
+	\foreach \t/\lab in {0/14,1.55/15,3.1/16,4.65/17,6.2/18,7.75/19,9.3/20,10.85/21,12.4/22}{
+			\draw[black!55] (\t,0) -- (\t,-0.16) node[below, lbl] {\lab};
+		}
+	\node[lbl, anchor=west] at (\xmax+0.12,-0.36) {video time (s)};
+
+	% ---- sliding window ----------------------------------------------------
+	\draw[win] (1.55,0.28) rectangle (10.85,3.05);
+	\node[anchor=south, font=\scriptsize\itshape, darkgreen!65] at (6.2,3.05)
+	{sliding window $W = 6$\,s, key = \texttt{(security, zone\_A)}};
+
+	% ---- video events (cam_01) ---------------------------------------------
+	\node[lbl, anchor=east] at (-0.15,2.45) {\texttt{cam\_01}};
+	\node[vid] at (2.35,2.45) {\texttt{intrusion} 0.87};
+	\node[vid] at (4.75,2.45) {\texttt{intrusion} 0.86};
+	\node[vid] at (7.05,2.45) {\texttt{intrusion} 0.88};
+	\node[vid] at (9.35,2.45) {\texttt{intrusion} 0.87};
+
+	% ---- audio events (mic_01) ---------------------------------------------
+	\node[lbl, anchor=east] at (-0.15,1.35) {\texttt{mic\_01}};
+	\node[aud] at (2.35,1.35) {\texttt{audio\_glass\_break} 0.61};
+	\node[aud] at (6.55,1.35) {\texttt{audio\_glass\_break} 0.58};
+
+	% ---- grouping braces ---------------------------------------------------
+	\draw[decorate, decoration={brace, amplitude=4pt, mirror}, black!55]
+	(1.55,0.62) -- (10.85,0.62);
+	\node[lbl, anchor=north] at (6.2,0.44) {all 6 events share one hypothesis};
+
+	% ---- hypothesis box ----------------------------------------------------
+	\node[hyp, anchor=north west, text width=13.0cm] at (-0.9,-0.95)
+	{\textbf{Hypothesis} \texttt{security:zone\_A} --- $|M(H)|=2$ modalities,
+	$|S(H)|=2$ sensors\\[2pt]
+	$\displaystyle C(H)=1-\!\!\prod_{e\in H}\!\bigl(1-w_{m(e)}c_e\bigr)
+		\;+\;\underbrace{0.05}_{\beta_{mod}}+\underbrace{0.05}_{\beta_{sen}}$
+	\hfill
+	$=\;\underbrace{0.9999}_{\text{video alone: }0.9992}\;+\;0.10\;=\;1.0999
+		\;\xrightarrow{\ \text{clamp}\ }\;\mathbf{1.0}$};
+
+	% ---- the saturation caveat ---------------------------------------------
+	\node[warn, anchor=north west, text width=13.0cm] at (-0.9,-3.05)
+	{\textbf{Saturation.} Four same-camera detections already drive the product to
+		$0.9992$, so the two corroboration bonuses are absorbed entirely by the clamp
+		to $[0,1]$: a video-only hypothesis reaches the same reported $1.0$. The
+		noisy-OR treats repeated observations of one incident by one sensor as
+		conditionally independent evidence, which they are not. Cross-modal fusion is
+		therefore \emph{arithmetically present but numerically invisible} at these
+		event confidences --- 4 of 240 alerts in the v2 campaign carry two sensors,
+		and all four report exactly $1.0$
+		(\texttt{results/cross\_modal\_fusion\_audit.md}).};
+
+	% ---- legend -------------------------------------------------------------
+	\node[vid, anchor=west] at (-0.9,-4.95) {\phantom{x}};
+	\node[lbl, anchor=west] at (-0.42,-4.95) {video event ($w_{video}=0.9$)};
+	\node[aud, anchor=west] at (4.2,-4.95) {\phantom{x}};
+	\node[lbl, anchor=west] at (4.68,-4.95) {audio event ($w_{audio}=0.7$)};
+
+\end{tikzpicture}

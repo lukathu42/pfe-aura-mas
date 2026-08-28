@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "summary": {
+    "declared": 36,
+    "ready": 36,
+    "incomplete": 0,
+    "errors": []
+  },
+  "families": {
+    "abandoned_object": 3,
+    "alarm_siren": 3,
+    "distress_vocalization": 3,
+    "glass_break": 3,
+    "gunshot_impulse": 3,
+    "loitering": 3,
+    "perimeter_intrusion": 3,
+    "person_down": 3,
+    "rapid_movement": 3,
+    "violence": 3,
+    "wrong_direction": 3,
+    "zone_occupancy": 3
+  },
+  "scenarios": [
+    {
+      "scenario": "abandoned_object_01",
+      "anomaly_key": "abandoned_object",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "abandoned_object_02",
+      "anomaly_key": "abandoned_object",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "abandoned_object_03",
+      "anomaly_key": "abandoned_object",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_alarm_clock_01",
+      "anomaly_key": "alarm_siren",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_alarm_siren_01",
+      "anomaly_key": "alarm_siren",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_alarm_siren_02",
+      "anomaly_key": "alarm_siren",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_distress_01",
+      "anomaly_key": "distress_vocalization",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_distress_02",
+      "anomaly_key": "distress_vocalization",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_distress_03",
+      "anomaly_key": "distress_vocalization",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_glass_break_01",
+      "anomaly_key": "glass_break",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_glass_break_02",
+      "anomaly_key": "glass_break",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_glass_break_03",
+      "anomaly_key": "glass_break",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_gunshot_01",
+      "anomaly_key": "gunshot_impulse",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_gunshot_02",
+      "anomaly_key": "gunshot_impulse",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "audio_gunshot_03",
+      "anomaly_key": "gunshot_impulse",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "fight_01",
+      "anomaly_key": "violence",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "fight_02",
+      "anomaly_key": "violence",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "fight_03",
+      "anomaly_key": "violence",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "loitering_multizone_01",
+      "anomaly_key": "loitering",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "loitering_multizone_02",
+      "anomaly_key": "loitering",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "loitering_multizone_03",
+      "anomaly_key": "loitering",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "perimeter_chain_01",
+      "anomaly_key": "perimeter_intrusion",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "perimeter_chain_02",
+      "anomaly_key": "perimeter_intrusion",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "perimeter_chain_03",
+      "anomaly_key": "perimeter_intrusion",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "person_down_01",
+      "anomaly_key": "person_down",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "person_down_02",
+      "anomaly_key": "person_down",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "person_down_03",
+      "anomaly_key": "person_down",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "rapid_movement_01",
+      "anomaly_key": "rapid_movement",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "rapid_movement_02",
+      "anomaly_key": "rapid_movement",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "rapid_movement_03",
+      "anomaly_key": "rapid_movement",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "wrong_direction_01",
+      "anomaly_key": "wrong_direction",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "wrong_direction_02",
+      "anomaly_key": "wrong_direction",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "wrong_direction_03",
+      "anomaly_key": "wrong_direction",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "zone_occupancy_01",
+      "anomaly_key": "zone_occupancy",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "zone_occupancy_02",
+      "anomaly_key": "zone_occupancy",
+      "status": "ready",
+      "errors": []
+    },
+    {
+      "scenario": "zone_occupancy_03",
+      "anomaly_key": "zone_occupancy",
+      "status": "ready",
+      "errors": []
+    }
+  ]
+}

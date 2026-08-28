@@ -1,0 +1,796 @@
+{
+  "schema_version": 2,
+  "scenario": "fight_03",
+  "mode": "mas-auction",
+  "duration_seconds": 18,
+  "source_run": "results/run_fight_03_mas-auction-demo.json",
+  "metadata": {
+    "title": "Violence / Fighting",
+    "anomaly_type": "anomaly",
+    "anomaly_key": "violence",
+    "sample_id": "03",
+    "sample_label": "CAVIAR fight and chase",
+    "site_context": "semi-closed site",
+    "tags": [
+      "violence",
+      "prepared replay"
+    ],
+    "camera_count": 1,
+    "has_context": true,
+    "detected_event_types": [
+      "anomaly"
+    ],
+    "description": "Two people fight and then chase in an indoor lobby.",
+    "dataset": "CAVIAR \u2014 Fight_Chase",
+    "attribution": "EC-funded CAVIAR project / IST 2001 37540 (CC BY-SA)"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_9507c089cc",
+      "timestamp": 1787846262.4717107,
+      "severity": "WARNING",
+      "event_type": "anomaly",
+      "confidence": 1.0,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_anomaly_1787846231_889e3d.jpg",
+        "data/evidence/cam_01_anomaly_1787846233_2f9886.jpg",
+        "data/evidence/cam_01_anomaly_1787846233_c2474b.jpg",
+        "data/evidence/cam_01_anomaly_1787846234_a98b85.jpg",
+        "data/evidence/cam_01_anomaly_1787846235_8fded5.jpg",
+        "data/evidence/cam_01_anomaly_1787846236_404ee5.jpg",
+        "data/evidence/cam_01_anomaly_1787846237_6d2a81.jpg",
+        "data/evidence/cam_01_anomaly_1787846238_ec5688.jpg",
+        "data/evidence/cam_01_anomaly_1787846238_619dad.jpg",
+        "data/evidence/cam_01_anomaly_1787846239_db8bfc.jpg",
+        "data/evidence/cam_01_anomaly_1787846240_c77a65.jpg",
+        "data/evidence/cam_01_anomaly_1787846241_5bc734.jpg",
+        "data/evidence/cam_01_anomaly_1787846242_1faa2b.jpg",
+        "data/evidence/cam_01_anomaly_1787846243_230674.jpg",
+        "data/evidence/cam_01_anomaly_1787846243_598c10.jpg",
+        "data/evidence/cam_01_anomaly_1787846244_81ac88.jpg",
+        "data/evidence/cam_01_anomaly_1787846246_503292.jpg",
+        "data/evidence/cam_01_anomaly_1787846247_040bd9.jpg",
+        "data/evidence/cam_01_anomaly_1787846247_2877d2.jpg",
+        "data/evidence/cam_01_anomaly_1787846249_834810.jpg",
+        "data/evidence/cam_01_anomaly_1787846250_6e7395.jpg",
+        "data/evidence/cam_01_anomaly_1787846251_247f1d.jpg",
+        "data/evidence/cam_01_anomaly_1787846252_27c156.jpg",
+        "data/evidence/cam_01_anomaly_1787846252_07e797.jpg",
+        "data/evidence/cam_01_anomaly_1787846253_34a7dd.jpg",
+        "data/evidence/cam_01_anomaly_1787846254_0dc3b8.jpg",
+        "data/evidence/cam_01_anomaly_1787846254_5f578b.jpg",
+        "data/evidence/cam_01_anomaly_1787846255_53b7d0.jpg",
+        "data/evidence/cam_01_anomaly_1787846256_5d9975.jpg"
+      ],
+      "fused_events": [
+        "ev_89ed04b768",
+        "ev_f8b377b3bf",
+        "ev_63e2a4cf3d",
+        "ev_8f6b8336ba",
+        "ev_a7049f15da",
+        "ev_895c41f7ff",
+        "ev_cb73e328c7",
+        "ev_99d6c6298e",
+        "ev_4886f98155",
+        "ev_54f6e7e2fa",
+        "ev_683a41b16e",
+        "ev_586be754c8",
+        "ev_4949fd81b4",
+        "ev_65d94f91c8",
+        "ev_d898fb72dd",
+        "ev_d547761607",
+        "ev_ade81c7793",
+        "ev_1f8dd3d7b0",
+        "ev_7b75b8638e",
+        "ev_24ad82fcf6",
+        "ev_ddfb413a88",
+        "ev_c437527da2",
+        "ev_b7ab42279b",
+        "ev_c67b548576",
+        "ev_21c8948e76",
+        "ev_6eb9c03d43",
+        "ev_f6fe145d0d",
+        "ev_fce649d402",
+        "ev_f863536b2e"
+      ],
+      "scene_time_seconds": 0.6,
+      "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 1.00, corroborated by 29 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "anomaly"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 0.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_fight_03_deterministic",
+        "scenario": "fight_03",
+        "summary": "Two people fight and then chase in an indoor lobby.",
+        "object_labels": [],
+        "safety_observations": [
+          "anomaly"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          0.0
+        ],
+        "generated_at": 1787846264.1923115
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 0.6,
+      "wall_offset_seconds": 0.548,
+      "payload": {
+        "event_id": "ev_89ed04b768",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846231.384382,
+        "event_type": "anomaly",
+        "confidence": 0.889,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846231_889e3d.jpg",
+        "scene_time_seconds": 0.6,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 1.2,
+      "wall_offset_seconds": 1.601,
+      "payload": {
+        "event_id": "ev_f8b377b3bf",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846232.4374588,
+        "event_type": "anomaly",
+        "confidence": 0.814,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846233_2f9886.jpg",
+        "scene_time_seconds": 1.2,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 1.8,
+      "wall_offset_seconds": 2.612,
+      "payload": {
+        "event_id": "ev_63e2a4cf3d",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846233.4485445,
+        "event_type": "anomaly",
+        "confidence": 0.893,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846233_c2474b.jpg",
+        "scene_time_seconds": 1.8,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 2.4,
+      "wall_offset_seconds": 3.353,
+      "payload": {
+        "event_id": "ev_8f6b8336ba",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846234.1893997,
+        "event_type": "anomaly",
+        "confidence": 0.851,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846234_a98b85.jpg",
+        "scene_time_seconds": 2.4,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 3.0,
+      "wall_offset_seconds": 4.116,
+      "payload": {
+        "event_id": "ev_a7049f15da",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846234.9519086,
+        "event_type": "anomaly",
+        "confidence": 0.802,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846235_8fded5.jpg",
+        "scene_time_seconds": 3.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 3.6,
+      "wall_offset_seconds": 5.026,
+      "payload": {
+        "event_id": "ev_895c41f7ff",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846235.8619926,
+        "event_type": "anomaly",
+        "confidence": 0.772,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846236_404ee5.jpg",
+        "scene_time_seconds": 3.6,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 4.2,
+      "wall_offset_seconds": 5.942,
+      "payload": {
+        "event_id": "ev_cb73e328c7",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846236.778524,
+        "event_type": "anomaly",
+        "confidence": 0.898,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846237_6d2a81.jpg",
+        "scene_time_seconds": 4.2,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 4.8,
+      "wall_offset_seconds": 6.843,
+      "payload": {
+        "event_id": "ev_99d6c6298e",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846237.6798208,
+        "event_type": "anomaly",
+        "confidence": 0.873,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846238_ec5688.jpg",
+        "scene_time_seconds": 4.8,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 5.4,
+      "wall_offset_seconds": 7.728,
+      "payload": {
+        "event_id": "ev_4886f98155",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846238.5640404,
+        "event_type": "anomaly",
+        "confidence": 0.86,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846238_619dad.jpg",
+        "scene_time_seconds": 5.4,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 6.0,
+      "wall_offset_seconds": 8.448,
+      "payload": {
+        "event_id": "ev_54f6e7e2fa",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846239.2844722,
+        "event_type": "anomaly",
+        "confidence": 0.831,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846239_db8bfc.jpg",
+        "scene_time_seconds": 6.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 6.6,
+      "wall_offset_seconds": 9.377,
+      "payload": {
+        "event_id": "ev_683a41b16e",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846240.2138562,
+        "event_type": "anomaly",
+        "confidence": 0.847,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846240_c77a65.jpg",
+        "scene_time_seconds": 6.6,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 7.2,
+      "wall_offset_seconds": 10.151,
+      "payload": {
+        "event_id": "ev_586be754c8",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846240.9873424,
+        "event_type": "anomaly",
+        "confidence": 0.827,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846241_5bc734.jpg",
+        "scene_time_seconds": 7.2,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 7.8,
+      "wall_offset_seconds": 11.07,
+      "payload": {
+        "event_id": "ev_4949fd81b4",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846241.906705,
+        "event_type": "anomaly",
+        "confidence": 0.919,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846242_1faa2b.jpg",
+        "scene_time_seconds": 7.8,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 8.4,
+      "wall_offset_seconds": 11.848,
+      "payload": {
+        "event_id": "ev_65d94f91c8",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846242.6839345,
+        "event_type": "anomaly",
+        "confidence": 0.781,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846243_230674.jpg",
+        "scene_time_seconds": 8.4,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 9.0,
+      "wall_offset_seconds": 12.648,
+      "payload": {
+        "event_id": "ev_d898fb72dd",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846243.484175,
+        "event_type": "anomaly",
+        "confidence": 0.791,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846243_598c10.jpg",
+        "scene_time_seconds": 9.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 9.6,
+      "wall_offset_seconds": 13.546,
+      "payload": {
+        "event_id": "ev_d547761607",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846244.3823557,
+        "event_type": "anomaly",
+        "confidence": 0.88,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846244_81ac88.jpg",
+        "scene_time_seconds": 9.6,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 10.2,
+      "wall_offset_seconds": 14.637,
+      "payload": {
+        "event_id": "ev_ade81c7793",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846245.47348,
+        "event_type": "anomaly",
+        "confidence": 0.699,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846246_503292.jpg",
+        "scene_time_seconds": 10.2,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 10.8,
+      "wall_offset_seconds": 15.654,
+      "payload": {
+        "event_id": "ev_1f8dd3d7b0",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846246.489981,
+        "event_type": "anomaly",
+        "confidence": 0.791,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846247_040bd9.jpg",
+        "scene_time_seconds": 10.8,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 11.4,
+      "wall_offset_seconds": 16.701,
+      "payload": {
+        "event_id": "ev_7b75b8638e",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846247.5372941,
+        "event_type": "anomaly",
+        "confidence": 0.63,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846247_2877d2.jpg",
+        "scene_time_seconds": 11.4,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 12.0,
+      "wall_offset_seconds": 17.635,
+      "payload": {
+        "event_id": "ev_24ad82fcf6",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846248.4711602,
+        "event_type": "anomaly",
+        "confidence": 0.794,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846249_834810.jpg",
+        "scene_time_seconds": 12.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 12.6,
+      "wall_offset_seconds": 19.038,
+      "payload": {
+        "event_id": "ev_ddfb413a88",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846249.8739367,
+        "event_type": "anomaly",
+        "confidence": 0.88,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846250_6e7395.jpg",
+        "scene_time_seconds": 12.6,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 13.2,
+      "wall_offset_seconds": 20.211,
+      "payload": {
+        "event_id": "ev_c437527da2",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846251.0473208,
+        "event_type": "anomaly",
+        "confidence": 0.932,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846251_247f1d.jpg",
+        "scene_time_seconds": 13.2,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 13.8,
+      "wall_offset_seconds": 20.901,
+      "payload": {
+        "event_id": "ev_b7ab42279b",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846251.7377412,
+        "event_type": "anomaly",
+        "confidence": 0.907,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846252_27c156.jpg",
+        "scene_time_seconds": 13.8,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 14.4,
+      "wall_offset_seconds": 21.686,
+      "payload": {
+        "event_id": "ev_c67b548576",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846252.5221949,
+        "event_type": "anomaly",
+        "confidence": 0.893,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846252_07e797.jpg",
+        "scene_time_seconds": 14.4,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 22.332,
+      "payload": {
+        "event_id": "ev_21c8948e76",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846253.168453,
+        "event_type": "anomaly",
+        "confidence": 0.9,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846253_34a7dd.jpg",
+        "scene_time_seconds": 15.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 15.6,
+      "wall_offset_seconds": 22.972,
+      "payload": {
+        "event_id": "ev_6eb9c03d43",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846253.8087358,
+        "event_type": "anomaly",
+        "confidence": 0.705,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846254_0dc3b8.jpg",
+        "scene_time_seconds": 15.6,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 16.2,
+      "wall_offset_seconds": 23.655,
+      "payload": {
+        "event_id": "ev_f6fe145d0d",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846254.4913962,
+        "event_type": "anomaly",
+        "confidence": 0.811,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846254_5f578b.jpg",
+        "scene_time_seconds": 16.2,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 16.8,
+      "wall_offset_seconds": 24.324,
+      "payload": {
+        "event_id": "ev_fce649d402",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846255.1602476,
+        "event_type": "anomaly",
+        "confidence": 0.794,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846255_53b7d0.jpg",
+        "scene_time_seconds": 16.8,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 17.4,
+      "wall_offset_seconds": 25.076,
+      "payload": {
+        "event_id": "ev_f863536b2e",
+        "sensor_id": "cam_01",
+        "timestamp": 1787846255.9124937,
+        "event_type": "anomaly",
+        "confidence": 0.859,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787846256_5d9975.jpg",
+        "scene_time_seconds": 17.4,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 17.4,
+      "wall_offset_seconds": 31.635,
+      "payload": {
+        "alert_id": "alt_9507c089cc",
+        "timestamp": 1787846262.4717107,
+        "severity": "WARNING",
+        "event_type": "anomaly",
+        "confidence": 1.0,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_anomaly_1787846231_889e3d.jpg",
+          "data/evidence/cam_01_anomaly_1787846233_2f9886.jpg",
+          "data/evidence/cam_01_anomaly_1787846233_c2474b.jpg",
+          "data/evidence/cam_01_anomaly_1787846234_a98b85.jpg",
+          "data/evidence/cam_01_anomaly_1787846235_8fded5.jpg",
+          "data/evidence/cam_01_anomaly_1787846236_404ee5.jpg",
+          "data/evidence/cam_01_anomaly_1787846237_6d2a81.jpg",
+          "data/evidence/cam_01_anomaly_1787846238_ec5688.jpg",
+          "data/evidence/cam_01_anomaly_1787846238_619dad.jpg",
+          "data/evidence/cam_01_anomaly_1787846239_db8bfc.jpg",
+          "data/evidence/cam_01_anomaly_1787846240_c77a65.jpg",
+          "data/evidence/cam_01_anomaly_1787846241_5bc734.jpg",
+          "data/evidence/cam_01_anomaly_1787846242_1faa2b.jpg",
+          "data/evidence/cam_01_anomaly_1787846243_230674.jpg",
+          "data/evidence/cam_01_anomaly_1787846243_598c10.jpg",
+          "data/evidence/cam_01_anomaly_1787846244_81ac88.jpg",
+          "data/evidence/cam_01_anomaly_1787846246_503292.jpg",
+          "data/evidence/cam_01_anomaly_1787846247_040bd9.jpg",
+          "data/evidence/cam_01_anomaly_1787846247_2877d2.jpg",
+          "data/evidence/cam_01_anomaly_1787846249_834810.jpg",
+          "data/evidence/cam_01_anomaly_1787846250_6e7395.jpg",
+          "data/evidence/cam_01_anomaly_1787846251_247f1d.jpg",
+          "data/evidence/cam_01_anomaly_1787846252_27c156.jpg",
+          "data/evidence/cam_01_anomaly_1787846252_07e797.jpg",
+          "data/evidence/cam_01_anomaly_1787846253_34a7dd.jpg",
+          "data/evidence/cam_01_anomaly_1787846254_0dc3b8.jpg",
+          "data/evidence/cam_01_anomaly_1787846254_5f578b.jpg",
+          "data/evidence/cam_01_anomaly_1787846255_53b7d0.jpg",
+          "data/evidence/cam_01_anomaly_1787846256_5d9975.jpg"
+        ],
+        "fused_events": [
+          "ev_89ed04b768",
+          "ev_f8b377b3bf",
+          "ev_63e2a4cf3d",
+          "ev_8f6b8336ba",
+          "ev_a7049f15da",
+          "ev_895c41f7ff",
+          "ev_cb73e328c7",
+          "ev_99d6c6298e",
+          "ev_4886f98155",
+          "ev_54f6e7e2fa",
+          "ev_683a41b16e",
+          "ev_586be754c8",
+          "ev_4949fd81b4",
+          "ev_65d94f91c8",
+          "ev_d898fb72dd",
+          "ev_d547761607",
+          "ev_ade81c7793",
+          "ev_1f8dd3d7b0",
+          "ev_7b75b8638e",
+          "ev_24ad82fcf6",
+          "ev_ddfb413a88",
+          "ev_c437527da2",
+          "ev_b7ab42279b",
+          "ev_c67b548576",
+          "ev_21c8948e76",
+          "ev_6eb9c03d43",
+          "ev_f6fe145d0d",
+          "ev_fce649d402",
+          "ev_f863536b2e"
+        ],
+        "scene_time_seconds": 0.6,
+        "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 1.00, corroborated by 29 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "anomaly"
+        ]
+      }
+    }
+  ]
+}

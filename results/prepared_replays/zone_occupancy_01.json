@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "scenario": "zone_occupancy_01",
+  "mode": "mas-auction",
+  "duration_seconds": 67,
+  "source_run": "results/run_zone_occupancy_01_mas-auction-demo.json",
+  "metadata": {
+    "title": "Zone Occupancy Violation",
+    "anomaly_type": "zone_occupancy",
+    "description": "Three pedestrians enter a zone whose declared safe occupancy is two.",
+    "dataset": "CAVIAR \u2014 ThreePastShop1",
+    "attribution": "EC-funded CAVIAR project / IST 2001 37540 (CC BY-SA)"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_122017bc6e",
+      "timestamp": 1787773186.8773565,
+      "severity": "WARNING",
+      "event_type": "zone_occupancy",
+      "confidence": 0.588,
+      "zone": "retail_corridor",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_zone_occupancy_1787773179_05b61c.jpg"
+      ],
+      "fused_events": [
+        "ev_22ef1357b3"
+      ],
+      "scene_time_seconds": 31.6,
+      "explanation": "[WARNING] zone occupancy detected in zone 'retail_corridor' with fused confidence 0.59, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "zone_occupancy"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "event",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 31.423,
+      "payload": {
+        "event_id": "ev_22ef1357b3",
+        "sensor_id": "cam_01",
+        "timestamp": 1787773178.9421122,
+        "event_type": "zone_occupancy",
+        "confidence": 0.82,
+        "modality": "video",
+        "zone": "retail_corridor",
+        "track_id": 29,
+        "evidence_path": "data/evidence/cam_01_zone_occupancy_1787773179_05b61c.jpg",
+        "scene_time_seconds": 31.6,
+        "extra": {
+          "reid_feat": [
+            0.23513709008693695,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.03254333883523941,
+            0.0,
+            0.0,
+            0.0,
+            0.058211326599121094,
+            0.0018334275810047984,
+            0.0,
+            0.0,
+            0.08892123401165009,
+            0.007792066782712936,
+            0.0,
+            0.0,
+            0.41068774461746216,
+            0.2960985600948334,
+            0.09625494480133057,
+            0.004583568777889013,
+            0.009574467316269875,
+            0.021668532863259315,
+            0.0015117580769583583,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.059966400265693665,
+            0.026203805580735207,
+            0.0,
+            0.0,
+            0.17133258283138275,
+            0.020156774669885635,
+            0.0,
+            0.0,
+            0.17637178301811218,
+            0.013605821877717972,
+            0.0,
+            0.0,
+            0.17284433543682098,
+            0.3461925685405731,
+            0.3421612083911896,
+            0.02519596740603447,
+            0.3691103756427765,
+            0.01977377012372017,
+            0.0,
+            0.0,
+            0.03427453711628914,
+            0.0,
+            0.0,
+            0.0,
+            0.005273005459457636,
+            0.0,
+            0.0,
+            0.0,
+            0.0035153371281921864,
+            0.0,
+            0.0,
+            0.0,
+            0.07426149398088455,
+            0.0,
+            0.0,
+            0.0,
+            0.3932783305644989,
+            0.06415490061044693,
+            0.0,
+            0.0,
+            0.14720474183559418,
+            0.0,
+            0.0,
+            0.0,
+            0.09755060076713562,
+            0.0008788342820480466,
+            0.0,
+            0.0
+          ]
+        }
+      }
+    },
+    {
+      "kind": "task",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 37.831,
+      "payload": {
+        "task_id": "task_e2429a6d7a",
+        "type": "verify",
+        "hypothesis_id": "hyp_2e00546c26",
+        "event_type": "zone_occupancy",
+        "zone": "retail_corridor",
+        "origin_sensor": "cam_01",
+        "scene_time_seconds": 31.6,
+        "fov_overlap": {
+          "cam_01": 0.9,
+          "cam_02": 0.9
+        },
+        "timestamp": 1787773185.3497777
+      }
+    },
+    {
+      "kind": "bid",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 37.831,
+      "payload": {
+        "task_id": "task_e2429a6d7a",
+        "agent_id": "cam_01",
+        "bid": 0.27,
+        "timestamp": 1787773185.349883
+      }
+    },
+    {
+      "kind": "bid",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 37.831,
+      "payload": {
+        "task_id": "task_e2429a6d7a",
+        "agent_id": "cam_02",
+        "bid": 0.9,
+        "timestamp": 1787773185.349965
+      }
+    },
+    {
+      "kind": "award",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 38.831,
+      "payload": {
+        "task_id": "task_e2429a6d7a",
+        "winner": "cam_02",
+        "timestamp": 1787773186.3503833
+      }
+    },
+    {
+      "kind": "verification",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 39.357,
+      "payload": {
+        "task_id": "task_e2429a6d7a",
+        "agent_id": "cam_02",
+        "verified": false,
+        "verification_score": 0.0,
+        "timestamp": 1787773186.8766828
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 31.6,
+      "wall_offset_seconds": 39.358,
+      "payload": {
+        "alert_id": "alt_122017bc6e",
+        "timestamp": 1787773186.8773565,
+        "severity": "WARNING",
+        "event_type": "zone_occupancy",
+        "confidence": 0.588,
+        "zone": "retail_corridor",
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_zone_occupancy_1787773179_05b61c.jpg"
+        ],
+        "fused_events": [
+          "ev_22ef1357b3"
+        ],
+        "scene_time_seconds": 31.6,
+        "explanation": "[WARNING] zone occupancy detected in zone 'retail_corridor' with fused confidence 0.59, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "zone_occupancy"
+        ]
+      }
+    }
+  ]
+}

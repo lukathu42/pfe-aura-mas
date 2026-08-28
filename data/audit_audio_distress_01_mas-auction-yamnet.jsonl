@@ -1,0 +1,6 @@
+{"timestamp": 1787844966.7863417, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_865ebd52a7", "event_type": "audio_alarm", "confidence": 0.361, "severity": "WARNING", "decision": "SUPPRESS", "reason": "threshold"}
+{"timestamp": 1787844967.787196, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_b497e4d377", "event_type": "audio_scream", "confidence": 0.221, "severity": "CRITICAL", "decision": "SUPPRESS", "reason": "threshold"}
+{"timestamp": 1787845577.0467346, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_dc7e146261", "event_type": "audio_alarm", "confidence": 0.342, "severity": "WARNING", "decision": "SUPPRESS", "reason": "threshold"}
+{"timestamp": 1787845578.0558112, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_54ebe81deb", "event_type": "audio_scream", "confidence": 0.545, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}
+{"timestamp": 1787859112.1224244, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_af0fde9a8a", "event_type": "audio_alarm", "confidence": 0.342, "severity": "WARNING", "decision": "SUPPRESS", "reason": "threshold"}
+{"timestamp": 1787859113.122742, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_46ab4233d2", "event_type": "audio_scream", "confidence": 0.545, "severity": "CRITICAL", "decision": "ALERT", "reason": "accepted"}

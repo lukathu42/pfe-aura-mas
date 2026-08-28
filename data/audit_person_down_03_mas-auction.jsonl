@@ -1,0 +1,2 @@
+{"timestamp": 1787846023.984659, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_01b8830f4e", "event_type": "person_down", "confidence": 0.876, "severity": "WARNING", "decision": "ALERT", "reason": "accepted"}
+{"timestamp": 1787846044.9934464, "actor": "policy", "action": "decision", "hypothesis_id": "hyp_7c348100e0", "event_type": "person_down", "confidence": 0.706, "severity": "WARNING", "decision": "ALERT", "reason": "accepted"}

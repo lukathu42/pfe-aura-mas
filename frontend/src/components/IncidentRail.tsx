@@ -81,7 +81,12 @@ export function IncidentRail() {
                   <SeverityTag severity={alert.severity} />
                 </div>
                 <div className="flex items-center justify-between hud-label">
-                  <span>{formatLocalTime(alert.timestamp)} · {alert.zone ?? "site"}</span>
+                  <span>
+                    {alert.scene_time_seconds != null
+                      ? `T+${alert.scene_time_seconds.toFixed(1)}s`
+                      : formatLocalTime(alert.timestamp)}{" "}
+                    · {alert.zone ?? "site"}
+                  </span>
                   <span>{alert.status}</span>
                 </div>
               </button>

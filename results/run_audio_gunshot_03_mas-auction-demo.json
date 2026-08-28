@@ -1,0 +1,76 @@
+{
+  "scenario": "audio_gunshot_03",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "yamnet",
+  "rep": null,
+  "tag": "mas-auction-yamnet",
+  "t_start": 1787859130.680512,
+  "wall_seconds": 24.843740701675415,
+  "ground_truth": [
+    {
+      "event_type": "audio_gunshot",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 17.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787859152.0899072,
+      "alert_id": "alt_482e192213",
+      "timestamp": 1787859152.0898502,
+      "severity": "CRITICAL",
+      "event_type": "audio_gunshot",
+      "confidence": 0.554,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_36edea3759"
+      ],
+      "scene_time_seconds": 15.0,
+      "explanation": "[CRITICAL] audio gunshot detected in zone 'site' with fused confidence 0.55, corroborated by 1 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_gunshot"
+      ]
+    }
+  ],
+  "agent_metrics": {
+    "mic_01": {
+      "chunks": 17,
+      "events": 2,
+      "backend": "yamnet",
+      "suppressed_dupes": 2
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": [],
+      "bandit_decisions": 0,
+      "feedback_updates": 0
+    },
+    "fusion": {
+      "events_in": 2,
+      "hypotheses_out": 2,
+      "reid_matches": 0
+    },
+    "policy": {
+      "hypotheses": 2,
+      "alerts": 1,
+      "suppressed": 1,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.028371810913085938,
+        0.0095367431640625
+      ]
+    }
+  }
+}

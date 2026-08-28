@@ -60,6 +60,8 @@ def main() -> None:
                    help="directory holding the ESC-50 source clips")
     p.add_argument("--force", action="store_true",
                    help="regenerate even if the destination already exists")
+    p.add_argument("--source", action="append", default=[], metavar="INPUT=OUTPUT",
+                   help="additional relative source/output pair; may be repeated")
     p.add_argument("--only-missing", action="store_true", default=True,
                    help="(default) never touch glass_breaking_with_baseline.wav "
                         "-- it is a cited, pre-existing artifact with no "
@@ -68,7 +70,13 @@ def main() -> None:
     args = p.parse_args()
 
     base = Path(args.dir)
-    for src_name, dst_name in SOURCES.items():
+    pairs = dict(SOURCES)
+    for value in args.source:
+        if "=" not in value:
+            p.error("--source must use INPUT=OUTPUT")
+        src_name, dst_name = value.split("=", 1)
+        pairs[src_name] = dst_name
+    for src_name, dst_name in pairs.items():
         build_one(base / src_name, base / dst_name, force=args.force)
 
 

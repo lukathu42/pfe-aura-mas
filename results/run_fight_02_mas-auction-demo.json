@@ -1,0 +1,113 @@
+{
+  "scenario": "fight_02",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "auto",
+  "rep": null,
+  "tag": "mas-auction",
+  "t_start": 1787846250.451925,
+  "wall_seconds": 15.135854244232178,
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 0.0,
+      "t_end": 6.2
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787846263.8958342,
+      "alert_id": "alt_3c0fba43f9",
+      "timestamp": 1787846263.8957958,
+      "severity": "WARNING",
+      "event_type": "anomaly",
+      "confidence": 0.975,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_anomaly_1787846253_217a87.jpg",
+        "data/evidence/cam_01_anomaly_1787846256_166069.jpg",
+        "data/evidence/cam_01_anomaly_1787846257_407583.jpg"
+      ],
+      "fused_events": [
+        "ev_5175070c3f",
+        "ev_ec892c7574",
+        "ev_e7f9b9240c"
+      ],
+      "scene_time_seconds": 2.0,
+      "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.97, corroborated by 3 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "anomaly"
+      ]
+    }
+  ],
+  "agent_metrics": {
+    "cam_01": {
+      "frames": 31,
+      "detections": 121,
+      "events": 3,
+      "infer_ms": [
+        233.4446907043457,
+        215.58737754821777,
+        219.96593475341797,
+        149.64580535888672,
+        166.5327548980713,
+        213.00172805786133,
+        163.45572471618652,
+        145.16711235046387,
+        200.7734775543213,
+        146.71993255615234,
+        181.66661262512207,
+        145.3564167022705,
+        208.70614051818848,
+        180.12237548828125,
+        152.16350555419922,
+        156.4931869506836,
+        167.5572395324707,
+        158.38074684143066,
+        231.88114166259766,
+        225.19898414611816,
+        143.25833320617676,
+        178.09224128723145,
+        84.3653678894043,
+        104.2490005493164,
+        84.17725563049316,
+        68.8326358795166,
+        73.74763488769531,
+        97.98955917358398,
+        116.02234840393066,
+        79.48732376098633,
+        73.81629943847656
+      ]
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": [],
+      "bandit_decisions": 0,
+      "feedback_updates": 0
+    },
+    "fusion": {
+      "events_in": 3,
+      "hypotheses_out": 1,
+      "reid_matches": 0
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 1,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.016689300537109375
+      ]
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "scenario": "fight_01",
+  "mode": "mas-auction",
+  "duration_seconds": 8,
+  "source_run": "results/run_fight_01_mas-auction-demo.json",
+  "metadata": {
+    "title": "Violence / Fighting",
+    "anomaly_type": "anomaly",
+    "description": "Zero-shot semantic scoring identifies a staged physical fight in surveillance footage.",
+    "dataset": "AIRTLab violence dataset \u2014 violent/cam1/1",
+    "attribution": "Bianculli et al., Data in Brief 33 (2020), doi:10.1016/j.dib.2020.106587",
+    "display_sources": {
+      "cam_01": "data/clips_real/violence/violent_1_demo.mp4"
+    }
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_52abd42708",
+      "timestamp": 1787774802.55198,
+      "severity": "WARNING",
+      "event_type": "anomaly",
+      "confidence": 0.625,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_anomaly_1787774796_4cf629.jpg"
+      ],
+      "fused_events": [
+        "ev_34f4afab5c"
+      ],
+      "scene_time_seconds": 2.0,
+      "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.62, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "anomaly"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "event",
+      "scene_time_seconds": 2.0,
+      "wall_offset_seconds": 1.83,
+      "payload": {
+        "event_id": "ev_34f4afab5c",
+        "sensor_id": "cam_01",
+        "timestamp": 1787774796.2379787,
+        "event_type": "anomaly",
+        "confidence": 0.695,
+        "modality": "video",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": "data/evidence/cam_01_anomaly_1787774796_4cf629.jpg",
+        "scene_time_seconds": 2.0,
+        "extra": {
+          "clip_label": "a person breaking into a restricted area"
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 2.0,
+      "wall_offset_seconds": 8.144,
+      "payload": {
+        "alert_id": "alt_52abd42708",
+        "timestamp": 1787774802.55198,
+        "severity": "WARNING",
+        "event_type": "anomaly",
+        "confidence": 0.625,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_anomaly_1787774796_4cf629.jpg"
+        ],
+        "fused_events": [
+          "ev_34f4afab5c"
+        ],
+        "scene_time_seconds": 2.0,
+        "explanation": "[WARNING] anomaly detected in zone 'site' with fused confidence 0.62, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "anomaly"
+        ]
+      }
+    }
+  ]
+}

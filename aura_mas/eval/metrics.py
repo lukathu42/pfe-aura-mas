@@ -43,7 +43,12 @@ def evaluate_run(run: Dict, tolerance: float = 5.0) -> Dict:
             if ai in matched_alerts:
                 continue
             a_fam = FAMILY.get(a["event_type"], a["event_type"])
-            a_t = a["t_wall"] - t0
+            # New replay artifacts carry source-video time, which is the same
+            # clock as scenario ground truth. Historical runs retain their
+            # wall-clock fallback for backward compatibility.
+            a_t = a.get("scene_time_seconds")
+            if a_t is None:
+                a_t = a["t_wall"] - t0
             if a_fam == g_fam and (g["t_start"] - tolerance) <= a_t <= (
                     g.get("t_end", g["t_start"]) + tolerance):
                 matched_gt.add(gi)

@@ -30,6 +30,7 @@ class Hypothesis:
     last_ts: float
     events: List[Event] = field(default_factory=list)
     confidence: float = 0.0
+    global_entity_id: Optional[str] = None
 
     @property
     def modalities(self) -> set:
@@ -38,6 +39,21 @@ class Hypothesis:
     @property
     def sensors(self) -> set:
         return {e.sensor_id for e in self.events}
+
+    @property
+    def contributing_types(self) -> List[str]:
+        seen = []
+        for e in self.events:
+            if e.event_type not in seen:
+                seen.append(e.event_type)
+        return seen
+
+    @property
+    def scene_time_seconds(self) -> Optional[float]:
+        """Earliest source-video time represented by this hypothesis."""
+        values = [e.scene_time_seconds for e in self.events
+                  if e.scene_time_seconds is not None]
+        return min(values) if values else None
 
     def dominant_type(self) -> str:
         best = max(self.events, key=lambda e: e.confidence)
@@ -51,11 +67,47 @@ class FusionAgent(Agent):
         self.window_seconds = window_seconds
         self.on_hypothesis = on_hypothesis  # callback(Hypothesis)
         self._hypotheses: Dict[str, Hypothesis] = {}
+        # Re-ID entity gallery: entity_id -> {"feat": vector, "last_ts": ts, "zones": [z1, z2]}
+        self._entity_gallery: Dict[str, Dict[str, Any]] = {}
         self._lock = threading.Lock()
-        self.metrics = {"events_in": 0, "hypotheses_out": 0}
+        self.metrics = {"events_in": 0, "hypotheses_out": 0, "reid_matches": 0}
 
     def setup(self) -> None:
         self.bus.subscribe(TOPIC_EVENTS, self._on_event)
+
+    def _match_or_register_entity(self, feat: List[float], zone: Optional[str],
+                                  ts: float, threshold: float = 0.70) -> str:
+        """Find matching global entity ID in gallery or register a new entity."""
+        import numpy as np
+        v1 = np.array(feat, dtype=np.float32)
+        best_id, best_sim = None, -1.0
+        for eid, data in list(self._entity_gallery.items()):
+            if ts - data["last_ts"] > 120.0:
+                del self._entity_gallery[eid]
+                continue
+            v2 = np.array(data["feat"], dtype=np.float32)
+            sim = float(np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2) + 1e-6))
+            if sim > best_sim:
+                best_sim = sim
+                best_id = eid
+
+        if best_sim >= threshold and best_id:
+            self.metrics["reid_matches"] += 1
+            entry = self._entity_gallery[best_id]
+            entry["last_ts"] = ts
+            updated = (np.array(entry["feat"]) * 0.7 + v1 * 0.3)
+            entry["feat"] = (updated / (np.linalg.norm(updated) + 1e-6)).tolist()
+            if zone and zone not in entry["zones"]:
+                entry["zones"].append(zone)
+            return best_id
+
+        new_eid = new_id("entity")
+        self._entity_gallery[new_eid] = {
+            "feat": feat,
+            "last_ts": ts,
+            "zones": [zone] if zone else [],
+        }
+        return new_eid
 
     # ------------------------------------------------------------------ fuse
     def _on_event(self, topic: str, payload: str) -> None:
@@ -73,6 +125,9 @@ class FusionAgent(Agent):
             hyp.events.append(ev)
             hyp.last_ts = ev.timestamp
             hyp.confidence = self._fuse_confidence(hyp)
+            if "reid_feat" in ev.extra and isinstance(ev.extra["reid_feat"], list):
+                eid = self._match_or_register_entity(ev.extra["reid_feat"], ev.zone, ev.timestamp)
+                hyp.global_entity_id = eid
 
     @staticmethod
     def _fuse_confidence(hyp: Hypothesis) -> float:

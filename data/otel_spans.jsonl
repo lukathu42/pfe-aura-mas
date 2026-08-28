@@ -1,0 +1,1 @@
+{"trace_id": "1c06a095b85a287acc95fb57207d2d0b", "span_id": "91ccb951742984ea", "name": "explanation.explain", "start_time_ns": 1787594776573776461, "end_time_ns": 1787594777044694426, "duration_ms": 470.918, "attributes": {"aura.llm.model": "qwen2.5-vl:3b", "aura.guardrail.passed": false, "aura.explanation.fallback_triggered": true}, "status": "UNSET"}

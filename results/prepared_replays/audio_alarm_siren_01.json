@@ -1,0 +1,170 @@
+{
+  "schema_version": 2,
+  "scenario": "audio_alarm_siren_01",
+  "mode": "mas-auction",
+  "duration_seconds": 21,
+  "source_run": "results/run_audio_alarm_siren_01_mas-auction-demo.json",
+  "metadata": {
+    "title": "Alarm / Siren",
+    "anomaly_type": "audio_alarm",
+    "anomaly_key": "alarm_siren",
+    "sample_id": "02",
+    "sample_label": "Siren 1",
+    "site_context": "semi-closed site",
+    "tags": [
+      "alarm_siren",
+      "prepared replay"
+    ],
+    "camera_count": 0,
+    "has_context": true,
+    "detected_event_types": [
+      "audio_alarm"
+    ],
+    "description": "A real siren recording is classified as an alarm.",
+    "dataset": "ESC-50 \u2014 siren",
+    "attribution": "Piczak, ESC-50 (2015), CC BY-NC 3.0; non-commercial thesis use"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_2420d13017",
+      "timestamp": 1787859029.8034954,
+      "severity": "WARNING",
+      "event_type": "audio_alarm",
+      "confidence": 0.891,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_dc5b94d5e6",
+        "ev_a011743c09",
+        "ev_90d8da26aa"
+      ],
+      "scene_time_seconds": 16.0,
+      "explanation": "[WARNING] audio alarm detected in zone 'site' with fused confidence 0.89, corroborated by 3 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_alarm"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_audio_alarm_siren_01_deterministic",
+        "scenario": "audio_alarm_siren_01",
+        "summary": "A real siren recording is classified as an alarm.",
+        "object_labels": [],
+        "safety_observations": [
+          "audio_alarm"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          15.0
+        ],
+        "generated_at": 1787859032.6132498
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 16.0,
+      "wall_offset_seconds": 17.92,
+      "payload": {
+        "event_id": "ev_dc5b94d5e6",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859020.9295106,
+        "event_type": "audio_alarm",
+        "confidence": 0.669,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 16.0,
+        "extra": {
+          "yamnet_class": "Siren",
+          "yamnet_rank": 0,
+          "n_candidates": 2
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 17.0,
+      "wall_offset_seconds": 18.84,
+      "payload": {
+        "event_id": "ev_a011743c09",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859021.8501508,
+        "event_type": "audio_alarm",
+        "confidence": 0.801,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 17.0,
+        "extra": {
+          "yamnet_class": "Siren",
+          "yamnet_rank": 0,
+          "n_candidates": 2
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 19.0,
+      "wall_offset_seconds": 20.679,
+      "payload": {
+        "event_id": "ev_90d8da26aa",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859023.688547,
+        "event_type": "audio_alarm",
+        "confidence": 0.759,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 19.0,
+        "extra": {
+          "yamnet_class": "Siren",
+          "yamnet_rank": 0,
+          "n_candidates": 2
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 19.0,
+      "wall_offset_seconds": 26.794,
+      "payload": {
+        "alert_id": "alt_2420d13017",
+        "timestamp": 1787859029.8034954,
+        "severity": "WARNING",
+        "event_type": "audio_alarm",
+        "confidence": 0.891,
+        "zone": null,
+        "sensors": [
+          "mic_01"
+        ],
+        "evidence": [],
+        "fused_events": [
+          "ev_dc5b94d5e6",
+          "ev_a011743c09",
+          "ev_90d8da26aa"
+        ],
+        "scene_time_seconds": 16.0,
+        "explanation": "[WARNING] audio alarm detected in zone 'site' with fused confidence 0.89, corroborated by 3 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "audio_alarm"
+        ]
+      }
+    }
+  ]
+}

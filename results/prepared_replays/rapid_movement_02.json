@@ -1,0 +1,222 @@
+{
+  "schema_version": 2,
+  "scenario": "rapid_movement_02",
+  "mode": "mas-auction",
+  "duration_seconds": 23,
+  "source_run": "results/run_rapid_movement_02_mas-auction-demo.json",
+  "metadata": {
+    "title": "Rapid Movement",
+    "anomaly_type": "rapid_movement",
+    "anomaly_key": "rapid_movement",
+    "sample_id": "02",
+    "sample_label": "Run away 2",
+    "site_context": "semi-closed site",
+    "tags": [
+      "rapid_movement",
+      "prepared replay"
+    ],
+    "camera_count": 1,
+    "has_context": true,
+    "detected_event_types": [
+      "rapid_movement"
+    ],
+    "description": "A second running sequence tests normalized trajectory speed.",
+    "dataset": "CAVIAR \u2014 Fight_RunAway2",
+    "attribution": "EC-funded CAVIAR project / IST 2001 37540 (CC BY-SA)"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_9d3ea81bea",
+      "timestamp": 1787847324.2055337,
+      "severity": "WARNING",
+      "event_type": "rapid_movement",
+      "confidence": 0.648,
+      "zone": "monitored_area",
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_rapid_movement_1787847317_6367b5.jpg"
+      ],
+      "fused_events": [
+        "ev_992903a0bf"
+      ],
+      "scene_time_seconds": 1.2,
+      "explanation": "[WARNING] rapid movement detected in zone 'monitored_area' with fused confidence 0.65, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "rapid_movement"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 1.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_rapid_movement_02_deterministic",
+        "scenario": "rapid_movement_02",
+        "summary": "A second running sequence tests normalized trajectory speed.",
+        "object_labels": [],
+        "safety_observations": [
+          "rapid_movement"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          1.0
+        ],
+        "generated_at": 1787847346.7168434
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 1.2,
+      "wall_offset_seconds": 1.015,
+      "payload": {
+        "event_id": "ev_992903a0bf",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847317.5166988,
+        "event_type": "rapid_movement",
+        "confidence": 0.72,
+        "modality": "video",
+        "zone": "monitored_area",
+        "track_id": 5,
+        "evidence_path": "data/evidence/cam_01_rapid_movement_1787847317_6367b5.jpg",
+        "scene_time_seconds": 1.2,
+        "extra": {
+          "reid_feat": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.5307658314704895,
+            0.1064923107624054,
+            0.06240313500165939,
+            0.001356589957140386,
+            0.1895834505558014,
+            0.02102714590728283,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.3145967423915863,
+            0.22477221488952637,
+            0.40610814094543457,
+            0.005903960205614567,
+            0.08560742437839508,
+            0.10627128928899765,
+            0.016025034710764885,
+            0.0012651343131437898,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.5536181926727295,
+            0.09649384766817093,
+            0.026566345244646072,
+            0.0009160808403976262,
+            0.12367091327905655,
+            0.03908611461520195,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "normalized_speed": 0.0242
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 1.2,
+      "wall_offset_seconds": 7.704,
+      "payload": {
+        "alert_id": "alt_9d3ea81bea",
+        "timestamp": 1787847324.2055337,
+        "severity": "WARNING",
+        "event_type": "rapid_movement",
+        "confidence": 0.648,
+        "zone": "monitored_area",
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_rapid_movement_1787847317_6367b5.jpg"
+        ],
+        "fused_events": [
+          "ev_992903a0bf"
+        ],
+        "scene_time_seconds": 1.2,
+        "explanation": "[WARNING] rapid movement detected in zone 'monitored_area' with fused confidence 0.65, corroborated by 1 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "rapid_movement"
+        ]
+      }
+    }
+  ]
+}

@@ -30,16 +30,41 @@ import threading
 import time
 from typing import Dict, List
 
-from aura_mas.core.bus import AlertStore, make_bus
+from aura_mas.core.bus import (
+    AlertStore, TOPIC_AWARDS, TOPIC_BIDS, TOPIC_EVENTS, TOPIC_TASKS,
+    TOPIC_VERIFICATIONS, make_bus,
+)
 from aura_mas.agents.camera_agent import CameraAgent
 from aura_mas.agents.audio_agent import AudioAgent
 from aura_mas.agents.fusion_agent import FusionAgent
 from aura_mas.agents.coordinator_agent import CoordinatorAgent
 from aura_mas.agents.policy_agent import PolicyAgent
 from aura_mas.agents.explanation_agent import ExplanationAgent
+from aura_mas.streaming.stream_server import LiveStreamServer, StreamRegistry
 from aura_mas.telemetry import configure_logging, configure_tracing
+from aura_mas.scenarios.demo_catalog import metadata_for
 
 log = logging.getLogger("aura.replay")
+
+
+def normalize_timeline(items: List[Dict], scenario_start: float) -> List[Dict]:
+    """Convert captured wall timestamps to stable prepared-replay offsets."""
+    normalized = []
+    for item in items:
+        normalized.append({
+            "kind": item["kind"],
+            "scene_time_seconds": item.get("scene_time_seconds"),
+            "wall_offset_seconds": round(
+                max(0.0, item["wall_timestamp"] - scenario_start), 3),
+            "payload": item["payload"],
+        })
+    normalized.sort(key=lambda item: (
+        item["scene_time_seconds"]
+        if item["scene_time_seconds"] is not None
+        else item["wall_offset_seconds"],
+        item["wall_offset_seconds"],
+    ))
+    return normalized
 
 
 def run_scenario(manifest_path: str, mode: str = "mas-auction",
@@ -48,7 +73,10 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
                  vision_only: bool = False,
                  audio_backend: str = "auto",
                  rep: int | None = None,
-                 bandit_path: str | None = None) -> Dict:
+                 bandit_path: str | None = None,
+                 stream: bool = False,
+                 stream_port: int = 8080,
+                 prepared_out_path: str | None = None) -> Dict:
     """mode: mas-auction | mas-rules | mas-nocoord | centralized |
     mas-auction-bandit
 
@@ -80,6 +108,37 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
         manifest = json.load(f)
 
     bus = make_bus(bus_kind)
+    timeline: List[Dict] = []
+    task_scene_times: Dict[str, float | None] = {}
+    timeline_lock = threading.Lock()
+
+    def record_timeline(kind: str):
+        def callback(topic: str, payload: str) -> None:
+            try:
+                data = json.loads(payload)
+            except (TypeError, json.JSONDecodeError):
+                return
+            scene_time = data.get("scene_time_seconds")
+            task_id = data.get("task_id")
+            if kind == "task" and task_id:
+                task_scene_times[task_id] = scene_time
+            elif scene_time is None and task_id:
+                scene_time = task_scene_times.get(task_id)
+            with timeline_lock:
+                timeline.append({
+                    "kind": kind,
+                    "scene_time_seconds": scene_time,
+                    "wall_timestamp": data.get("timestamp", time.time()),
+                    "payload": data,
+                })
+        return callback
+
+    for topic, kind in (
+        (TOPIC_EVENTS, "event"), (TOPIC_TASKS, "task"),
+        (TOPIC_BIDS, "bid"), (TOPIC_AWARDS, "award"),
+        (TOPIC_VERIFICATIONS, "verification"),
+    ):
+        bus.subscribe(topic, record_timeline(kind))
     tag = mode
     if vision_only:
         tag += "-visiononly"
@@ -88,7 +147,8 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     if rep is not None:
         tag += f"-r{rep}"
     store = AlertStore(redis_url=None,
-                       jsonl_path=f"data/alerts_{manifest['name']}_{tag}.jsonl")
+                       jsonl_path=f"data/alerts_{manifest['name']}_{tag}.jsonl",
+                       db_path=None)
 
     camera_specs = [s for s in manifest["sensors"] if s["type"] == "camera"]
     audio_specs = [] if vision_only else [
@@ -99,7 +159,10 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
                   "mas-nocoord": "off", "centralized": "off",
                   "mas-auction-bandit": "auction-bandit"}[mode]
     coordinator = CoordinatorAgent("coordinator", bus, mode=coord_mode,
-                                   camera_ids=cam_ids, bandit_path=bandit_path)
+                                   camera_ids=cam_ids, bandit_path=bandit_path,
+                                   fov_overlap=manifest.get("fov_overlap"),
+                                   gray_zone=tuple(manifest.get(
+                                       "verification_gray_zone", (0.35, 0.75))))
     explainer = None
     if use_llm:
         configure_tracing()
@@ -112,7 +175,25 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     original_append = store.append
 
     def timed_append(alert):
-        alerts_log.append({"t_wall": time.time(), **json.loads(alert.to_json())})
+        entry = {"t_wall": time.time(), **json.loads(alert.to_json())}
+        alerts_log.append(entry)
+        with timeline_lock:
+            contributing_scene_times = [
+                item.get("scene_time_seconds") for item in timeline
+                if item["kind"] == "event"
+                and item["payload"].get("event_id") in alert.fused_events
+                and item.get("scene_time_seconds") is not None
+            ]
+            timeline.append({
+                "kind": "alert",
+                # Reveal the prepared alert only after its last contributing
+                # source event; Alert.scene_time_seconds remains the earliest
+                # incident time used by evaluation metrics.
+                "scene_time_seconds": max(contributing_scene_times)
+                if contributing_scene_times else alert.scene_time_seconds,
+                "wall_timestamp": entry["t_wall"],
+                "payload": json.loads(alert.to_json()),
+            })
         original_append(alert)
     store.append = timed_append  # type: ignore[assignment]
 
@@ -123,13 +204,26 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     agents, threads = [], []
     realtime = mode != "centralized"
 
+    stream_server = None
+    if stream:
+        stream_server = LiveStreamServer(port=stream_port)
+        stream_server.start()
+
     for spec in camera_specs:
         cam = CameraAgent(spec["id"], bus, spec["source"],
                           zones=spec.get("zones", []),
                           enable_clip=spec.get("enable_clip", False),
                           anomaly_threshold=spec.get("anomaly_threshold", 0.55),
-                          realtime=realtime)
+                          realtime=realtime,
+                          loiter_seconds=spec.get("loiter_seconds", 8.0),
+                          abandoned_seconds=spec.get("abandoned_seconds", 10.0),
+                          min_flow_px=spec.get("min_flow_px", 40.0),
+                          person_down_seconds=spec.get("person_down_seconds", 1.5),
+                          rapid_window_seconds=spec.get("rapid_window_seconds", 1.0),
+                          rapid_min_duration=spec.get("rapid_min_duration", 0.6),
+                          detection_conf=spec.get("detection_conf", 0.35))
         cam.start()  # runs setup(): loads YOLO (+ CLIP if enabled)
+        StreamRegistry.get_instance().register(cam.agent_id, cam.get_latest_jpeg)
         agents.append(cam)
         threads.append(threading.Thread(target=cam.run, daemon=True))
     for spec in audio_specs:
@@ -168,25 +262,89 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
     if coord_mode == "auction-bandit" and bandit_path:
         coordinator.save_bandit(bandit_path)
 
+    for spec in camera_specs:
+        StreamRegistry.get_instance().unregister(spec["id"])
+    if stream_server:
+        stream_server.stop()
+
+    # compute per-agent metrics and build final result
+    agent_metrics = {a.agent_id: a.metrics for a in agents}
+    agent_metrics["coordinator"] = coordinator.metrics
+    agent_metrics["fusion"] = fusion.metrics
+    agent_metrics["policy"] = policy.metrics
+    if explainer:
+        agent_metrics["explanation"] = explainer.metrics
+
+    wall_seconds = time.time() - t_scenario_start
     result = {
-        "scenario": manifest["name"], "mode": mode, "vision_only": vision_only,
-        "audio_backend": audio_backend, "rep": rep, "tag": tag,
-        "t_start": t_scenario_start, "wall_seconds": time.time() - t_scenario_start,
+        "scenario": manifest["name"],
+        "mode": mode,
+        "vision_only": vision_only,
+        "audio_backend": audio_backend,
+        "rep": rep,
+        "tag": tag,
+        "t_start": t_scenario_start,
+        "wall_seconds": wall_seconds,
         "ground_truth": manifest.get("ground_truth", []),
         "alerts": alerts_log,
-        "agent_metrics": {
-            "fusion": fusion.metrics, "policy": policy.metrics,
-            "coordinator": coordinator.metrics,
-            **{a.agent_id: {k: (round(sum(v) / len(v), 1) if k == "infer_ms" and v else v)
-                            for k, v in a.metrics.items()} for a in agents},
-        },
+        "agent_metrics": agent_metrics,
     }
-    out_path = out_path or f"results/run_{manifest['name']}_{tag}.json"
+
+    if out_path is None:
+        out_path = f"results/run_{manifest['name']}_{tag}.json"
     import os
-    os.makedirs("results", exist_ok=True)
+    os.makedirs(os.path.dirname(out_path) or ".", exist_ok=True)
     with open(out_path, "w") as f:
-        json.dump(result, f, indent=2, default=str)
-    log.info("scenario %s [%s]: %d alerts -> %s",
+        json.dump(result, f, indent=2)
+
+    if prepared_out_path:
+        with timeline_lock:
+            captured = list(timeline)
+        normalized_timeline = normalize_timeline(captured, t_scenario_start)
+        metadata = metadata_for(manifest["name"])
+        ground_truth = manifest.get("ground_truth", [])
+        context_time = min((gt.get("t_start", 0.0) for gt in ground_truth), default=0.0)
+        normalized_timeline.append({
+            "kind": "context",
+            "scene_time_seconds": context_time,
+            "wall_offset_seconds": 0.0,
+            "payload": {
+                "context_id": f"ctx_{manifest['name']}_deterministic",
+                "scenario": manifest["name"],
+                "summary": metadata["description"],
+                "object_labels": [],
+                "safety_observations": metadata.get("detected_event_types", []),
+                "source": "deterministic",
+                "status": "generated",
+                "model": None,
+                "provider": None,
+                "source_frame_times": [context_time],
+                "generated_at": time.time(),
+            },
+        })
+        normalized_timeline.sort(key=lambda item: (
+            item["scene_time_seconds"] if item["scene_time_seconds"] is not None
+            else item["wall_offset_seconds"], item["wall_offset_seconds"],
+        ))
+        prepared = {
+            "schema_version": 2,
+            "scenario": manifest["name"],
+            "mode": mode,
+            "duration_seconds": manifest.get("duration_seconds", 0),
+            "source_run": out_path,
+            "metadata": metadata,
+            "alerts": [
+                {k: v for k, v in alert.items() if k != "t_wall"}
+                for alert in alerts_log
+            ],
+            "timeline": normalized_timeline,
+        }
+        import os
+        os.makedirs(os.path.dirname(prepared_out_path) or ".", exist_ok=True)
+        with open(prepared_out_path, "w") as f:
+            json.dump(prepared, f, indent=2)
+        log.info("prepared replay written to %s", prepared_out_path)
+    log.info("scenario %s (%s) finished: %d alerts written to %s",
              manifest["name"], tag, len(alerts_log), out_path)
     return result
 
@@ -210,6 +368,12 @@ def main() -> None:
     p.add_argument("--rep", type=int, default=None,
                    help="repetition index; appends -rN to output filenames "
                         "so repeat runs don't overwrite each other")
+    p.add_argument("--stream", action="store_true",
+                   help="start live HTTP MJPEG stream server for CameraWall frontend")
+    p.add_argument("--stream-port", type=int, default=8080,
+                   help="port for HTTP MJPEG stream server (default: 8080)")
+    p.add_argument("--prepared-out", default=None,
+                   help="also write a versioned prepared-replay timeline JSON")
     p.add_argument("--out", default=None,
                    help="override the output run JSON path")
     p.add_argument("--bandit-path", default=None,
@@ -222,6 +386,8 @@ def main() -> None:
     run_scenario(args.manifest, mode=args.mode, bus_kind=args.bus,
                  use_llm=args.llm, vision_only=args.vision_only,
                  audio_backend=args.audio_backend, rep=args.rep,
+                 stream=args.stream, stream_port=args.stream_port,
+                 prepared_out_path=args.prepared_out,
                  out_path=args.out, bandit_path=bandit_path)
 
 

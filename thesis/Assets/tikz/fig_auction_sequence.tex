@@ -1,0 +1,97 @@
+% ============================================================================
+% Auction-based active verification: message sequence
+% Source of truth (do not edit numbers here without re-checking the code):
+%   aura_mas/agents/coordinator_agent.py  request_verification / _run_auction
+%   aura_mas/agents/camera_agent.py       _view_score / _on_task_announce
+%                                         / _on_award / _verify
+%   aura_mas/agents/policy_agent.py       verification adjustment +0.15 / -0.20
+% Generated for chapter 6; referenced as fig:auction_sequence.
+% ============================================================================
+\begin{tikzpicture}[
+	font=\small,
+	lifeline/.style={draw=black!55, dashed, thick},
+	actorbox/.style={draw=black!70, fill=black!5, rounded corners=2pt,
+			minimum height=7mm, minimum width=22mm, align=center,
+			font=\small\bfseries},
+	msg/.style={-{Latex[length=2mm]}, thick, black!80},
+	selfmsg/.style={-{Latex[length=2mm]}, thick, black!80},
+	lbl/.style={font=\scriptsize, inner sep=1.2pt, fill=white},
+	note/.style={draw=black!45, fill=yellow!12, rounded corners=1.5pt,
+			font=\scriptsize, align=left, inner sep=2.5pt},
+	warn/.style={draw=red!65, fill=red!8, rounded corners=1.5pt,
+			font=\scriptsize, align=left, inner sep=2.5pt},
+	phase/.style={font=\scriptsize\itshape, black!55, anchor=east},
+	]
+
+	% ---- actor columns -------------------------------------------------------
+	\def\xF{0}      % FusionAgent
+	\def\xP{2.9}    % PolicyAgent
+	\def\xC{6.0}    % CoordinatorAgent
+	\def\xA{9.2}    % CameraAgent (origin)
+	\def\xB{12.6}   % CameraAgent (other)
+	\def\ytop{0}
+	\def\ybot{-11.4}
+
+	\node[actorbox] (F) at (\xF,\ytop) {Fusion\\Agent};
+	\node[actorbox] (P) at (\xP,\ytop) {Policy\\Agent};
+	\node[actorbox] (C) at (\xC,\ytop) {Coordinator\\Agent};
+	\node[actorbox] (A) at (\xA,\ytop) {CameraAgent\\\textnormal{\scriptsize origin (cam\_01)}};
+	\node[actorbox] (B) at (\xB,\ytop) {CameraAgent\\\textnormal{\scriptsize other (cam\_02)}};
+
+	\foreach \x in {\xF,\xP,\xC,\xA,\xB}{
+			\draw[lifeline] (\x,-0.45) -- (\x,\ybot);
+		}
+
+	% ---- 1. hypothesis flush ------------------------------------------------
+	\node[phase] at (-1.1,-1.1) {flush};
+	\draw[msg] (\xF,-1.1) -- node[lbl,above]{\texttt{hypothesis} $C(H)=0.52$} (\xP,-1.1);
+
+	% ---- 2. gray-zone test --------------------------------------------------
+	\draw[selfmsg] (\xP,-1.75) -- ++(0.75,0) -- ++(0,-0.55) -- ++(-0.75,0);
+	\node[lbl, anchor=west, align=left] at (\xP+0.85,-2.02)
+	{\texttt{needs\_verification(0.52)}: $0.35\!\le\!0.52\!<\!0.75 \Rightarrow$ true};
+
+	% ---- 3. announce --------------------------------------------------------
+	\node[phase] at (-1.1,-3.0) {announce};
+	\draw[msg] (\xP,-3.0) -- node[lbl,above]{\texttt{request\_verification}} (\xC,-3.0);
+	\draw[msg] (\xC,-3.5) -- node[lbl,above,pos=0.42]{\texttt{site/coord/tasks} (QoS 1)} (\xB,-3.5);
+	\draw[msg] (\xC,-3.5) -- (\xA,-3.5);
+
+	% ---- 4. bid ------------------------------------------------------------
+	\node[phase] at (-1.1,-4.5) {bid};
+	\draw[msg] (\xA,-4.35) -- node[lbl,above,pos=0.55]{\texttt{bid} $u=0.15$} (\xC,-4.35);
+	\draw[msg] (\xB,-4.85) -- node[lbl,above,pos=0.62]{\texttt{bid} $u=0.50$} (\xC,-4.85);
+
+	\node[note, anchor=north west, text width=6.1cm] at (\xA-0.55,-5.25)
+	{$u=b\cdot\kappa\cdot o$ \ \ (\texttt{camera\_agent.py:444--449})\\
+		origin: $b{=}0.3$, other: $b{=}1.0$; \ $\kappa{=}0.2$ if busy else $1.0$};
+
+	% ---- 5. award ----------------------------------------------------------
+	\node[phase] at (-1.1,-6.85) {award};
+	\draw[msg] (\xC,-6.85) -- node[lbl,above,pos=0.55]{\texttt{award} winner=cam\_02} (\xB,-6.85);
+
+	% ---- 6. verify ---------------------------------------------------------
+	\node[phase] at (-1.1,-7.6) {verify};
+	\draw[selfmsg] (\xB,-7.5) -- ++(0.62,0) -- ++(0,-0.6) -- ++(-0.62,0);
+	\node[lbl, anchor=east, align=right] at (\xB-0.15,-7.8)
+	{\texttt{\_verify()}: re-run YOLO at \texttt{imgsz=960, conf=0.25}};
+	\draw[msg] (\xB,-8.55) -- node[lbl,above,pos=0.45]{\texttt{verification} verified=true} (\xC,-8.55);
+
+	% ---- 7. integrate ------------------------------------------------------
+	\node[phase] at (-1.1,-9.3) {integrate};
+	\draw[msg] (\xC,-9.3) -- node[lbl,above]{result} (\xP,-9.3);
+	\draw[selfmsg] (\xP,-9.85) -- ++(0.75,0) -- ++(0,-0.55) -- ++(-0.75,0);
+	\node[lbl, anchor=west, align=left] at (\xP+0.85,-10.12)
+	{$C' = 0.52 + 0.15 = 0.67 \ \ge \theta_{\text{WARNING}}{=}0.55 \Rightarrow$ alert};
+
+	% ---- the inert-overlap caveat ------------------------------------------
+	\node[warn, anchor=north west, text width=13.0cm] at (-1.4,-10.75)
+	{\textbf{Measurement caveat.} The overlap term $o$ was inert throughout the
+		373-run campaign: \texttt{fov\_overlap} was never populated, so
+		\texttt{task.get("fov\_overlap",\{\}).get(agent\_id, 0.5)} returned the
+		constant fallback $0.5$ for every camera. The bid reduced to
+		$b\cdot\kappa$, which for a two-camera site always selects the
+		non-origin camera --- the same choice round-robin makes. See
+		Section~\ref{sec:c2_retraction}.};
+
+\end{tikzpicture}

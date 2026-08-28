@@ -24,11 +24,11 @@ AURA-MAS is a hierarchical \gls{mas} organized in three layers connected by a tw
     \label{fig:architecture}
 \end{figure}
 
-\textbf{Layer 1 --- Edge perception.} One autonomous agent per sensor. \emph{CameraAgents} run detection, tracking, zone rules, and optional semantic anomaly scoring on their own video stream. \emph{AudioAgents} classify sound events or score acoustic anomalies. Both publish structured events on the bus.
+\textbf{Layer 1: edge perception.} One agent handles each sensor. \emph{CameraAgents} run detection, tracking, zone rules, and optional semantic anomaly scoring on their video stream. \emph{AudioAgents} classify sound events or score acoustic anomalies. Both publish structured events on the bus.
 
-\textbf{Layer 2 --- Site coordination.} The \emph{FusionAgent} aggregates events into incident hypotheses; the \emph{CoordinatorAgent} allocates verification tasks by auction when hypotheses are uncertain; the \emph{PolicyAgent} converts hypotheses into alerts (or suppressions) under deterministic rules; the \emph{ExplanationAgent} generates grounded natural-language reports for accepted alerts.
+\textbf{Layer 2: site coordination.} The \emph{FusionAgent} groups events into incident hypotheses. The \emph{CoordinatorAgent} allocates verification tasks when a hypothesis is uncertain. The \emph{PolicyAgent} applies deterministic alert or suppression rules. The \emph{ExplanationAgent} produces a report for an accepted alert.
 
-\textbf{Layer 3 --- Governance and operator.} A web operator console presents the alert feed, anonymized evidence, and explanations; operator actions (acknowledge/dismiss) and all policy decisions are appended to an immutable audit log.
+\textbf{Layer 3: governance and operator.} A web console shows alerts, anonymized evidence, and explanations. Operator actions and policy decisions are appended to the audit log. The log is append-only by convention, not cryptographically immutable.
 
 The substrate pairs \gls{mqtt} \cite{light2017mosquitto} for low-latency fan-out of high-frequency messages (detections \gls{qos}~0; events, tasks, bids, awards \gls{qos}~1) with Redis Streams for durable, replayable storage of alerts and audit records. A single-process in-memory bus with identical semantics supports development and testing.
 
@@ -109,6 +109,14 @@ Fused confidence in the \emph{gray zone} $[\theta_{lo}, \theta_{hi})$ (defaults 
 
 The protocol costs $O(n)$ messages per task ($n$ = number of cameras) and bounded wall time $T_b + T_{verify}$. A round-robin allocator (ignoring utilities) serves as the ablation baseline, and coordination can be disabled entirely.
 
+\begin{revisionbox}
+The utility expression states the intended design, but the v2 campaign did not
+populate \texttt{fov\_overlap} in its manifests. During those measurements,
+$o$ consequently used the 0.5 fallback for every camera. The reported campaign
+does not validate spatially informed bidding; the correction and its evidence
+are discussed in Section~\ref{sec:c2_retraction}.
+\end{revisionbox}
+
 \section{Policy and Alerting Design}
 
 The PolicyAgent is the sole component authorized to create alerts. Its decision procedure is fully deterministic: (1) map the hypothesis's dominant event type to a severity class (e.g., \texttt{intrusion} and \texttt{audio\_gunshot} $\rightarrow$ CRITICAL; \texttt{loitering} $\rightarrow$ INFO); (2) optionally request verification for gray-zone confidence; (3) compare adjusted confidence to a per-severity threshold (CRITICAL 0.45, WARNING 0.55, INFO 0.70---lower thresholds for higher-stakes events reflect asymmetric miss costs); (4) apply per-(zone, type) cooldown (default 20~s) to prevent alert storms; (5) write \emph{every} decision---alert or suppression, with reason---to the audit stream. This design directly implements the human-oversight and logging obligations of high-risk AI systems under the EU AI Act \cite{euaiact2024}.
@@ -135,7 +143,7 @@ No biometric identification & No face recognition or \gls{reid}; corroboration a
 Anonymization & All exported evidence passes through person/face blurring; fail-closed (full-frame blur if localization unavailable) \\
 Storage limitation & Evidence retention window configurable; detections are transient (\gls{qos} 0, not persisted) \\
 Human oversight & Operator console with acknowledge/dismiss authority; no automated enforcement actions \\
-Logging \& traceability & Immutable audit stream of every policy decision and operator action \\
+Logging \& traceability & Append-only audit stream of every policy decision and operator action; cryptographic immutability is not implemented \\
 Transparency & Grounded natural-language explanations with verifiable evidence citations \\
 \bottomrule
 \end{tabular}
@@ -143,4 +151,4 @@ Transparency & Grounded natural-language explanations with verifiable evidence c
 
 \section{Conclusion}
 
-The design distributes perception to sensor-local agents, concentrates uncertainty resolution in an auditable auction protocol, isolates decision authority in a deterministic policy engine, and confines generative AI to a guarded explanatory role---each choice traceable to the principles stated at the outset. The next chapter describes how this design is realized in code.
+AURA-MAS assigns perception to sensor-local agents, uses an auction for uncertain verification, keeps alert decisions in a deterministic policy engine, and places generative AI after the decision. The next chapter describes the implementation.

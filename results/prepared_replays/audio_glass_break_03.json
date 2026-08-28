@@ -1,0 +1,146 @@
+{
+  "schema_version": 2,
+  "scenario": "audio_glass_break_03",
+  "mode": "mas-auction",
+  "duration_seconds": 22,
+  "source_run": "results/run_audio_glass_break_03_mas-auction-demo.json",
+  "metadata": {
+    "title": "Glass Break",
+    "anomaly_type": "audio_glass_break",
+    "anomaly_key": "glass_break",
+    "sample_id": "03",
+    "sample_label": "ESC-50 glass 3",
+    "site_context": "semi-closed site",
+    "tags": [
+      "glass_break",
+      "prepared replay"
+    ],
+    "camera_count": 0,
+    "has_context": true,
+    "detected_event_types": [
+      "audio_glass_break"
+    ],
+    "description": "A third fold supplies a distinct glass-breaking recording.",
+    "dataset": "ESC-50 \u2014 3-216280-A-39",
+    "attribution": "Piczak, ESC-50 (2015), CC BY-NC 3.0; non-commercial thesis use"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_a240ab9e3d",
+      "timestamp": 1787859075.424248,
+      "severity": "WARNING",
+      "event_type": "audio_glass_break",
+      "confidence": 0.888,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_83e2a80882",
+        "ev_8febce8642"
+      ],
+      "scene_time_seconds": 15.0,
+      "explanation": "[WARNING] audio glass break detected in zone 'site' with fused confidence 0.89, corroborated by 2 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_glass_break"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_audio_glass_break_03_deterministic",
+        "scenario": "audio_glass_break_03",
+        "summary": "A third fold supplies a distinct glass-breaking recording.",
+        "object_labels": [],
+        "safety_observations": [
+          "audio_glass_break"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          15.0
+        ],
+        "generated_at": 1787859080.2630954
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 17.158,
+      "payload": {
+        "event_id": "ev_83e2a80882",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859067.7053137,
+        "event_type": "audio_glass_break",
+        "confidence": 0.994,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 15.0,
+        "extra": {
+          "yamnet_class": "Glass",
+          "yamnet_rank": 0,
+          "n_candidates": 3
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 16.0,
+      "wall_offset_seconds": 18.066,
+      "payload": {
+        "event_id": "ev_8febce8642",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859068.6135213,
+        "event_type": "audio_glass_break",
+        "confidence": 0.903,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 16.0,
+        "extra": {
+          "yamnet_class": "Shatter",
+          "yamnet_rank": 0,
+          "n_candidates": 3
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 16.0,
+      "wall_offset_seconds": 24.877,
+      "payload": {
+        "alert_id": "alt_a240ab9e3d",
+        "timestamp": 1787859075.424248,
+        "severity": "WARNING",
+        "event_type": "audio_glass_break",
+        "confidence": 0.888,
+        "zone": null,
+        "sensors": [
+          "mic_01"
+        ],
+        "evidence": [],
+        "fused_events": [
+          "ev_83e2a80882",
+          "ev_8febce8642"
+        ],
+        "scene_time_seconds": 15.0,
+        "explanation": "[WARNING] audio glass break detected in zone 'site' with fused confidence 0.89, corroborated by 2 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "audio_glass_break"
+        ]
+      }
+    }
+  ]
+}

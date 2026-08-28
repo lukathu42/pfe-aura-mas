@@ -1,0 +1,81 @@
+{
+  "scenario": "audio_distress_02",
+  "mode": "mas-auction",
+  "vision_only": false,
+  "audio_backend": "yamnet",
+  "rep": null,
+  "tag": "mas-auction-yamnet",
+  "t_start": 1787859090.1515431,
+  "wall_seconds": 29.374663591384888,
+  "ground_truth": [
+    {
+      "event_type": "audio_scream",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 25.0
+    }
+  ],
+  "alerts": [
+    {
+      "t_wall": 1787859117.5457294,
+      "alert_id": "alt_ef715e98ea",
+      "timestamp": 1787859117.5456831,
+      "severity": "CRITICAL",
+      "event_type": "audio_scream",
+      "confidence": 0.991,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_57a1512f8c",
+        "ev_06f75ad14b",
+        "ev_f9c4e8345e",
+        "ev_5a1885c25a",
+        "ev_ea72956c5b",
+        "ev_9e1d8ea0cb",
+        "ev_2f2dd90379"
+      ],
+      "scene_time_seconds": 15.0,
+      "explanation": "[CRITICAL] audio scream detected in zone 'site' with fused confidence 0.99, corroborated by 7 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_scream"
+      ]
+    }
+  ],
+  "agent_metrics": {
+    "mic_01": {
+      "chunks": 22,
+      "events": 7,
+      "backend": "yamnet",
+      "suppressed_dupes": 2
+    },
+    "coordinator": {
+      "tasks": 0,
+      "bids": 0,
+      "awards": 0,
+      "verifications": 0,
+      "messages": 0,
+      "allocation_ms": [],
+      "bandit_decisions": 0,
+      "feedback_updates": 0
+    },
+    "fusion": {
+      "events_in": 7,
+      "hypotheses_out": 1,
+      "reid_matches": 0
+    },
+    "policy": {
+      "hypotheses": 1,
+      "alerts": 1,
+      "suppressed": 0,
+      "verified_up": 0,
+      "verified_down": 0,
+      "decision_ms": [
+        0.012636184692382812
+      ]
+    }
+  }
+}

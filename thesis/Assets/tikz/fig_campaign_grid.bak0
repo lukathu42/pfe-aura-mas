@@ -1,0 +1,96 @@
+% ============================================================================
+% Evaluation campaign grid and scoring pipeline (contribution C5)
+% Source of truth:
+%   aura_mas/scripts/run_campaign.py  grid expansion, fresh-subprocess isolation,
+%                                     resume-by-skip, free-disk floor
+%   aura_mas/scenarios/replay.py      one run -> one results/run_*.json
+%   aura_mas/eval/metrics.py          evaluate_run -> summary.csv, aggregate -> summary_agg.csv
+%   aura_mas/scripts/thesis_stats.py  paired Wilcoxon / bootstrap / Holm -> thesis_stats.json
+%   results/evaluation_campaign_v2_notes.md   373 runs, 0 failures
+% Referenced as fig:campaign_grid.
+% ============================================================================
+\begin{tikzpicture}[
+    font=\small,
+    dim/.style={draw=black!65, fill=blue!8, rounded corners=2pt,
+                minimum height=6.5mm, minimum width=31mm, align=center,
+                font=\scriptsize},
+    proc/.style={draw=black!70, fill=black!5, rounded corners=2.5pt,
+                 minimum height=8.5mm, minimum width=34mm, align=center,
+                 font=\scriptsize},
+    art/.style={draw=darkgreen!70, fill=darkgreen!7, rounded corners=2pt,
+                minimum height=8mm, minimum width=34mm, align=center,
+                font=\scriptsize},
+    fl/.style={-{Latex[length=2mm]}, thick, black!70},
+    note/.style={font=\scriptsize\itshape, black!60, align=left},
+    brk/.style={draw=black!45, fill=yellow!12, rounded corners=1.5pt,
+                font=\scriptsize, align=left, inner sep=3pt},
+]
+
+% ---- left column: the grid factors --------------------------------------
+\node[note, anchor=south west] at (-0.2,4.15) {Campaign grid factors};
+\node[dim] (scen) at (1.5,3.55) {9 scenarios};
+\node[dim] (mode) at (1.5,2.75) {4 architecture modes};
+\node[dim] (mod)  at (1.5,1.95) {\{audio-visual, vision-only\}};
+\node[dim] (back) at (1.5,1.15) {\{YAMNet (\texttt{auto}), \texttt{dsp}\}};
+\node[dim] (rep)  at (1.5,0.35) {5 repetitions (3 for \texttt{dsp})};
+
+\node[draw=black!40, dashed, rounded corners=3pt, fit=none,
+      minimum width=37mm, minimum height=42mm] at (1.5,1.95) {};
+
+% ---- cartesian product -------------------------------------------------
+\node[proc] (grid) at (6.9,1.95) {\texttt{run\_campaign.py}\\
+  Cartesian product $\rightarrow$ \textbf{373 runs}\\
+  \textnormal{\scriptsize 0 failures}};
+\foreach \n in {scen,mode,mod,back,rep}{
+    \draw[fl, black!45] (\n.east) -- (grid.west);
+}
+
+% ---- per-run isolation -------------------------------------------------
+\node[proc] (sub) at (6.9,-0.35) {fresh \textbf{subprocess} per run\\
+  \texttt{--bus local}, resume-by-skip,\\ free-disk floor};
+\draw[fl] (grid) -- (sub);
+
+\node[proc] (replay) at (6.9,-2.35) {\texttt{scenarios/replay.py}\\
+  instantiate 6 agents from manifest\\
+  warm up models, then start timer};
+\draw[fl] (sub) -- (replay);
+
+% ---- artifacts ---------------------------------------------------------
+\node[art] (runjson) at (6.9,-4.3) {\texttt{results/run\_*.json}\\
+  \textnormal{\scriptsize alerts · ground truth · agent metrics}};
+\draw[fl] (replay) -- (runjson);
+
+\node[art] (jsonl) at (12.1,-4.3) {\texttt{data/alerts\_*.jsonl}\\\texttt{data/audit\_*.jsonl}};
+\draw[fl] (replay.east) -- ++(1.6,0) |- (jsonl.north);
+
+% ---- scoring chain -----------------------------------------------------
+\node[proc] (metrics) at (6.9,-6.2) {\texttt{eval/metrics.py}\\
+  family match, $\pm5$\,s tolerance\\
+  $\rightarrow$ P / R / F1, TTA, FA/h, msgs};
+\draw[fl] (runjson) -- (metrics);
+
+\node[art] (summ) at (1.9,-6.2) {\texttt{summary.csv}\\\textnormal{\scriptsize 416 rows, one per run}};
+\node[art] (aggr) at (1.9,-7.6) {\texttt{summary\_agg.csv}\\\textnormal{\scriptsize 84 groups, mean$\pm$sd}};
+\draw[fl] (metrics.west) -- (summ.east);
+\draw[fl] (metrics.south west) -- (aggr.east);
+
+\node[proc] (stats) at (6.9,-8.35) {\texttt{scripts/thesis\_stats.py}\\
+  paired Wilcoxon · bootstrap CI\\ Cliff's $\delta$ · Holm--Bonferroni};
+\draw[fl] (metrics) -- (stats);
+
+\node[art] (sjson) at (12.1,-8.35) {\texttt{results/thesis\_stats.json}\\
+  \textnormal{\scriptsize + generated \LaTeX{} tables}};
+\draw[fl] (stats) -- (sjson);
+
+% ---- the two isolation notes -------------------------------------------
+\node[brk, anchor=north west, text width=4.3cm] at (9.9,0.55)
+ {\textbf{Why subprocesses?} Model state, tracker state and CUDA/thread
+  pools do not reset cleanly in-process; a fresh interpreter per run
+  removes cross-run contamination as a confound.};
+
+\node[brk, anchor=north west, text width=4.3cm] at (9.9,-2.05)
+ {\textbf{Excluded from aggregation:} the 44 v1 pre-YAMNet runs carry
+  \texttt{rep=None}; pooling one old single-pass run with 5 v2
+  repetitions would corrupt every mean.};
+
+\end{tikzpicture}

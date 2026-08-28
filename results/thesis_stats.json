@@ -1,0 +1,3739 @@
+{
+  "provenance": {
+    "source_csv": "results/summary.csv",
+    "n_rows_used": 180,
+    "filters": "rep is set (v2 only); audio_backend in {auto,''}; mode in 4 core modes",
+    "bootstrap_resamples": 10000,
+    "seed": 20260826,
+    "multiplicity_correction": "Holm-Bonferroni over 6 pairwise mode comparisons",
+    "test": "Wilcoxon signed-rank, paired on (scenario, rep)",
+    "effect_size": "Cliff's delta"
+  },
+  "f1": {
+    "n_paired_cells": 45,
+    "scenarios": [
+      "abandoned_object_01",
+      "audio_alarm_clock_01",
+      "audio_alarm_siren_01",
+      "audio_glass_break_01",
+      "combined_audio_video_01",
+      "demo_site_01",
+      "fight_01",
+      "intrusion_01",
+      "loitering_01"
+    ],
+    "marginals": {
+      "centralized": {
+        "n": 45,
+        "mean": 0.5193333333333333,
+        "median": 0.667,
+        "sd": 0.4023247783479502,
+        "ci_lo": 0.40080000000000005,
+        "ci_hi": 0.6334222222222222
+      },
+      "mas-nocoord": {
+        "n": 45,
+        "mean": 0.5771777777777778,
+        "median": 0.667,
+        "sd": 0.4173601174965903,
+        "ci_lo": 0.45497777777777776,
+        "ci_hi": 0.697245
+      },
+      "mas-rules": {
+        "n": 45,
+        "mean": 0.48984444444444447,
+        "median": 0.5,
+        "sd": 0.442079484603245,
+        "ci_lo": 0.3607772222222222,
+        "ci_hi": 0.6201111111111112
+      },
+      "mas-auction": {
+        "n": 45,
+        "mean": 0.4518888888888889,
+        "median": 0.5,
+        "sd": 0.45315270465635943,
+        "ci_lo": 0.32226666666666665,
+        "ci_hi": 0.588911111111111
+      }
+    },
+    "pairwise": [
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-nocoord",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 22,
+        "mean_diff": -0.057844444444444434,
+        "median_diff": 0.0,
+        "ci_lo": -0.2051338888888889,
+        "ci_hi": 0.08217944444444443,
+        "wilcoxon_W": 102.5,
+        "p_raw": 0.4319670796505365,
+        "cliffs_delta": -0.08493827160493828,
+        "cohen_dz": -0.11635470371191131,
+        "n_required": 579.7486122808754,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-rules",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 28,
+        "mean_diff": 0.0294888888888889,
+        "median_diff": 0.0,
+        "ci_lo": -0.13624833333333336,
+        "ci_hi": 0.1889116666666667,
+        "wilcoxon_W": 184.5,
+        "p_raw": 0.6714534371413619,
+        "cliffs_delta": 0.027654320987654323,
+        "cohen_dz": 0.05290237661059681,
+        "n_required": 2804.5116029600113,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 29,
+        "mean_diff": 0.06744444444444445,
+        "median_diff": 0.0,
+        "ci_lo": -0.1133111111111111,
+        "ci_hi": 0.23855555555555555,
+        "wilcoxon_W": 191.0,
+        "p_raw": 0.5618635909304321,
+        "cliffs_delta": 0.06666666666666667,
+        "cohen_dz": 0.11029665368166064,
+        "n_required": 645.1830273907489,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-rules",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 15,
+        "mean_diff": 0.08733333333333333,
+        "median_diff": 0.0,
+        "ci_lo": -0.014822222222222218,
+        "ci_hi": 0.18888888888888888,
+        "wilcoxon_W": 31.0,
+        "p_raw": 0.0973538726117281,
+        "cliffs_delta": 0.10666666666666667,
+        "cohen_dz": 0.24516570914187769,
+        "n_required": 130.58345487818272,
+        "p_holm": 0.48676936305864055,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 15,
+        "mean_diff": 0.1252888888888889,
+        "median_diff": 0.0,
+        "ci_lo": 0.022486666666666665,
+        "ci_hi": 0.22900111111111107,
+        "wilcoxon_W": 20.5,
+        "p_raw": 0.024229736421100698,
+        "cliffs_delta": 0.14617283950617285,
+        "cohen_dz": 0.34718031714429237,
+        "n_required": 65.11745459492042,
+        "p_holm": 0.1453784185266042,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-rules",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 12,
+        "mean_diff": 0.037955555555555555,
+        "median_diff": 0.0,
+        "ci_lo": -0.06640000000000001,
+        "ci_hi": 0.14444444444444443,
+        "wilcoxon_W": 31.5,
+        "p_raw": 0.5515150900118735,
+        "cliffs_delta": 0.044444444444444446,
+        "cohen_dz": 0.10309730085807177,
+        "n_required": 738.4362637195446,
+        "p_holm": 1.0,
+        "significant_holm": false
+      }
+    ],
+    "per_scenario": {
+      "abandoned_object_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.667,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.5336000000000001,
+          "sd": 0.29829146819847197
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        }
+      },
+      "audio_alarm_clock_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        }
+      },
+      "audio_alarm_siren_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.6,
+          "sd": 0.5477225575051661
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        }
+      },
+      "audio_glass_break_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        }
+      },
+      "combined_audio_video_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.4668,
+          "sd": 0.27398302867148544
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.22360679774997896
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.27386127875258304
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.1,
+          "sd": 0.22360679774997896
+        }
+      },
+      "demo_site_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.7734000000000001,
+          "sd": 0.05947940820149441
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.781,
+          "sd": 0.2037240781056574
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.6286,
+          "sd": 0.05258136552049599
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.667,
+          "sd": 0.0
+        }
+      },
+      "fight_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.5477225575051661
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        }
+      },
+      "intrusion_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.5668,
+          "sd": 0.09146966710336277
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.28,
+          "sd": 0.2588435821108957
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.38,
+          "sd": 0.216794833886788
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.3,
+          "sd": 0.27386127875258304
+        }
+      },
+      "loitering_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      }
+    },
+    "sensitivity_excluding_probe": {
+      "n_paired_cells": 40,
+      "marginals": {
+        "centralized": {
+          "n": 40,
+          "mean": 0.58425,
+          "median": 0.667,
+          "sd": 0.3791004027755911,
+          "ci_lo": 0.4650993750000001,
+          "ci_hi": 0.6959506249999999
+        },
+        "mas-nocoord": {
+          "n": 40,
+          "mean": 0.649325,
+          "median": 0.667,
+          "sd": 0.3853222685506583,
+          "ci_lo": 0.52505,
+          "ci_hi": 0.7625499999999998
+        },
+        "mas-rules": {
+          "n": 40,
+          "mean": 0.551075,
+          "median": 0.571,
+          "sd": 0.4311404903693197,
+          "ci_lo": 0.41607500000000003,
+          "ci_hi": 0.682025
+        },
+        "mas-auction": {
+          "n": 40,
+          "mean": 0.508375,
+          "median": 0.5835,
+          "sd": 0.449690474032859,
+          "ci_lo": 0.375025,
+          "ci_hi": 0.645875
+        }
+      },
+      "pairwise": [
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-nocoord",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 22,
+          "mean_diff": -0.065075,
+          "median_diff": 0.0,
+          "ci_lo": -0.22665187499999997,
+          "ci_hi": 0.09671374999999978,
+          "wilcoxon_W": 102.5,
+          "p_raw": 0.4319670796505365,
+          "cliffs_delta": -0.10125,
+          "cohen_dz": -0.12334415908453975,
+          "n_required": 515.9058233360379,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-rules",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 28,
+          "mean_diff": 0.03317500000000001,
+          "median_diff": 0.0,
+          "ci_lo": -0.15199,
+          "ci_hi": 0.209850625,
+          "wilcoxon_W": 184.5,
+          "p_raw": 0.6714534371413619,
+          "cliffs_delta": 0.025625,
+          "cohen_dz": 0.0560417097138247,
+          "n_required": 2499.107020471982,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 29,
+          "mean_diff": 0.07587500000000001,
+          "median_diff": 0.0665,
+          "ci_lo": -0.12497562500000002,
+          "ci_hi": 0.27005124999999996,
+          "wilcoxon_W": 191.0,
+          "p_raw": 0.5618635909304321,
+          "cliffs_delta": 0.065625,
+          "cohen_dz": 0.11691192217260275,
+          "n_required": 574.2354570648772,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-rules",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 15,
+          "mean_diff": 0.09825,
+          "median_diff": 0.0,
+          "ci_lo": -0.018424999999999997,
+          "ci_hi": 0.21256437499999975,
+          "wilcoxon_W": 31.0,
+          "p_raw": 0.0973538726117281,
+          "cliffs_delta": 0.119375,
+          "cohen_dz": 0.26067130397142896,
+          "n_required": 115.51041869976625,
+          "p_holm": 0.48676936305864055,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 15,
+          "mean_diff": 0.14095,
+          "median_diff": 0.0,
+          "ci_lo": 0.02430000000000001,
+          "ci_hi": 0.25834999999999997,
+          "wilcoxon_W": 20.5,
+          "p_raw": 0.024229736421100698,
+          "cliffs_delta": 0.16,
+          "cohen_dz": 0.37058317355726733,
+          "n_required": 57.152629273471,
+          "p_holm": 0.1453784185266042,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-rules",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 12,
+          "mean_diff": 0.042699999999999995,
+          "median_diff": 0.0,
+          "ci_lo": -0.0775,
+          "ci_hi": 0.16030749999999988,
+          "wilcoxon_W": 31.5,
+          "p_raw": 0.5515150900118735,
+          "cliffs_delta": 0.046875,
+          "cohen_dz": 0.10927002676732193,
+          "n_required": 657.3633815669001,
+          "p_holm": 1.0,
+          "significant_holm": false
+        }
+      ]
+    }
+  },
+  "precision": {
+    "n_paired_cells": 45,
+    "scenarios": [
+      "abandoned_object_01",
+      "audio_alarm_clock_01",
+      "audio_alarm_siren_01",
+      "audio_glass_break_01",
+      "combined_audio_video_01",
+      "demo_site_01",
+      "fight_01",
+      "intrusion_01",
+      "loitering_01"
+    ],
+    "marginals": {
+      "centralized": {
+        "n": 45,
+        "mean": 0.5481555555555555,
+        "median": 0.5,
+        "sd": 0.43754313842157094,
+        "ci_lo": 0.4222222222222222,
+        "ci_hi": 0.6703777777777779
+      },
+      "mas-nocoord": {
+        "n": 45,
+        "mean": 0.5592666666666667,
+        "median": 0.5,
+        "sd": 0.41766675493965066,
+        "ci_lo": 0.43704444444444446,
+        "ci_hi": 0.6779133333333321
+      },
+      "mas-rules": {
+        "n": 45,
+        "mean": 0.4852,
+        "median": 0.5,
+        "sd": 0.4421460885684319,
+        "ci_lo": 0.3555777777777777,
+        "ci_hi": 0.6148222222222223
+      },
+      "mas-auction": {
+        "n": 45,
+        "mean": 0.4518888888888889,
+        "median": 0.5,
+        "sd": 0.45315270465635943,
+        "ci_lo": 0.32226666666666665,
+        "ci_hi": 0.588911111111111
+      }
+    },
+    "pairwise": [
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-nocoord",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 20,
+        "mean_diff": -0.011111111111111112,
+        "median_diff": 0.0,
+        "ci_lo": -0.16666666666666666,
+        "ci_hi": 0.13704444444444444,
+        "wilcoxon_W": 98.0,
+        "p_raw": 0.7894739360980084,
+        "cliffs_delta": -0.009876543209876543,
+        "cohen_dz": -0.020827971338655722,
+        "n_required": 18093.12835840051,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-rules",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 28,
+        "mean_diff": 0.06295555555555556,
+        "median_diff": 0.0,
+        "ci_lo": -0.10742222222222221,
+        "ci_hi": 0.22960000000000003,
+        "wilcoxon_W": 179.5,
+        "p_raw": 0.5863046994461556,
+        "cliffs_delta": 0.07703703703703704,
+        "cohen_dz": 0.10796755538185392,
+        "n_required": 673.31931159564,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 29,
+        "mean_diff": 0.09626666666666667,
+        "median_diff": 0.0,
+        "ci_lo": -0.0926,
+        "ci_hi": 0.27035555555555557,
+        "wilcoxon_W": 185.5,
+        "p_raw": 0.47937939831633936,
+        "cliffs_delta": 0.11358024691358025,
+        "cohen_dz": 0.15252966520478117,
+        "n_required": 337.3641830551171,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-rules",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 15,
+        "mean_diff": 0.07406666666666667,
+        "median_diff": 0.0,
+        "ci_lo": -0.025933333333333333,
+        "ci_hi": 0.17035555555555557,
+        "wilcoxon_W": 38.0,
+        "p_raw": 0.19975546799869393,
+        "cliffs_delta": 0.09037037037037036,
+        "cohen_dz": 0.21436485755185483,
+        "n_required": 170.80494017693547,
+        "p_holm": 0.9987773399934696,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 15,
+        "mean_diff": 0.10737777777777778,
+        "median_diff": 0.0,
+        "ci_lo": 0.007377777777777775,
+        "ci_hi": 0.21106666666666668,
+        "wilcoxon_W": 24.5,
+        "p_raw": 0.04094713384384859,
+        "cliffs_delta": 0.12641975308641976,
+        "cohen_dz": 0.3034701155038013,
+        "n_required": 85.22671457128703,
+        "p_holm": 0.24568280306309154,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-rules",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 12,
+        "mean_diff": 0.03331111111111111,
+        "median_diff": 0.0,
+        "ci_lo": -0.07408888888888888,
+        "ci_hi": 0.14071111111111112,
+        "wilcoxon_W": 31.5,
+        "p_raw": 0.5515150900118735,
+        "cliffs_delta": 0.04049382716049383,
+        "cohen_dz": 0.08995439562565005,
+        "n_required": 969.9801055991086,
+        "p_holm": 1.0,
+        "significant_holm": false
+      }
+    ],
+    "per_scenario": {
+      "abandoned_object_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.5,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.22360679774997896
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        }
+      },
+      "audio_alarm_clock_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        }
+      },
+      "audio_alarm_siren_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.6,
+          "sd": 0.5477225575051661
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        }
+      },
+      "audio_glass_break_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        }
+      },
+      "combined_audio_video_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.6,
+          "sd": 0.4183300132670378
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.22360679774997896
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.27386127875258304
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.1,
+          "sd": 0.22360679774997896
+        }
+      },
+      "demo_site_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.9334,
+          "sd": 0.148922127301486
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.7668,
+          "sd": 0.22353232428443096
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.6002000000000001,
+          "sd": 0.09146966710336277
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.667,
+          "sd": 0.0
+        }
+      },
+      "fight_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.5477225575051661
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        }
+      },
+      "intrusion_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.7,
+          "sd": 0.27386127875258304
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.2666,
+          "sd": 0.25274057845941555
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.3666,
+          "sd": 0.2173195803419471
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.3,
+          "sd": 0.27386127875258304
+        }
+      },
+      "loitering_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      }
+    },
+    "sensitivity_excluding_probe": {
+      "n_paired_cells": 40,
+      "marginals": {
+        "centralized": {
+          "n": 40,
+          "mean": 0.616675,
+          "median": 0.5835,
+          "sd": 0.41551225027453176,
+          "ci_lo": 0.4875,
+          "ci_hi": 0.7416750000000001
+        },
+        "mas-nocoord": {
+          "n": 40,
+          "mean": 0.629175,
+          "median": 0.5835,
+          "sd": 0.3894842011541905,
+          "ci_lo": 0.504175,
+          "ci_hi": 0.74585
+        },
+        "mas-rules": {
+          "n": 40,
+          "mean": 0.5458500000000001,
+          "median": 0.5,
+          "sd": 0.43197421278685205,
+          "ci_lo": 0.4125,
+          "ci_hi": 0.6750499999999999
+        },
+        "mas-auction": {
+          "n": 40,
+          "mean": 0.508375,
+          "median": 0.5835,
+          "sd": 0.449690474032859,
+          "ci_lo": 0.375025,
+          "ci_hi": 0.645875
+        }
+      },
+      "pairwise": [
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-nocoord",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 20,
+          "mean_diff": -0.0125,
+          "median_diff": 0.0,
+          "ci_lo": -0.18334999999999999,
+          "ci_hi": 0.16665,
+          "wilcoxon_W": 98.0,
+          "p_raw": 0.7894739360980084,
+          "cliffs_delta": -0.00625,
+          "cohen_dz": -0.022060609236837034,
+          "n_required": 16127.7061921467,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-rules",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 28,
+          "mean_diff": 0.070825,
+          "median_diff": 0.0,
+          "ci_lo": -0.120825,
+          "ci_hi": 0.258325,
+          "wilcoxon_W": 179.5,
+          "p_raw": 0.5863046994461556,
+          "cliffs_delta": 0.088125,
+          "cohen_dz": 0.11443940702941277,
+          "n_required": 599.3167411171008,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 29,
+          "mean_diff": 0.1083,
+          "median_diff": 0.16649999999999998,
+          "ci_lo": -0.10002499999999999,
+          "ci_hi": 0.308275625,
+          "wilcoxon_W": 185.5,
+          "p_raw": 0.47937939831633936,
+          "cliffs_delta": 0.125,
+          "cohen_dz": 0.16179295936451507,
+          "n_required": 299.8391716425479,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-rules",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 15,
+          "mean_diff": 0.083325,
+          "median_diff": 0.0,
+          "ci_lo": -0.029175,
+          "ci_hi": 0.195825,
+          "wilcoxon_W": 38.0,
+          "p_raw": 0.19975546799869393,
+          "cliffs_delta": 0.09875,
+          "cohen_dz": 0.22771492094199738,
+          "n_required": 151.36470885528624,
+          "p_holm": 0.9987773399934696,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 15,
+          "mean_diff": 0.12079999999999999,
+          "median_diff": 0.0,
+          "ci_lo": 0.004149999999999998,
+          "ci_hi": 0.23747500000000002,
+          "wilcoxon_W": 24.5,
+          "p_raw": 0.04094713384384859,
+          "cliffs_delta": 0.135,
+          "cohen_dz": 0.3233301075909929,
+          "n_required": 75.07845266487602,
+          "p_holm": 0.24568280306309154,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-rules",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 12,
+          "mean_diff": 0.037475,
+          "median_diff": 0.0,
+          "ci_lo": -0.08335000000000001,
+          "ci_hi": 0.15830000000000002,
+          "wilcoxon_W": 31.5,
+          "p_raw": 0.5515150900118735,
+          "cliffs_delta": 0.041875,
+          "cohen_dz": 0.0953247389502317,
+          "n_required": 863.7665024066757,
+          "p_holm": 1.0,
+          "significant_holm": false
+        }
+      ]
+    }
+  },
+  "recall": {
+    "n_paired_cells": 45,
+    "scenarios": [
+      "abandoned_object_01",
+      "audio_alarm_clock_01",
+      "audio_alarm_siren_01",
+      "audio_glass_break_01",
+      "combined_audio_video_01",
+      "demo_site_01",
+      "fight_01",
+      "intrusion_01",
+      "loitering_01"
+    ],
+    "marginals": {
+      "centralized": {
+        "n": 45,
+        "mean": 0.5296666666666666,
+        "median": 0.5,
+        "sd": 0.4223806985948275,
+        "ci_lo": 0.4074438888888889,
+        "ci_hi": 0.6518672222222223
+      },
+      "mas-nocoord": {
+        "n": 45,
+        "mean": 0.6111333333333333,
+        "median": 0.667,
+        "sd": 0.43374398607305836,
+        "ci_lo": 0.48519999999999996,
+        "ci_hi": 0.7370666666666666
+      },
+      "mas-rules": {
+        "n": 45,
+        "mean": 0.49633333333333335,
+        "median": 0.5,
+        "sd": 0.4430996194167546,
+        "ci_lo": 0.3666888888888889,
+        "ci_hi": 0.6259555555555555
+      },
+      "mas-auction": {
+        "n": 45,
+        "mean": 0.4518888888888889,
+        "median": 0.5,
+        "sd": 0.45315270465635943,
+        "ci_lo": 0.32226666666666665,
+        "ci_hi": 0.588911111111111
+      }
+    },
+    "pairwise": [
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-nocoord",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 16,
+        "mean_diff": -0.08146666666666666,
+        "median_diff": 0.0,
+        "ci_lo": -0.22962222222222223,
+        "ci_hi": 0.05926666666666666,
+        "wilcoxon_W": 48.0,
+        "p_raw": 0.2864220227778588,
+        "cliffs_delta": -0.11358024691358025,
+        "cohen_dz": -0.163505704356968,
+        "n_required": 293.5903585113812,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-rules",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 19,
+        "mean_diff": 0.03333333333333333,
+        "median_diff": 0.0,
+        "ci_lo": -0.14444444444444443,
+        "ci_hi": 0.2,
+        "wilcoxon_W": 90.5,
+        "p_raw": 0.8489339097874008,
+        "cliffs_delta": 0.035555555555555556,
+        "cohen_dz": 0.05671308728156004,
+        "n_required": 2440.287682891774,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 22,
+        "mean_diff": 0.07777777777777778,
+        "median_diff": 0.0,
+        "ci_lo": -0.1111111111111111,
+        "ci_hi": 0.25555555555555554,
+        "wilcoxon_W": 112.0,
+        "p_raw": 0.6177535443230383,
+        "cliffs_delta": 0.08839506172839506,
+        "cohen_dz": 0.1216785049356876,
+        "n_required": 530.126942926811,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-rules",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 13,
+        "mean_diff": 0.1148,
+        "median_diff": 0.0,
+        "ci_lo": 0.0036888888888888874,
+        "ci_hi": 0.22962222222222223,
+        "wilcoxon_W": 20.5,
+        "p_raw": 0.07543747473423859,
+        "cliffs_delta": 0.14320987654320988,
+        "cohen_dz": 0.2903450140767131,
+        "n_required": 93.10625573615133,
+        "p_holm": 0.3771873736711929,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 12,
+        "mean_diff": 0.15924444444444444,
+        "median_diff": 0.0,
+        "ci_lo": 0.048133333333333334,
+        "ci_hi": 0.2740444444444445,
+        "wilcoxon_W": 9.0,
+        "p_raw": 0.015924985627566963,
+        "cliffs_delta": 0.19012345679012346,
+        "cohen_dz": 0.4041663704185122,
+        "n_required": 48.049321401137014,
+        "p_holm": 0.09554991376540178,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-rules",
+        "mode_b": "mas-auction",
+        "n_pairs": 45,
+        "n_nonzero_pairs": 9,
+        "mean_diff": 0.044444444444444446,
+        "median_diff": 0.0,
+        "ci_lo": -0.05555555555555555,
+        "ci_hi": 0.15555555555555556,
+        "wilcoxon_W": 16.5,
+        "p_raw": 0.4652088184521417,
+        "cliffs_delta": 0.05135802469135802,
+        "cohen_dz": 0.12125768111645968,
+        "n_required": 533.8129306325752,
+        "p_holm": 1.0,
+        "significant_holm": false
+      }
+    ],
+    "per_scenario": {
+      "abandoned_object_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        }
+      },
+      "audio_alarm_clock_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        }
+      },
+      "audio_alarm_siren_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.6,
+          "sd": 0.5477225575051661
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        }
+      },
+      "audio_glass_break_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        }
+      },
+      "combined_audio_video_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.22360679774997896
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.22360679774997896
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.27386127875258304
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.1,
+          "sd": 0.22360679774997896
+        }
+      },
+      "demo_site_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.667,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8002,
+          "sd": 0.1823916116492203
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.667,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.667,
+          "sd": 0.0
+        }
+      },
+      "fight_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 1.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.8,
+          "sd": 0.4472135954999579
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.5477225575051661
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.2,
+          "sd": 0.4472135954999579
+        }
+      },
+      "intrusion_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.5,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.3,
+          "sd": 0.27386127875258304
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.4,
+          "sd": 0.22360679774997896
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.3,
+          "sd": 0.27386127875258304
+        }
+      },
+      "loitering_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      }
+    },
+    "sensitivity_excluding_probe": {
+      "n_paired_cells": 40,
+      "marginals": {
+        "centralized": {
+          "n": 40,
+          "mean": 0.595875,
+          "median": 0.667,
+          "sd": 0.40101679659815515,
+          "ci_lo": 0.47087437500000007,
+          "ci_hi": 0.7166750000000001
+        },
+        "mas-nocoord": {
+          "n": 40,
+          "mean": 0.687525,
+          "median": 1.0,
+          "sd": 0.39797699891660404,
+          "ci_lo": 0.558399375,
+          "ci_hi": 0.8041750000000001
+        },
+        "mas-rules": {
+          "n": 40,
+          "mean": 0.558375,
+          "median": 0.667,
+          "sd": 0.43125158862583646,
+          "ci_lo": 0.42502499999999993,
+          "ci_hi": 0.68755
+        },
+        "mas-auction": {
+          "n": 40,
+          "mean": 0.508375,
+          "median": 0.5835,
+          "sd": 0.449690474032859,
+          "ci_lo": 0.375025,
+          "ci_hi": 0.645875
+        }
+      },
+      "pairwise": [
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-nocoord",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 16,
+          "mean_diff": -0.09165,
+          "median_diff": 0.0,
+          "ci_lo": -0.2501031249999999,
+          "ci_hi": 0.07085,
+          "wilcoxon_W": 48.0,
+          "p_raw": 0.2864220227778588,
+          "cliffs_delta": -0.1375,
+          "cohen_dz": -0.1734741686068146,
+          "n_required": 260.81825049181657,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-rules",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 19,
+          "mean_diff": 0.0375,
+          "median_diff": 0.0,
+          "ci_lo": -0.1625,
+          "ci_hi": 0.225,
+          "wilcoxon_W": 90.5,
+          "p_raw": 0.8489339097874008,
+          "cliffs_delta": 0.035625,
+          "cohen_dz": 0.06008016035638718,
+          "n_required": 2174.430047090482,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 22,
+          "mean_diff": 0.0875,
+          "median_diff": 0.0,
+          "ci_lo": -0.125,
+          "ci_hi": 0.2875,
+          "wilcoxon_W": 112.0,
+          "p_raw": 0.6177535443230383,
+          "cliffs_delta": 0.093125,
+          "cohen_dz": 0.12899823008352207,
+          "n_required": 471.6720085525478,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-rules",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 13,
+          "mean_diff": 0.12915,
+          "median_diff": 0.0,
+          "ci_lo": 0.0,
+          "ci_hi": 0.25830000000000003,
+          "wilcoxon_W": 20.5,
+          "p_raw": 0.07543747473423859,
+          "cliffs_delta": 0.165625,
+          "cohen_dz": 0.3091902293692075,
+          "n_required": 82.10244377606875,
+          "p_holm": 0.3771873736711929,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 12,
+          "mean_diff": 0.17915,
+          "median_diff": 0.0,
+          "ci_lo": 0.05415,
+          "ci_hi": 0.3083,
+          "wilcoxon_W": 9.0,
+          "p_raw": 0.015924985627566963,
+          "cliffs_delta": 0.215625,
+          "cohen_dz": 0.43261476501915574,
+          "n_required": 41.93773118113352,
+          "p_holm": 0.09554991376540178,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-rules",
+          "mode_b": "mas-auction",
+          "n_pairs": 40,
+          "n_nonzero_pairs": 9,
+          "mean_diff": 0.05,
+          "median_diff": 0.0,
+          "ci_lo": -0.075,
+          "ci_hi": 0.1625,
+          "wilcoxon_W": 16.5,
+          "p_raw": 0.4652088184521417,
+          "cliffs_delta": 0.055625,
+          "cohen_dz": 0.1285512494253306,
+          "n_required": 474.9577766372051,
+          "p_holm": 1.0,
+          "significant_holm": false
+        }
+      ]
+    }
+  },
+  "mean_time_to_alert_s": {
+    "n_paired_cells": 14,
+    "scenarios": [
+      "audio_alarm_clock_01",
+      "combined_audio_video_01",
+      "demo_site_01",
+      "fight_01",
+      "intrusion_01"
+    ],
+    "marginals": {
+      "centralized": {
+        "n": 14,
+        "mean": 9.46642857142857,
+        "median": 11.8,
+        "sd": 7.977301073519942,
+        "ci_lo": 5.491410714285714,
+        "ci_hi": 13.43228571428571
+      },
+      "mas-nocoord": {
+        "n": 14,
+        "mean": 8.871428571428572,
+        "median": 8.145,
+        "sd": 6.84493508104615,
+        "ci_lo": 5.8170714285714284,
+        "ci_hi": 12.733571428571427
+      },
+      "mas-rules": {
+        "n": 14,
+        "mean": 6.604285714285714,
+        "median": 5.97,
+        "sd": 5.9161301206443735,
+        "ci_lo": 4.001339285714285,
+        "ci_hi": 10.008071428571427
+      },
+      "mas-auction": {
+        "n": 14,
+        "mean": 8.456428571428571,
+        "median": 8.94,
+        "sd": 7.344433378304391,
+        "ci_lo": 5.067785714285715,
+        "ci_hi": 12.612196428571428
+      }
+    },
+    "pairwise": [
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-nocoord",
+        "n_pairs": 14,
+        "n_nonzero_pairs": 14,
+        "mean_diff": 0.595,
+        "median_diff": -4.090000000000001,
+        "ci_lo": -4.625732142857143,
+        "ci_hi": 6.025267857142853,
+        "wilcoxon_W": 48.0,
+        "p_raw": 0.8077392578125,
+        "cliffs_delta": 0.07653061224489796,
+        "cohen_dz": 0.05615346655572239,
+        "n_required": 2489.1694546908757,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-rules",
+        "n_pairs": 14,
+        "n_nonzero_pairs": 14,
+        "mean_diff": 2.8621428571428567,
+        "median_diff": 3.309999999999999,
+        "ci_lo": -2.9200357142857145,
+        "ci_hi": 8.737232142857142,
+        "wilcoxon_W": 36.0,
+        "p_raw": 0.3258056640625,
+        "cliffs_delta": 0.21428571428571427,
+        "cohen_dz": 0.24655556942437648,
+        "n_required": 129.1153784457188,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "centralized",
+        "mode_b": "mas-auction",
+        "n_pairs": 14,
+        "n_nonzero_pairs": 14,
+        "mean_diff": 1.0099999999999996,
+        "median_diff": -4.63,
+        "ci_lo": -4.897946428571428,
+        "ci_hi": 6.996196428571421,
+        "wilcoxon_W": 44.0,
+        "p_raw": 0.5935272605600672,
+        "cliffs_delta": 0.0663265306122449,
+        "cohen_dz": 0.0846965831588049,
+        "n_required": 1094.1473839984874,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-rules",
+        "n_pairs": 14,
+        "n_nonzero_pairs": 13,
+        "mean_diff": 2.267142857142857,
+        "median_diff": -0.0250000000000008,
+        "ci_lo": -0.1771607142857147,
+        "ci_hi": 6.087874999999999,
+        "wilcoxon_W": 45.5,
+        "p_raw": 1.0,
+        "cliffs_delta": 0.20408163265306123,
+        "cohen_dz": 0.3472894967728361,
+        "n_required": 65.07651824619153,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-nocoord",
+        "mode_b": "mas-auction",
+        "n_pairs": 14,
+        "n_nonzero_pairs": 13,
+        "mean_diff": 0.4149999999999997,
+        "median_diff": -0.240000000000002,
+        "ci_lo": -0.6678750000000007,
+        "ci_hi": 1.847160714285714,
+        "wilcoxon_W": 36.0,
+        "p_raw": 0.5067455281526702,
+        "cliffs_delta": -0.025510204081632654,
+        "cohen_dz": 0.1660333632862871,
+        "n_required": 284.71927966986755,
+        "p_holm": 1.0,
+        "significant_holm": false
+      },
+      {
+        "mode_a": "mas-rules",
+        "mode_b": "mas-auction",
+        "n_pairs": 14,
+        "n_nonzero_pairs": 13,
+        "mean_diff": -1.852142857142857,
+        "median_diff": 0.025000000000000355,
+        "ci_lo": -5.4457321428571435,
+        "ci_hi": 0.19071428571428567,
+        "wilcoxon_W": 33.0,
+        "p_raw": 0.38235208985751545,
+        "cliffs_delta": -0.12244897959183673,
+        "cohen_dz": -0.2881461529633564,
+        "n_required": 94.53267679366577,
+        "p_holm": 1.0,
+        "significant_holm": false
+      }
+    ],
+    "per_scenario": {
+      "abandoned_object_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 5.388,
+          "sd": 7.932179397870423
+        },
+        "mas-nocoord": {
+          "n": 4,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-rules": {
+          "n": 1,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-auction": {
+          "n": 1,
+          "mean": 0.0,
+          "sd": 0.0
+        }
+      },
+      "audio_alarm_clock_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 8.138,
+          "sd": 0.2676191323504352
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 8.374,
+          "sd": 0.7230006915626016
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 9.426,
+          "sd": 0.18352111595127168
+        }
+      },
+      "audio_alarm_siren_01": {
+        "centralized": {
+          "n": 1,
+          "mean": 0.0,
+          "sd": 0.0
+        },
+        "mas-nocoord": {
+          "n": 3,
+          "mean": 8.363333333333333,
+          "sd": 0.020816659994661594
+        },
+        "mas-rules": {
+          "n": 4,
+          "mean": 9.8825,
+          "sd": 0.02753785273643089
+        },
+        "mas-auction": {
+          "n": 4,
+          "mean": 9.8875,
+          "sd": 0.0694622199472492
+        }
+      },
+      "audio_glass_break_01": {
+        "centralized": {
+          "n": 0,
+          "mean": null,
+          "sd": null
+        },
+        "mas-nocoord": {
+          "n": 4,
+          "mean": 8.2125,
+          "sd": 0.34932076949417123
+        },
+        "mas-rules": {
+          "n": 4,
+          "mean": 8.032499999999999,
+          "sd": 0.4201884497857279
+        },
+        "mas-auction": {
+          "n": 4,
+          "mean": 9.075,
+          "sd": 0.3098924544633725
+        }
+      },
+      "combined_audio_video_01": {
+        "centralized": {
+          "n": 4,
+          "mean": 11.3075,
+          "sd": 8.199468986871446
+        },
+        "mas-nocoord": {
+          "n": 4,
+          "mean": 17.735,
+          "sd": 11.823517525113525
+        },
+        "mas-rules": {
+          "n": 2,
+          "mean": 12.0,
+          "sd": 16.97056274847714
+        },
+        "mas-auction": {
+          "n": 1,
+          "mean": 23.71,
+          "sd": 0.0
+        }
+      },
+      "demo_site_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 15.069999999999999,
+          "sd": 3.107394406894625
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 5.598,
+          "sd": 3.1368885858442597
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 3.64,
+          "sd": 0.2690724809414741
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 2.96,
+          "sd": 0.13982131454109573
+        }
+      },
+      "fight_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 7.514,
+          "sd": 0.2929675749976434
+        },
+        "mas-nocoord": {
+          "n": 4,
+          "mean": 8.23,
+          "sd": 0.5710808465824551
+        },
+        "mas-rules": {
+          "n": 2,
+          "mean": 8.555,
+          "sd": 0.23334523779156074
+        },
+        "mas-auction": {
+          "n": 1,
+          "mean": 8.77,
+          "sd": 0.0
+        }
+      },
+      "intrusion_01": {
+        "centralized": {
+          "n": 5,
+          "mean": 10.99,
+          "sd": 10.230806419828301
+        },
+        "mas-nocoord": {
+          "n": 3,
+          "mean": 15.836666666666666,
+          "sd": 13.715357572201073
+        },
+        "mas-rules": {
+          "n": 4,
+          "mean": 5.9275,
+          "sd": 11.855
+        },
+        "mas-auction": {
+          "n": 3,
+          "mean": 15.936666666666666,
+          "sd": 13.801761964812076
+        }
+      }
+    },
+    "sensitivity_excluding_probe": {
+      "n_paired_cells": 14,
+      "marginals": {
+        "centralized": {
+          "n": 14,
+          "mean": 9.46642857142857,
+          "median": 11.8,
+          "sd": 7.977301073519942,
+          "ci_lo": 5.491410714285714,
+          "ci_hi": 13.43228571428571
+        },
+        "mas-nocoord": {
+          "n": 14,
+          "mean": 8.871428571428572,
+          "median": 8.145,
+          "sd": 6.84493508104615,
+          "ci_lo": 5.8170714285714284,
+          "ci_hi": 12.733571428571427
+        },
+        "mas-rules": {
+          "n": 14,
+          "mean": 6.604285714285714,
+          "median": 5.97,
+          "sd": 5.9161301206443735,
+          "ci_lo": 4.001339285714285,
+          "ci_hi": 10.008071428571427
+        },
+        "mas-auction": {
+          "n": 14,
+          "mean": 8.456428571428571,
+          "median": 8.94,
+          "sd": 7.344433378304391,
+          "ci_lo": 5.067785714285715,
+          "ci_hi": 12.612196428571428
+        }
+      },
+      "pairwise": [
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-nocoord",
+          "n_pairs": 14,
+          "n_nonzero_pairs": 14,
+          "mean_diff": 0.595,
+          "median_diff": -4.090000000000001,
+          "ci_lo": -4.625732142857143,
+          "ci_hi": 6.025267857142853,
+          "wilcoxon_W": 48.0,
+          "p_raw": 0.8077392578125,
+          "cliffs_delta": 0.07653061224489796,
+          "cohen_dz": 0.05615346655572239,
+          "n_required": 2489.1694546908757,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-rules",
+          "n_pairs": 14,
+          "n_nonzero_pairs": 14,
+          "mean_diff": 2.8621428571428567,
+          "median_diff": 3.309999999999999,
+          "ci_lo": -2.9200357142857145,
+          "ci_hi": 8.737232142857142,
+          "wilcoxon_W": 36.0,
+          "p_raw": 0.3258056640625,
+          "cliffs_delta": 0.21428571428571427,
+          "cohen_dz": 0.24655556942437648,
+          "n_required": 129.1153784457188,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "centralized",
+          "mode_b": "mas-auction",
+          "n_pairs": 14,
+          "n_nonzero_pairs": 14,
+          "mean_diff": 1.0099999999999996,
+          "median_diff": -4.63,
+          "ci_lo": -4.897946428571428,
+          "ci_hi": 6.996196428571421,
+          "wilcoxon_W": 44.0,
+          "p_raw": 0.5935272605600672,
+          "cliffs_delta": 0.0663265306122449,
+          "cohen_dz": 0.0846965831588049,
+          "n_required": 1094.1473839984874,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-rules",
+          "n_pairs": 14,
+          "n_nonzero_pairs": 13,
+          "mean_diff": 2.267142857142857,
+          "median_diff": -0.0250000000000008,
+          "ci_lo": -0.1771607142857147,
+          "ci_hi": 6.087874999999999,
+          "wilcoxon_W": 45.5,
+          "p_raw": 1.0,
+          "cliffs_delta": 0.20408163265306123,
+          "cohen_dz": 0.3472894967728361,
+          "n_required": 65.07651824619153,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-nocoord",
+          "mode_b": "mas-auction",
+          "n_pairs": 14,
+          "n_nonzero_pairs": 13,
+          "mean_diff": 0.4149999999999997,
+          "median_diff": -0.240000000000002,
+          "ci_lo": -0.6678750000000007,
+          "ci_hi": 1.847160714285714,
+          "wilcoxon_W": 36.0,
+          "p_raw": 0.5067455281526702,
+          "cliffs_delta": -0.025510204081632654,
+          "cohen_dz": 0.1660333632862871,
+          "n_required": 284.71927966986755,
+          "p_holm": 1.0,
+          "significant_holm": false
+        },
+        {
+          "mode_a": "mas-rules",
+          "mode_b": "mas-auction",
+          "n_pairs": 14,
+          "n_nonzero_pairs": 13,
+          "mean_diff": -1.852142857142857,
+          "median_diff": 0.025000000000000355,
+          "ci_lo": -5.4457321428571435,
+          "ci_hi": 0.19071428571428567,
+          "wilcoxon_W": 33.0,
+          "p_raw": 0.38235208985751545,
+          "cliffs_delta": -0.12244897959183673,
+          "cohen_dz": -0.2881461529633564,
+          "n_required": 94.53267679366577,
+          "p_holm": 1.0,
+          "significant_holm": false
+        }
+      ]
+    }
+  },
+  "variance_tests": {
+    "precision_demo_site_01": {
+      "scenario": "demo_site_01",
+      "metric": "precision",
+      "per_mode": {
+        "centralized": {
+          "n": 5,
+          "mean": 0.9334,
+          "variance": 0.0221778,
+          "values": [
+            0.667,
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "mas-nocoord": {
+          "n": 5,
+          "mean": 0.7668,
+          "variance": 0.049966699999999996,
+          "values": [
+            0.5,
+            0.667,
+            1.0,
+            1.0,
+            0.667
+          ]
+        },
+        "mas-rules": {
+          "n": 5,
+          "mean": 0.6002000000000001,
+          "variance": 0.008366700000000005,
+          "values": [
+            0.5,
+            0.5,
+            0.667,
+            0.667,
+            0.667
+          ]
+        },
+        "mas-auction": {
+          "n": 5,
+          "mean": 0.667,
+          "variance": 0.0,
+          "values": [
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            0.667
+          ]
+        }
+      },
+      "levene": {
+        "stat": 1.6193738687096826,
+        "p": 0.22429723658016898
+      },
+      "fligner": {
+        "stat": 4.462553657276124,
+        "p": 0.21565483480927666
+      }
+    },
+    "precision_all": {
+      "scenario": "ALL",
+      "metric": "precision",
+      "per_mode": {
+        "centralized": {
+          "n": 45,
+          "mean": 0.5481555555555555,
+          "variance": 0.19144399797979794,
+          "values": [
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            0.5,
+            0.5,
+            0.667,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.5,
+            1.0,
+            1.0,
+            0.5,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mas-nocoord": {
+          "n": 45,
+          "mean": 0.5592666666666667,
+          "variance": 0.17444551818181817,
+          "values": [
+            0.5,
+            0.5,
+            0.0,
+            0.5,
+            0.5,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.5,
+            0.0,
+            0.5,
+            0.5,
+            0.5,
+            0.5,
+            0.667,
+            1.0,
+            1.0,
+            0.667,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            0.333,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mas-rules": {
+          "n": 45,
+          "mean": 0.4852,
+          "variance": 0.1954931636363636,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.5,
+            0.5,
+            0.667,
+            0.667,
+            0.667,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.333,
+            0.0,
+            0.5,
+            0.5,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mas-auction": {
+          "n": 45,
+          "mean": 0.4518888888888889,
+          "variance": 0.20534737373737377,
+          "values": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.5,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "levene": {
+        "stat": 0.7654254713954726,
+        "p": 0.5148458531867695
+      },
+      "fligner": {
+        "stat": 2.009077716840093,
+        "p": 0.5705247298482419
+      }
+    },
+    "f1_all": {
+      "scenario": "ALL",
+      "metric": "f1",
+      "per_mode": {
+        "centralized": {
+          "n": 45,
+          "mean": 0.5193333333333333,
+          "variance": 0.16186522727272726,
+          "values": [
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.667,
+            0.667,
+            0.5,
+            0.5,
+            0.667,
+            0.8,
+            0.8,
+            0.8,
+            0.8,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.5,
+            0.667,
+            0.667,
+            0.5,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mas-nocoord": {
+          "n": 45,
+          "mean": 0.5771777777777778,
+          "variance": 0.17418946767676766,
+          "values": [
+            0.667,
+            0.667,
+            0.0,
+            0.667,
+            0.667,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.5,
+            0.0,
+            0.5,
+            0.5,
+            0.5,
+            0.571,
+            0.667,
+            1.0,
+            1.0,
+            0.667,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            0.4,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mas-rules": {
+          "n": 45,
+          "mean": 0.48984444444444447,
+          "variance": 0.19543427070707076,
+          "values": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.571,
+            0.571,
+            0.667,
+            0.667,
+            0.667,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.4,
+            0.0,
+            0.5,
+            0.5,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "mas-auction": {
+          "n": 45,
+          "mean": 0.4518888888888889,
+          "variance": 0.20534737373737377,
+          "values": [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            0.667,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.5,
+            0.5,
+            0.0,
+            0.5,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "levene": {
+        "stat": 1.3713424512741101,
+        "p": 0.25314446152335024
+      },
+      "fligner": {
+        "stat": 0.14135629426516447,
+        "p": 0.9864496974569662
+      }
+    }
+  },
+  "fa_per_hour_degeneracy": {
+    "note": "false_alerts_per_hour = fp / (wall_seconds/3600). At the run lengths in this campaign a single false positive extrapolates to a very large hourly rate, so the metric reports run duration as much as alert quality.",
+    "min_wall_seconds": 9.1,
+    "max_fa_per_hour": 393.9,
+    "distinct_fp_counts": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "rows": [
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 97.8,
+        "fa_per_hour": 36.8
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 81.9,
+        "fa_per_hour": 44.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 82.4,
+        "fa_per_hour": 43.7
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 82.2,
+        "fa_per_hour": 43.8
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 83.8,
+        "fa_per_hour": 43.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 87.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 82.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 88.3,
+        "fa_per_hour": 40.8
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 44.5
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-nocoord",
+        "fp": 2,
+        "wall_seconds": 84.6,
+        "fa_per_hour": 85.1
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 82.1,
+        "fa_per_hour": 43.8
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 81.2,
+        "fa_per_hour": 44.3
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 82.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "abandoned_object_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 80.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.8,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 29.0,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 28.8,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 29.0,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 29.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_clock_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.2,
+        "fa_per_hour": 392.1
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.1,
+        "fa_per_hour": 393.7
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.1,
+        "fa_per_hour": 393.9
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.2,
+        "fa_per_hour": 393.4
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 28.8,
+        "fa_per_hour": 125.1
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 28.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 28.9,
+        "fa_per_hour": 124.5
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 28.3,
+        "fa_per_hour": 127.2
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.2,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 126.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.5,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_alarm_siren_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 28.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 11.5,
+        "fa_per_hour": 313.1
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.2,
+        "fa_per_hour": 392.7
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.1,
+        "fa_per_hour": 393.8
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.1,
+        "fa_per_hour": 393.7
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 9.2,
+        "fa_per_hour": 393.2
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 28.9,
+        "fa_per_hour": 124.6
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 26.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 29.0,
+        "fa_per_hour": 124.3
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 29.4,
+        "fa_per_hour": 122.4
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 26.2,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 26.2,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "audio_glass_break_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 26.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "centralized",
+        "fp": 3,
+        "wall_seconds": 66.7,
+        "fa_per_hour": 161.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 29.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 29.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 35.7,
+        "fa_per_hour": 100.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 36.4,
+        "fa_per_hour": 98.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-auction",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-auction",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 62.4
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-auction",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-auction",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 62.5,
+        "fa_per_hour": 57.6
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-nocoord",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 62.4
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 62.4
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 62.4
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 72.7,
+        "fa_per_hour": 49.5
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 62.4
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "combined_audio_video_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 124.8
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 97.9,
+        "fa_per_hour": 36.8
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 63.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 64.0,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 56.0,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 56.1,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 83.4,
+        "fa_per_hour": 43.2
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 63.0,
+        "fa_per_hour": 57.1
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 63.1,
+        "fa_per_hour": 57.1
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 65.1,
+        "fa_per_hour": 55.3
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 71.2,
+        "fa_per_hour": 50.5
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-nocoord",
+        "fp": 2,
+        "wall_seconds": 91.3,
+        "fa_per_hour": 78.9
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 307.0,
+        "fa_per_hour": 11.7
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 88.0,
+        "fa_per_hour": 81.8
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 82.2,
+        "fa_per_hour": 87.6
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 78.9,
+        "fa_per_hour": 45.6
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 77.3,
+        "fa_per_hour": 46.6
+      },
+      {
+        "scenario": "demo_site_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 79.2,
+        "fa_per_hour": 45.5
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 12.6,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.2,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.0,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 11.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 10.8,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 13.1,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 14.0,
+        "fa_per_hour": 257.6
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 13.6,
+        "fa_per_hour": 265.2
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 14.4,
+        "fa_per_hour": 250.5
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 16.5,
+        "fa_per_hour": 218.8
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 12.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 15.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 17.8,
+        "fa_per_hour": 202.8
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 12.8,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 12.8,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 12.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 15.0,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 14.6,
+        "fa_per_hour": 247.0
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 16.1,
+        "fa_per_hour": 223.1
+      },
+      {
+        "scenario": "fight_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 19.0,
+        "fa_per_hour": 189.1
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 102.7,
+        "fa_per_hour": 35.0
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 55.1,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 66.2,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 69.9,
+        "fa_per_hour": 51.5
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "centralized",
+        "fp": 1,
+        "wall_seconds": 66.7,
+        "fa_per_hour": 53.9
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 76.7,
+        "fa_per_hour": 47.0
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-auction",
+        "fp": 2,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 116.4
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-auction",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-auction",
+        "fp": 2,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 116.4
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-nocoord",
+        "fp": 2,
+        "wall_seconds": 97.0,
+        "fa_per_hour": 74.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-nocoord",
+        "fp": 2,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 116.4
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-nocoord",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-nocoord",
+        "fp": 2,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 116.4
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 92.2,
+        "fa_per_hour": 78.1
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-rules",
+        "fp": 2,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 116.4
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "intrusion_01",
+        "mode": "mas-rules",
+        "fp": 1,
+        "wall_seconds": 61.9,
+        "fa_per_hour": 58.2
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 52.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 55.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 50.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 52.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "centralized",
+        "fp": 0,
+        "wall_seconds": 54.2,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 58.8,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-auction",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-nocoord",
+        "fp": 0,
+        "wall_seconds": 58.3,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 57.9,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 58.4,
+        "fa_per_hour": 0.0
+      },
+      {
+        "scenario": "loitering_01",
+        "mode": "mas-rules",
+        "fp": 0,
+        "wall_seconds": 57.7,
+        "fa_per_hour": 0.0
+      }
+    ]
+  }
+}

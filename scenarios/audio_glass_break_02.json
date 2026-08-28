@@ -1,0 +1,20 @@
+{
+  "name": "audio_glass_break_02",
+  "duration_seconds": 22,
+  "sensors": [
+    {
+      "type": "audio",
+      "id": "mic_01",
+      "source": "data/clips_real/audio/2-141563-A-39_with_baseline.wav"
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "audio_glass_break",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 20.0
+    }
+  ],
+  "notes": "ESC-50 fold 2, CC BY-NC 3.0; selected after exact YAMNet probe; 15-second measured baseline prefix."
+}

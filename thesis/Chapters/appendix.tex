@@ -1,0 +1,198 @@
+\chapter{Correction Ledger}
+\label{app:corrections}
+
+This appendix preserves a visible record of corrections made during the final
+evidence audit. It is intentionally included rather than silently replacing
+earlier claims: the first evaluation was a single-run demonstration, whereas
+the final campaign consists of repeated replay runs and inferential analysis.
+
+\small
+\begin{longtable}{p{2.7cm}p{3.4cm}p{4.7cm}}
+\caption{Correction ledger: initial claim, corrected statement, and evidence.}\label{tab:correction-ledger}\\
+\toprule
+\textbf{Location} & \textbf{Earlier claim} & \textbf{Corrected statement and evidence} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Location} & \textbf{Earlier claim} & \textbf{Corrected statement and evidence} \\
+\midrule
+\endhead
+Abstracts; Chapter 7 & MAS is approximately 36--38\% faster to alert. & The 80.4\% reduction occurs only on \texttt{demo\_site\_01} ($n=5$, $p=0.0625$). Across the seven scenarios having all four modes the reduction is 10.7\% ($p=0.59$), not significant. Source: \texttt{thesis\_stats.json}. \\
+Abstracts; Chapter 7 & Auction coordination halves false alerts and restores precision. & Auction has the lowest marginal mean F1 (0.452). After Holm--Bonferroni correction, none of six pairwise F1 comparisons is significant. Sources: \texttt{summary\_agg.csv}; \texttt{thesis\_stats.json}. \\
+Chapter 6, earlier interpretation & ``Who verifies'' validates the utility-bid design. & Retracted: no campaign manifest populated \texttt{fov\_overlap}; the overlap factor was the 0.5 default. The bid is therefore not a measured view-utility allocation. Sources: \texttt{camera\_agent.py}; coordinator task construction. \\
+Chapter 6, earlier fusion text & Confidence 0.78 demonstrates an audio--video corroboration bonus. & Retracted: the 0.78 alert contains one video event from \texttt{cam\_01}. Four of 240 alerts are truly cross-modal, all at 1.0 because noisy-OR saturates. Source: \texttt{cross\_modal\_fusion\_audit.md}. \\
+Chapter 6; Chapter 7 & No hallucinated citations were found in replay. & The campaign never invoked \texttt{--llm}; all 373 explanations used the template. One post-campaign model output was rejected by the guardrail. The claim is a design/property test, not campaign evidence. \\
+Chapter 5 & The CLIP anomaly component is presented as working. & Its calibration AUC is 0.308, below chance, consistent with prompt/domain mismatch. Source: \texttt{clip\_anomaly\_calibration\_notes.md}. \\
+Chapter 6 setup & Variants differ only in architecture. & They also differ in replay pacing and stream sequencing; fusion and cooldown are wall-clock mechanisms. Source: \texttt{replay.py}. \\
+Chapters 1, 5, 7 & Approximately 2,500 lines, seven agents, six tests, and a \texttt{configs/} directory. & 4,376 tracked Python lines (5,188 including working-tree files); six implemented agents plus an operator console; 26 offline tests; zone data and thresholds are scenario manifests, not a \texttt{configs/} directory. \\
+Chapters 1, 3, 4 & No Re-ID. & Retained as the evaluated-system claim. A post-campaign appearance-descriptor prototype was withheld; it did not form part of the reported configuration. \\
+THESIS\_REPATCH variance row & Identical auction precision values establish stability. & Rejected: Levene tests give $p=0.224$ for \texttt{demo\_site\_01} precision and $p=0.515$ pooled. Five identical observations do not establish lower variance. \\
+FA/h figures & False alarms per hour is an operational rate. & Over 9--70 second replay runs with 0--3 false positives, FA/h is a scale artefact (maximum 393.9/h), not a deployment-rate estimate. \\
+Chapter 7 & The audit stream is immutable. & It is append-only by convention, not cryptographically immutable. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\chapter{Campaign Scenario Manifests}
+\label{app:scenarios}
+
+The following are the nine JSON scenario manifests used by the v2 campaign.
+They are reproduced directly from the repository so that sensor topology, zone
+geometry, and ground-truth intervals can be inspected without transcription.
+The three later exploratory manifests (\texttt{loitering\_multizone\_01},
+\texttt{wrong\_direction\_01}, and \texttt{zone\_occupancy\_01}) are not part
+of the 373-run campaign and are therefore not reported as campaign evidence.
+
+\section{Abandoned-object scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/abandoned_object_01.json}
+\section{Clock-alarm scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/audio_alarm_clock_01.json}
+\section{Siren-alarm scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/audio_alarm_siren_01.json}
+\section{Glass-break scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/audio_glass_break_01.json}
+\section{Combined audio--video scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/combined_audio_video_01.json}
+\section{Demonstrator site scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/demo_site_01.json}
+\section{Fight scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/fight_01.json}
+\section{Intrusion scenario}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/intrusion_01.json}
+\section{Loitering true-negative probe}
+\VerbatimInput[fontsize=\scriptsize,frame=single]{../scenarios/loitering_01.json}
+
+\chapter{Data Provenance and Licence Notes}
+\label{app:datasets}
+
+Table~\ref{tab:data-provenance} transcribes the provenance information in
+\texttt{data/clips\_real/manifest.json}. These clips extend the original
+demonstrator assets; they are used only for non-commercial academic evaluation.
+
+\small
+\begin{longtable}{p{2.8cm}p{3.5cm}p{2.6cm}p{3.3cm}}
+\caption{Provenance and licence notes for real evaluation assets.}\label{tab:data-provenance}\\
+\toprule
+\textbf{Asset} & \textbf{Source} & \textbf{Licence / use note} & \textbf{Role in corpus} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Asset} & \textbf{Source} & \textbf{Licence / use note} & \textbf{Role in corpus} \\
+\midrule
+\endhead
+\texttt{violence/violent\_1.mp4} & Bianculli et al. \cite{bianculli2020violence} & Free for research and educational purposes & Simulated brawl, about 4.8 s, 1920$\times$1080 at 30 FPS. \\
+\texttt{violence/violent\_10.mp4} & Same dataset & Free for research and educational purposes & Available corpus asset; not a separately reported manifest. \\
+\texttt{violence/nonviolent\_1.mp4} & Same dataset & Free for research and educational purposes & Deliberately ambiguous non-violent hard negative. \\
+\texttt{abandoned\_object/video1.avi} & ABODA \cite{lin2015aboda} & Public research dataset; no explicit per-file licence in its repository & 73-second indoor hallway sequence. Its onset is an approximate, frame-checked annotation because ABODA supplies no frame-level ground truth. \\
+\texttt{audio/glass\_breaking\_esc50.wav} & ESC-50 \cite{piczak2015esc50} & CC BY-NC 3.0 & Real five-second glass-breaking recording. \\
+\texttt{audio/clock\_alarm\_esc50.wav} & ESC-50 \cite{piczak2015esc50} & CC BY-NC 3.0 & Alarm proxy event. \\
+\texttt{audio/siren\_esc50.wav} & ESC-50 \cite{piczak2015esc50} & CC BY-NC 3.0 & Five-second siren hazard event. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\chapter{Configuration and Measurement Parameters}
+\label{app:config}
+
+The reported scores are outputs of a system with numerous free parameters.
+Table~\ref{tab:parameters} makes the principal defaults explicit, including
+their implementation provenance. It is a disclosure table, not a tuning study:
+apart from the documented CLIP threshold sweep, these values were not selected
+on a held-out validation split.
+
+\small
+\begin{longtable}{p{3.7cm}p{2.1cm}p{5.9cm}}
+\caption{Principal free parameters and source locations.}\label{tab:parameters}\\
+\toprule
+\textbf{Parameter} & \textbf{Default / campaign value} & \textbf{Implementation provenance} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Parameter} & \textbf{Default / campaign value} & \textbf{Implementation provenance} \\
+\midrule
+\endhead
+Fusion window & 6 s & \texttt{fusion\_agent.py}, \texttt{FusionAgent.window\_seconds} \\
+Video reliability weight & 0.9 & \texttt{fusion\_agent.py}, noisy-OR weighting \\
+Audio reliability weight & 0.7 & \texttt{fusion\_agent.py}, noisy-OR weighting \\
+Cross-modality bonus & 0.05 & \texttt{fusion\_agent.py}, confidence adjustment \\
+Cross-sensor bonus & 0.05 & \texttt{fusion\_agent.py}, confidence adjustment \\
+Verification gray zone & [0.35, 0.75) & \texttt{coordinator\_agent.py}, \texttt{needs\_verification()} \\
+Bid window & 1.0 s & \texttt{coordinator\_agent.py}, constructor default \\
+Verification timeout & 3.0 s & \texttt{coordinator\_agent.py}, constructor default \\
+Origin-sensor bid factor & 0.3 & \texttt{camera\_agent.py}, \texttt{\_view\_score()} \\
+Busy-camera capacity factor & 0.2 & \texttt{camera\_agent.py}, \texttt{\_view\_score()} \\
+FoV overlap fallback & 0.5 & \texttt{camera\_agent.py}: task default; inactive as an information-bearing term in campaign measurement \\
+Critical / warning / info thresholds & 0.45 / 0.55 / 0.70 & \texttt{policy\_agent.py}, \texttt{ALERT\_THRESHOLDS} \\
+Verification adjustment & +0.15 / -0.20 & \texttt{policy\_agent.py}, verification outcome handling \\
+Alert cooldown & 20 s & \texttt{policy\_agent.py}, constructor default \\
+Inference cadence & 5 FPS & \texttt{camera\_agent.py}, \texttt{infer\_fps} default \\
+Camera confidence floor & 0.35 & \texttt{camera\_agent.py}, detector configuration \\
+Verification confidence / size & 0.25 / 960 px & \texttt{camera\_agent.py}, \texttt{\_verify()} \\
+CLIP anomaly threshold & 0.55 & \texttt{camera\_agent.py}, constructor default \\
+Loitering threshold & 8 s & \texttt{camera\_agent.py}, \texttt{ZoneRuleEngine} default \\
+Abandoned-object threshold & 10 s & \texttt{camera\_agent.py}, \texttt{ZoneRuleEngine} default \\
+Static-object IoU & 0.6 & \texttt{camera\_agent.py}, \texttt{ZoneRuleEngine} default \\
+Metric time tolerance & $\pm5$ s & \texttt{metrics.py}, event matching logic \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\chapter{Methodology Changes from v1 to v2}
+\label{app:methodology}
+
+This table is reproduced from \texttt{results/methodology\_changes.md}. It
+records changes that could move a result relative to the preserved pre-YAMNet
+baseline, avoiding the appearance that v1 and v2 scores measure an unchanged
+pipeline.
+
+\small
+\begin{longtable}{p{0.5cm}p{3.2cm}p{3.5cm}p{4.0cm}}
+\caption{Documented changes between the v1 and v2 evaluation campaigns.}\label{tab:methodology-changes}\\
+\toprule
+\# & \textbf{Change} & \textbf{Why} & \textbf{Expected direction} \\
+\midrule
+\endfirsthead
+\toprule
+\# & \textbf{Change} & \textbf{Why} & \textbf{Expected direction} \\
+\midrule
+\endhead
+1 & Local YAMNet integration instead of DSP fallback only & The TensorFlow Hub URL was dead; this blocked typed audio events. & Audio-scenario recall and precision up. \\
+2 & Lookback-extended window and max pooling instead of bare one-second mean pooling & Mean pooling diluted brief transients (0.069 versus 0.75 on the same clip). & Audio recall up. \\
+3 & One event per type per audio chunk & Multiple matched classes otherwise entered noisy-OR as independent evidence. & Inflated confidence and false positives down. \\
+4 & Unified event-family mapping & Metric and fusion family dictionaries had drifted. & Correctly mapped audio events can score as matches. \\
+5 & Audio events carry the scenario zone & Without the zone, audio and video could not join the same fusion hypothesis. & Confidence can rise only for time- and zone-aligned evidence. \\
+6 & Scenario clock starts after model warm-up & Cold-start loading had been counted in time-to-alert. & Wall seconds and apparent alert delay down. \\
+7 & Repetition flags and rep-suffixed outputs & Reruns previously overwrote results. & Enables mean and standard-deviation reporting. \\
+8 & Aggregation to \texttt{summary\_agg.csv} & Repeated rows needed a separate aggregation artifact. & No direct scoring effect. \\
+9 & Two additional ESC-50 alarm scenarios & Earlier audio scenarios exercised only glass-break ground truth. & Expands class-discrimination coverage. \\
+10 & Full nine-scenario, four-mode, five-repetition campaign & Single-run demonstration could not support uncertainty estimates. & Enables paired inferential analysis. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\chapter{Message Schemas}
+\label{app:schemas}
+
+The implementation uses typed data classes in \texttt{aura\_mas/core/bus.py}.
+The abbreviated field inventory below distinguishes transient detections from
+durable semantic events and operator-facing alerts.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Core message-schema fields.}\label{tab:schemas}
+\begin{tabular}{p{2.3cm}p{9.5cm}}
+\toprule
+\textbf{Schema} & \textbf{Key fields} \\
+\midrule
+Detection & \texttt{sensor\_id}, \texttt{frame\_id}, \texttt{timestamp}, object class, confidence, bounding box, and track identifier. \\
+Event & \texttt{event\_id}, \texttt{sensor\_id}, \texttt{timestamp}, \texttt{event\_type}, confidence, modality, zone, track identifier, evidence path, and extensible metadata. \\
+Alert & \texttt{alert\_id}, timestamp, severity, event type, confidence, zone, sensor list, evidence list, fused-event list, explanation, and status. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The topic constants in the same module route detections, events, coordination
+tasks, bids, awards, verifications, alerts, and audit records. This explicit
+separation makes it possible to exchange structured facts rather than raw
+footage across the system boundary.

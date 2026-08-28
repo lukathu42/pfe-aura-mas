@@ -1,0 +1,173 @@
+{
+  "schema_version": 2,
+  "scenario": "audio_distress_03",
+  "mode": "mas-auction",
+  "duration_seconds": 25,
+  "source_run": "results/run_audio_distress_03_mas-auction-demo.json",
+  "metadata": {
+    "title": "Distress Vocalization",
+    "anomaly_type": "audio_scream",
+    "anomaly_key": "distress_vocalization",
+    "sample_id": "03",
+    "sample_label": "Fall-down scream",
+    "site_context": "semi-closed site",
+    "tags": [
+      "scream",
+      "yell",
+      "distress",
+      "cry for help",
+      "prepared replay"
+    ],
+    "camera_count": 0,
+    "has_context": true,
+    "detected_event_types": [
+      "audio_scream"
+    ],
+    "description": "A distinct staged scream tests the conservative audible-distress label.",
+    "dataset": "FSD50K \u2014 48052",
+    "attribution": "Fonseca et al., FSD50K (2022), per-clip Creative Commons; non-commercial thesis use"
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_f8591d03a8",
+      "timestamp": 1787859115.7561183,
+      "severity": "CRITICAL",
+      "event_type": "audio_scream",
+      "confidence": 0.781,
+      "zone": null,
+      "sensors": [
+        "mic_01"
+      ],
+      "evidence": [],
+      "fused_events": [
+        "ev_aac94bcb58",
+        "ev_be530c7d52",
+        "ev_dc9fb2ce62"
+      ],
+      "scene_time_seconds": 17.0,
+      "explanation": "[CRITICAL] audio scream detected in zone 'site' with fused confidence 0.78, corroborated by 3 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "audio_scream"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 15.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_audio_distress_03_deterministic",
+        "scenario": "audio_distress_03",
+        "summary": "A distinct staged scream tests the conservative audible-distress label.",
+        "object_labels": [],
+        "safety_observations": [
+          "audio_scream"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          15.0
+        ],
+        "generated_at": 1787859122.043463
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 17.0,
+      "wall_offset_seconds": 16.861,
+      "payload": {
+        "event_id": "ev_aac94bcb58",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859107.6574607,
+        "event_type": "audio_scream",
+        "confidence": 0.414,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 17.0,
+        "extra": {
+          "yamnet_class": "Screaming",
+          "yamnet_rank": 0,
+          "n_candidates": 1
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 18.0,
+      "wall_offset_seconds": 17.775,
+      "payload": {
+        "event_id": "ev_be530c7d52",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859108.5716755,
+        "event_type": "audio_scream",
+        "confidence": 0.787,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 18.0,
+        "extra": {
+          "yamnet_class": "Screaming",
+          "yamnet_rank": 0,
+          "n_candidates": 2
+        }
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 19.0,
+      "wall_offset_seconds": 18.687,
+      "payload": {
+        "event_id": "ev_dc9fb2ce62",
+        "sensor_id": "mic_01",
+        "timestamp": 1787859109.483314,
+        "event_type": "audio_scream",
+        "confidence": 0.449,
+        "modality": "audio",
+        "zone": null,
+        "track_id": null,
+        "evidence_path": null,
+        "scene_time_seconds": 19.0,
+        "extra": {
+          "yamnet_class": "Screaming",
+          "yamnet_rank": 0,
+          "n_candidates": 1
+        }
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 19.0,
+      "wall_offset_seconds": 24.959,
+      "payload": {
+        "alert_id": "alt_f8591d03a8",
+        "timestamp": 1787859115.7561183,
+        "severity": "CRITICAL",
+        "event_type": "audio_scream",
+        "confidence": 0.781,
+        "zone": null,
+        "sensors": [
+          "mic_01"
+        ],
+        "evidence": [],
+        "fused_events": [
+          "ev_aac94bcb58",
+          "ev_be530c7d52",
+          "ev_dc9fb2ce62"
+        ],
+        "scene_time_seconds": 17.0,
+        "explanation": "[CRITICAL] audio scream detected in zone 'site' with fused confidence 0.78, corroborated by 3 event(s) from 1 sensor(s) (audio). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "audio_scream"
+        ]
+      }
+    }
+  ]
+}

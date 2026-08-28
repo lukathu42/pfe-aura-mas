@@ -1,0 +1,20 @@
+{
+  "name": "audio_distress_03",
+  "duration_seconds": 25,
+  "sensors": [
+    {
+      "type": "audio",
+      "id": "mic_01",
+      "source": "data/clips_real/audio/distress/fsd50k_48052_with_baseline.wav"
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "audio_scream",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 23.9
+    }
+  ],
+  "notes": "FSD50K 48052 by JohnnyDiamond, CC BY 3.0; observable scream only."
+}

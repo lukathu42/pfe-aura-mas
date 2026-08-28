@@ -1,0 +1,147 @@
+{
+  "schema_version": 2,
+  "scenario": "abandoned_object_02",
+  "mode": "mas-auction",
+  "duration_seconds": 88,
+  "source_run": "results/run_abandoned_object_02_mas-auction-demo.json",
+  "metadata": {
+    "title": "Abandoned Object",
+    "anomaly_type": "abandoned_object",
+    "anomaly_key": "abandoned_object",
+    "sample_id": "02",
+    "sample_label": "ABODA hallway 3",
+    "site_context": "semi-closed site",
+    "tags": [
+      "abandoned_object",
+      "prepared replay"
+    ],
+    "camera_count": 1,
+    "has_context": true,
+    "detected_event_types": [
+      "abandoned_object"
+    ],
+    "description": "A second hallway sequence tests stationary-object persistence.",
+    "dataset": "ABODA \u2014 video3",
+    "attribution": "ABODA public research dataset (non-commercial academic evaluation)",
+    "display_sources": {
+      "cam_01": "data/clips_real/abandoned_object/video3_demo.mp4"
+    }
+  },
+  "alerts": [
+    {
+      "alert_id": "alt_1859494825",
+      "timestamp": 1787847170.7708101,
+      "severity": "WARNING",
+      "event_type": "abandoned_object",
+      "confidence": 0.863,
+      "zone": null,
+      "sensors": [
+        "cam_01"
+      ],
+      "evidence": [
+        "data/evidence/cam_01_abandoned_object_1787847158_7d5462.jpg",
+        "data/evidence/cam_01_abandoned_object_1787847163_496176.jpg"
+      ],
+      "fused_events": [
+        "ev_5a7809d4c6",
+        "ev_eb6b3705ed"
+      ],
+      "scene_time_seconds": 51.051051051051054,
+      "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.86, corroborated by 2 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+      "status": "OPEN",
+      "contributing_types": [
+        "abandoned_object"
+      ]
+    }
+  ],
+  "timeline": [
+    {
+      "kind": "context",
+      "scene_time_seconds": 10.0,
+      "wall_offset_seconds": 0.0,
+      "payload": {
+        "context_id": "ctx_abandoned_object_02_deterministic",
+        "scenario": "abandoned_object_02",
+        "summary": "A second hallway sequence tests stationary-object persistence.",
+        "object_labels": [],
+        "safety_observations": [
+          "abandoned_object"
+        ],
+        "source": "deterministic",
+        "status": "generated",
+        "model": null,
+        "provider": null,
+        "source_frame_times": [
+          10.0
+        ],
+        "generated_at": 1787847202.24211
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 51.051051051051054,
+      "wall_offset_seconds": 50.862,
+      "payload": {
+        "event_id": "ev_5a7809d4c6",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847158.205242,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 19,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787847158_7d5462.jpg",
+        "scene_time_seconds": 51.051051051051054,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "event",
+      "scene_time_seconds": 56.65665665665666,
+      "wall_offset_seconds": 56.468,
+      "payload": {
+        "event_id": "ev_eb6b3705ed",
+        "sensor_id": "cam_01",
+        "timestamp": 1787847163.810942,
+        "event_type": "abandoned_object",
+        "confidence": 0.7,
+        "modality": "video",
+        "zone": null,
+        "track_id": 23,
+        "evidence_path": "data/evidence/cam_01_abandoned_object_1787847163_496176.jpg",
+        "scene_time_seconds": 56.65665665665666,
+        "extra": {}
+      }
+    },
+    {
+      "kind": "alert",
+      "scene_time_seconds": 56.65665665665666,
+      "wall_offset_seconds": 63.428,
+      "payload": {
+        "alert_id": "alt_1859494825",
+        "timestamp": 1787847170.7708101,
+        "severity": "WARNING",
+        "event_type": "abandoned_object",
+        "confidence": 0.863,
+        "zone": null,
+        "sensors": [
+          "cam_01"
+        ],
+        "evidence": [
+          "data/evidence/cam_01_abandoned_object_1787847158_7d5462.jpg",
+          "data/evidence/cam_01_abandoned_object_1787847163_496176.jpg"
+        ],
+        "fused_events": [
+          "ev_5a7809d4c6",
+          "ev_eb6b3705ed"
+        ],
+        "scene_time_seconds": 51.051051051051054,
+        "explanation": "[WARNING] abandoned object detected in zone 'site' with fused confidence 0.86, corroborated by 2 event(s) from 1 sensor(s) (video). Evidence attached; awaiting operator acknowledgment.",
+        "status": "OPEN",
+        "contributing_types": [
+          "abandoned_object"
+        ]
+      }
+    }
+  ]
+}
