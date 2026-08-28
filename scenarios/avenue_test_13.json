@@ -1,0 +1,39 @@
+{
+  "name": "avenue_test_13",
+  "dataset": "CUHK Avenue",
+  "dataset_url": "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/Avenue_Dataset.zip",
+  "ground_truth_url": "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/ground_truth_demo.zip",
+  "split": "test",
+  "clip_id": "13",
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/avenue/Avenue Dataset/testing_videos/13.avi",
+      "zones": [],
+      "enable_clip": true
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 10.32,
+      "t_end": 11.44
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 18.28,
+      "t_end": 18.64
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 18.88,
+      "t_end": 20.4
+    }
+  ],
+  "notes": "CUHK Avenue clip. Test intervals are derived from the official volLabel mask at the declared source FPS; training clips are normal controls with no anomaly ground truth.",
+  "duration_seconds": 21.96
+}

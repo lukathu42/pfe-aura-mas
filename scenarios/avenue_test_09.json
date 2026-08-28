@@ -1,0 +1,93 @@
+{
+  "name": "avenue_test_09",
+  "dataset": "CUHK Avenue",
+  "dataset_url": "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/Avenue_Dataset.zip",
+  "ground_truth_url": "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/ground_truth_demo.zip",
+  "split": "test",
+  "clip_id": "09",
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/avenue/Avenue Dataset/testing_videos/09.avi",
+      "zones": [],
+      "enable_clip": true
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 5.4,
+      "t_end": 7.32
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 19.8,
+      "t_end": 21.88
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 22.0,
+      "t_end": 22.52
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 22.56,
+      "t_end": 22.64
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 29.6,
+      "t_end": 30.2
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 34.96,
+      "t_end": 36.32
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 36.92,
+      "t_end": 37.48
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 37.8,
+      "t_end": 38.2
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 38.72,
+      "t_end": 39.24
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 40.48,
+      "t_end": 41.76
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 44.12,
+      "t_end": 45.32
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 45.48,
+      "t_end": 46.52
+    }
+  ],
+  "notes": "CUHK Avenue clip. Test intervals are derived from the official volLabel mask at the declared source FPS; training clips are normal controls with no anomaly ground truth.",
+  "duration_seconds": 47.0
+}

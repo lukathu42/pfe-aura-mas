@@ -12,6 +12,10 @@ __pycache__/
 /models/yamnet/*
 !/models/yamnet/PROVENANCE.json
 
+# External evaluation media (download locally; manifests remain tracked)
+/data/avenue/*
+!/data/avenue/README.md
+
 # LaTeX build artifacts (keep the compiled main.pdf, ignore the rest)
 *.aux
 *.bbl

@@ -22,7 +22,11 @@ GROUND_TRUTH_URL = "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/
 def _video_dir(root: Path, split: str) -> Path:
     candidates = [root / f"{split}_videos", root / "ground_truth_demo" / f"{split}_videos"]
     for candidate in candidates:
-        if candidate.is_dir():
+        if candidate.is_dir() and any(candidate.glob("*.avi")):
+            return candidate
+    nested = sorted(root.rglob(f"{split}_videos"))
+    for candidate in nested:
+        if any(candidate.glob("*.avi")):
             return candidate
     raise FileNotFoundError(f"Avenue {split}_videos directory not found under {root}")
 
