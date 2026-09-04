@@ -2,9 +2,19 @@
   "schema_version": 1,
   "cameras": [
     {
-      "id": "gate_cam",
-      "label": "Main gate",
-      "source_env": "AURA_CAMERA_GATE_URL",
+      "id": "cam_entry_pi",
+      "label": "Entry · Raspberry Pi Camera Module 2",
+      "source_env": "AURA_CAMERA_PI_URL",
+      "physical_zone_id": "entry_overlap",
+      "stale_after_seconds": 5,
+      "initial_backoff_seconds": 0.5,
+      "max_backoff_seconds": 30
+    },
+    {
+      "id": "cam_verifier_usb",
+      "label": "Entry · HP HD verification webcam",
+      "source_env": "AURA_CAMERA_USB_URL",
+      "physical_zone_id": "entry_overlap",
       "stale_after_seconds": 5,
       "initial_backoff_seconds": 0.5,
       "max_backoff_seconds": 30

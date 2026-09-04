@@ -1,0 +1,48 @@
+{
+  "profile_name": "Defense entrance policy",
+  "payload": {
+    "site_profile": "Base safety",
+    "zones": {
+      "entry_overlap": {
+        "label": "Entrance overlapping view",
+        "profile": "Entrance",
+        "enabled_rules": [
+          "person_down",
+          "rapid_movement",
+          "intrusion",
+          "loitering"
+        ],
+        "thresholds": {
+          "person_down": 0.7,
+          "rapid_movement": 0.65,
+          "intrusion": 0.65,
+          "loitering": 0.6
+        },
+        "schedule": {"start_hour_utc": 0, "end_hour_utc": 24},
+        "verification_required": true,
+        "cooldown_seconds": 10,
+        "severity": "WARNING",
+        "response_playbooks": {
+          "intrusion": [
+            "Inspect second view",
+            "Acknowledge",
+            "Set operator verdict",
+            "Optionally escalate"
+          ]
+        }
+      }
+    },
+    "camera_view_zones": [
+      {
+        "camera_id": "cam_entry_pi",
+        "physical_zone_id": "entry_overlap",
+        "polygon": [[0.05, 0.05], [0.95, 0.05], [0.95, 0.95], [0.05, 0.95]]
+      },
+      {
+        "camera_id": "cam_verifier_usb",
+        "physical_zone_id": "entry_overlap",
+        "polygon": [[0.05, 0.05], [0.95, 0.05], [0.95, 0.95], [0.05, 0.95]]
+      }
+    ]
+  }
+}
