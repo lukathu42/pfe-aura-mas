@@ -33,9 +33,16 @@ export function IncidentDetail() {
   return (
     <GlassPanel className="flex-1 min-h-0 flex flex-col overflow-hidden">
       <div className="shrink-0 flex items-center justify-between gap-3 px-4 py-3 border-b border-[var(--border-secondary)]">
-        <span className="hud-text text-[13px] text-[var(--text-heading)] truncate">
-          {alert.event_type.replace(/_/g, " ")}
-        </span>
+        <div className="flex flex-col min-w-0">
+          <span className="hud-text text-[13px] text-[var(--text-heading)] truncate">
+            {alert.event_type.replace(/_/g, " ")}
+          </span>
+          {alert.contributing_types && alert.contributing_types.length > 1 && (
+            <span className="text-[10px] text-[var(--cyan-primary)] font-mono">
+              Composite: {alert.contributing_types.map((t) => t.replace(/_/g, " ")).join(" + ")}
+            </span>
+          )}
+        </div>
         <div className="flex items-center gap-2 shrink-0">
           <SeverityTag severity={alert.severity} />
           <StatusTag status={alert.status} />

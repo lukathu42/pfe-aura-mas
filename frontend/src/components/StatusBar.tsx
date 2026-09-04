@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Bot } from "lucide-react";
 import { useAuraData } from "./DataProvider";
 
-export function StatusBar() {
+export function StatusBar({ onToggleCopilot }: { onToggleCopilot?: () => void }) {
   const { connected, scenario, alerts } = useAuraData();
   const [clock, setClock] = useState("");
 
@@ -19,7 +20,7 @@ export function StatusBar() {
   const sensorCount = scenario?.sensors.length ?? 0;
 
   return (
-    <div className="h-[30px] shrink-0 flex items-center gap-4 px-4 border-t border-[var(--border-secondary)] bg-[var(--bg-panel-solid)]/90 backdrop-blur-xl text-[10px] font-mono tracking-wider">
+    <div className="h-[32px] shrink-0 flex items-center gap-4 px-4 border-t border-[var(--border-secondary)] bg-[var(--bg-panel-solid)]/90 backdrop-blur-xl text-[10px] font-mono tracking-wider">
       <div className="flex items-center gap-1.5">
         <span
           className={`w-1.5 h-1.5 rounded-full ${
@@ -53,7 +54,18 @@ export function StatusBar() {
           {openCount}
         </span>
       </span>
-      <span className="ml-auto text-[var(--text-muted)]">{clock}</span>
+
+      {onToggleCopilot && (
+        <button
+          onClick={onToggleCopilot}
+          className="ml-auto flex items-center gap-1.5 px-2 py-1 rounded border border-[var(--gold-primary)]/50 bg-[var(--gold-glow)] text-[var(--gold-primary)] hover:bg-[var(--gold-primary)] hover:text-black transition"
+        >
+          <Bot className="w-3 h-3" />
+          <span>AURA COPILOT</span>
+        </button>
+      )}
+
+      <span className={onToggleCopilot ? "text-[var(--text-muted)]" : "ml-auto text-[var(--text-muted)]"}>{clock}</span>
     </div>
   );
 }

@@ -11,18 +11,21 @@ import {
 } from "react";
 import type {
   Alert,
+  AlertStatus,
   AuraEvent,
   CoordinationAward,
   CoordinationBid,
   CoordinationRound,
   CoordinationTask,
   CoordinationVerification,
+  PreparedReplay,
+  ReplayCatalogItem,
   ScenarioManifest,
 } from "@/lib/types";
 
 const MAX_EVENTS = 200;
 const MAX_ROUNDS = 8;
-const RECENT_EVENT_WINDOW_S = 20;
+const RECENT_SCENE_EVENT_S = 5;
 
 interface StreamState {
   events: AuraEvent[];
@@ -41,48 +44,69 @@ type StreamAction =
 function streamReducer(state: StreamState, action: StreamAction): StreamState {
   switch (action.type) {
     case "event":
-      return {
-        ...state,
-        events: [action.payload, ...state.events].slice(0, MAX_EVENTS),
-      };
+      return { ...state, events: [action.payload, ...state.events].slice(0, MAX_EVENTS) };
     case "status":
       return { ...state, mqttConnected: action.payload.mqtt };
-    case "task": {
-      const round: CoordinationRound = {
-        task: action.payload,
-        bids: [],
-        award: null,
-        verification: null,
+    case "task":
+      return {
+        ...state,
+        rounds: [{ task: action.payload, bids: [], award: null, verification: null }, ...state.rounds]
+          .slice(0, MAX_ROUNDS),
       };
-      return { ...state, rounds: [round, ...state.rounds].slice(0, MAX_ROUNDS) };
-    }
-    case "bid": {
-      const rounds = state.rounds.map((r) =>
-        r.task.task_id === action.payload.task_id
-          ? { ...r, bids: [...r.bids, action.payload] }
-          : r,
-      );
-      return { ...state, rounds };
-    }
-    case "award": {
-      const rounds = state.rounds.map((r) =>
-        r.task.task_id === action.payload.task_id
-          ? { ...r, award: action.payload }
-          : r,
-      );
-      return { ...state, rounds };
-    }
-    case "verification": {
-      const rounds = state.rounds.map((r) =>
-        r.task.task_id === action.payload.task_id
-          ? { ...r, verification: action.payload }
-          : r,
-      );
-      return { ...state, rounds };
-    }
-    default:
-      return state;
+    case "bid":
+      return {
+        ...state,
+        rounds: state.rounds.map((round) =>
+          round.task.task_id === action.payload.task_id
+            ? { ...round, bids: [...round.bids, action.payload] }
+            : round,
+        ),
+      };
+    case "award":
+      return {
+        ...state,
+        rounds: state.rounds.map((round) =>
+          round.task.task_id === action.payload.task_id
+            ? { ...round, award: action.payload }
+            : round,
+        ),
+      };
+    case "verification":
+      return {
+        ...state,
+        rounds: state.rounds.map((round) =>
+          round.task.task_id === action.payload.task_id
+            ? { ...round, verification: action.payload }
+            : round,
+        ),
+      };
   }
+}
+
+function itemTime(item: PreparedReplay["timeline"][number]): number {
+  return item.scene_time_seconds ?? item.wall_offset_seconds;
+}
+
+function replayRounds(replay: PreparedReplay, currentTime: number): CoordinationRound[] {
+  const rounds = new Map<string, CoordinationRound>();
+  for (const item of replay.timeline) {
+    if (itemTime(item) > currentTime) continue;
+    if (item.kind === "task") {
+      const task = item.payload as unknown as CoordinationTask;
+      rounds.set(task.task_id, { task, bids: [], award: null, verification: null });
+      continue;
+    }
+    if (!["bid", "award", "verification"].includes(item.kind)) continue;
+    const payload = item.payload as unknown as { task_id: string };
+    const round = rounds.get(payload.task_id);
+    if (!round) continue;
+    if (item.kind === "bid") round.bids.push(item.payload as unknown as CoordinationBid);
+    if (item.kind === "award") round.award = item.payload as unknown as CoordinationAward;
+    if (item.kind === "verification") {
+      round.verification = item.payload as unknown as CoordinationVerification;
+    }
+  }
+  return [...rounds.values()].reverse().slice(0, MAX_ROUNDS);
 }
 
 interface AuraData {
@@ -90,12 +114,22 @@ interface AuraData {
   rounds: CoordinationRound[];
   alerts: Alert[];
   scenario: ScenarioManifest | null;
+  replay: PreparedReplay | null;
+  catalogue: ReplayCatalogItem[];
   connected: { mqtt: boolean; redis: boolean };
   selectedAlertId: string | null;
   selectAlert: (id: string | null) => void;
   ackAlert: (id: string) => Promise<void>;
   dismissAlert: (id: string) => Promise<void>;
   recentEventFor: (sensorId: string) => AuraEvent | null;
+  currentTime: number;
+  duration: number;
+  playing: boolean;
+  playbackRate: number;
+  seek: (seconds: number) => void;
+  setPlaying: (playing: boolean) => void;
+  setPlaybackRate: (rate: number) => void;
+  updatePrimaryTime: (seconds: number) => void;
 }
 
 const AuraDataContext = createContext<AuraData | null>(null);
@@ -108,9 +142,11 @@ export function useAuraData(): AuraData {
 
 export function AuraDataProvider({
   scenarioName,
+  initialTime,
   children,
 }: {
   scenarioName: string;
+  initialTime: number;
   children: React.ReactNode;
 }) {
   const [stream, dispatch] = useReducer(streamReducer, {
@@ -118,155 +154,203 @@ export function AuraDataProvider({
     rounds: [],
     mqttConnected: false,
   });
-  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [liveAlerts, setLiveAlerts] = useState<Alert[]>([]);
   const [redisConnected, setRedisConnected] = useState(false);
   const [scenario, setScenario] = useState<ScenarioManifest | null>(null);
+  const [replay, setReplay] = useState<PreparedReplay | null>(null);
+  const [catalogue, setCatalogue] = useState<ReplayCatalogItem[]>([]);
   const [selectedAlertId, setSelectedAlertId] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(initialTime);
+  const [playing, setPlaying] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [alertOverrides, setAlertOverrides] = useState<Record<string, AlertStatus>>({});
 
-  // Scenario manifest — fetched once, drives the Camera Wall + Zone rail layout.
+  useEffect(() => {
+    fetch("/api/replay", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : { scenarios: [] }))
+      .then((data) => setCatalogue(data.scenarios ?? []))
+      .catch(() => setCatalogue([]));
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/scenario?name=${encodeURIComponent(scenarioName)}`)
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (!cancelled && data) setScenario(data as ScenarioManifest);
+    // Scenario navigation is an external URL change; clear the prior replay
+    // immediately so its alerts and video state cannot flash under the new URL.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setScenario(null);
+    setReplay(null);
+    setCurrentTime(initialTime);
+    setPlaying(false);
+    setSelectedAlertId(null);
+    setAlertOverrides({});
+    Promise.all([
+      fetch(`/api/scenario?name=${encodeURIComponent(scenarioName)}`).then((r) =>
+        r.ok ? r.json() : null,
+      ),
+      fetch(`/api/replay?scenario=${encodeURIComponent(scenarioName)}`, {
+        cache: "no-store",
+      }).then((r) => (r.ok ? r.json() : null)),
+    ])
+      .then(([manifest, prepared]) => {
+        if (cancelled) return;
+        const typedPrepared = prepared as PreparedReplay | null;
+        const typedManifest = manifest as ScenarioManifest | null;
+        const displaySources = typedPrepared?.metadata.display_sources;
+        setScenario(
+          typedManifest && displaySources
+            ? {
+                ...typedManifest,
+                sensors: typedManifest.sensors.map((sensor) => ({
+                  ...sensor,
+                  source: displaySources[sensor.id] ?? sensor.source,
+                })),
+              }
+            : typedManifest,
+        );
+        setReplay(typedPrepared);
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, [scenarioName]);
+  }, [scenarioName, initialTime]);
 
-  // Live bus relay (MQTT via SSE) — browsers auto-reconnect EventSource on
-  // drop, no manual retry loop needed.
   useEffect(() => {
     const source = new EventSource("/api/events");
-    source.addEventListener("event", (e) =>
-      dispatch({ type: "event", payload: JSON.parse((e as MessageEvent).data) }),
-    );
-    source.addEventListener("task", (e) =>
-      dispatch({ type: "task", payload: JSON.parse((e as MessageEvent).data) }),
-    );
-    source.addEventListener("bid", (e) =>
-      dispatch({ type: "bid", payload: JSON.parse((e as MessageEvent).data) }),
-    );
-    source.addEventListener("award", (e) =>
-      dispatch({ type: "award", payload: JSON.parse((e as MessageEvent).data) }),
-    );
-    source.addEventListener("verification", (e) =>
-      dispatch({ type: "verification", payload: JSON.parse((e as MessageEvent).data) }),
-    );
-    source.addEventListener("status", (e) =>
-      dispatch({ type: "status", payload: JSON.parse((e as MessageEvent).data) }),
-    );
+    for (const eventName of ["event", "task", "bid", "award", "verification", "status"] as const) {
+      source.addEventListener(eventName, (event) =>
+        dispatch({
+          type: eventName,
+          payload: JSON.parse((event as MessageEvent).data),
+        } as StreamAction),
+      );
+    }
     return () => source.close();
   }, []);
 
-  // Alerts — polled (they're durable/low-frequency escalations, not worth
-  // a dedicated stream) at a cadence fast enough to feel live.
   const refetchAlerts = useCallback(async () => {
     try {
-      const res = await fetch("/api/alerts?count=200", { cache: "no-store" });
-      if (!res.ok && res.status !== 200) return;
-      const data = await res.json();
-      setAlerts(data.alerts ?? []);
+      const params = new URLSearchParams({ count: "200", scenario: scenarioName });
+      const response = await fetch(`/api/alerts?${params}`, { cache: "no-store" });
+      if (!response.ok) return;
+      const data = await response.json();
+      setLiveAlerts(data.alerts ?? []);
     } catch {
-      // leave alerts as-is; connectivity is tracked separately via /api/status
+      // Retain the last durable snapshot while the local service reconnects.
     }
-  }, []);
+  }, [scenarioName]);
 
-  // Redis connectivity is a real ping (/api/status), independent of where
-  // alerts data came from — a replay run's alerts live in JSONL files
-  // (see api/alerts/route.ts) even while Redis itself is perfectly reachable
-  // for ack/dismiss audit writes, so "alerts source" is not a valid proxy.
   const refetchStatus = useCallback(async () => {
     try {
-      const res = await fetch("/api/status", { cache: "no-store" });
-      if (!res.ok) {
-        setRedisConnected(false);
-        return;
-      }
-      const data = await res.json();
-      setRedisConnected(Boolean(data.redis));
+      const response = await fetch("/api/status", { cache: "no-store" });
+      const data = response.ok ? await response.json() : null;
+      setRedisConnected(Boolean(data?.redis));
     } catch {
       setRedisConnected(false);
     }
   }, []);
 
   useEffect(() => {
-    // Fetch-on-mount + poll: intentional, not a derived-state cascade — these
-    // effects don't read the state they set, so they can't loop.
+    // Fetch-on-mount plus polling; neither callback reads the state it sets.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     refetchAlerts();
     refetchStatus();
-    const alertsIv = setInterval(refetchAlerts, 4000);
-    const statusIv = setInterval(refetchStatus, 5000);
+    const alertsTimer = setInterval(refetchAlerts, 4000);
+    const statusTimer = setInterval(refetchStatus, 5000);
     return () => {
-      clearInterval(alertsIv);
-      clearInterval(statusIv);
+      clearInterval(alertsTimer);
+      clearInterval(statusTimer);
     };
   }, [refetchAlerts, refetchStatus]);
 
-  const ackAlert = useCallback(
-    async (id: string) => {
-      await fetch("/api/alerts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ alert_id: id, action: "acknowledge" }),
-      }).catch(() => {});
-      await refetchAlerts();
-    },
-    [refetchAlerts],
+  const visibleReplayItems = useMemo(
+    () => replay?.timeline.filter((item) => itemTime(item) <= currentTime) ?? [],
+    [replay, currentTime],
   );
+  const events = useMemo(
+    () =>
+      replay
+        ? visibleReplayItems
+            .filter((item) => item.kind === "event")
+            .map((item) => item.payload as unknown as AuraEvent)
+            .reverse()
+        : stream.events,
+    [replay, visibleReplayItems, stream.events],
+  );
+  const rounds = useMemo(
+    () => (replay ? replayRounds(replay, currentTime) : stream.rounds),
+    [replay, currentTime, stream.rounds],
+  );
+  const alerts = useMemo(() => {
+    const base = replay
+      ? replay.alerts.filter((alert) => (alert.scene_time_seconds ?? 0) <= currentTime)
+      : liveAlerts;
+    return base.map((alert) => ({
+      ...alert,
+      status: alertOverrides[alert.alert_id] ?? alert.status,
+    }));
+  }, [replay, currentTime, liveAlerts, alertOverrides]);
 
-  const dismissAlert = useCallback(
-    async (id: string) => {
+  const updateAlert = useCallback(
+    async (id: string, action: "acknowledge" | "dismiss") => {
+      const status = action === "acknowledge" ? "ACKNOWLEDGED" : "DISMISSED";
+      setAlertOverrides((value) => ({ ...value, [id]: status }));
       await fetch("/api/alerts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ alert_id: id, action: "dismiss" }),
+        body: JSON.stringify({ alert_id: id, action }),
       }).catch(() => {});
-      await refetchAlerts();
+      if (!replay) await refetchAlerts();
     },
-    [refetchAlerts],
+    [replay, refetchAlerts],
   );
 
   const recentEventFor = useCallback(
-    (sensorId: string): AuraEvent | null => {
-      const now = Date.now() / 1000;
-      return (
-        stream.events.find(
-          (e) => e.sensor_id === sensorId && now - e.timestamp < RECENT_EVENT_WINDOW_S,
-        ) ?? null
-      );
-    },
-    [stream.events],
+    (sensorId: string) =>
+      events.find((event) => {
+        if (event.sensor_id !== sensorId) return false;
+        const eventTime = event.scene_time_seconds;
+        return replay && eventTime != null
+          ? currentTime - eventTime <= RECENT_SCENE_EVENT_S
+          : Date.now() / 1000 - event.timestamp <= 20;
+      }) ?? null,
+    [events, replay, currentTime],
   );
+
+  const duration = replay?.duration_seconds ?? scenario?.duration_seconds ?? 0;
+  const seek = useCallback(
+    (seconds: number) => setCurrentTime(Math.min(Math.max(seconds, 0), duration)),
+    [duration],
+  );
+  const updatePrimaryTime = useCallback((seconds: number) => setCurrentTime(seconds), []);
 
   const value = useMemo<AuraData>(
     () => ({
-      events: stream.events,
-      rounds: stream.rounds,
+      events,
+      rounds,
       alerts,
       scenario,
+      replay,
+      catalogue,
       connected: { mqtt: stream.mqttConnected, redis: redisConnected },
       selectedAlertId,
       selectAlert: setSelectedAlertId,
-      ackAlert,
-      dismissAlert,
+      ackAlert: (id) => updateAlert(id, "acknowledge"),
+      dismissAlert: (id) => updateAlert(id, "dismiss"),
       recentEventFor,
+      currentTime,
+      duration,
+      playing,
+      playbackRate,
+      seek,
+      setPlaying,
+      setPlaybackRate,
+      updatePrimaryTime,
     }),
     [
-      stream.events,
-      stream.rounds,
-      stream.mqttConnected,
-      alerts,
-      scenario,
-      redisConnected,
-      selectedAlertId,
-      ackAlert,
-      dismissAlert,
-      recentEventFor,
+      events, rounds, alerts, scenario, replay, catalogue, stream.mqttConnected,
+      redisConnected, selectedAlertId, updateAlert, recentEventFor, currentTime,
+      duration, playing, playbackRate, seek, updatePrimaryTime,
     ],
   );
 

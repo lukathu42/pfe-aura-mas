@@ -65,10 +65,20 @@ class ExplanationState:
 
 
 class ExplanationAgent:
-    def __init__(self, model: str = "gpt-4.1-mini", use_vision: bool = False,
-                 max_evidence_frames: int = 2, request_timeout: float = 20.0,
-                 max_retries: int = 2) -> None:
-        self.model = model
+    def __init__(self, model: Optional[str] = None, use_vision: bool = False,
+                 max_evidence_frames: int = 2, request_timeout: float = 15.0,
+                 max_retries: int = 1,
+                 provider: str = "auto",
+                 ollama_base_url: str = "http://localhost:11434/v1") -> None:
+        self.provider = provider
+        self.ollama_base_url = os.environ.get("OLLAMA_BASE_URL", ollama_base_url)
+        # Default model selection:
+        if model:
+            self.model = model
+        elif provider == "ollama" or (provider == "auto" and not os.environ.get("OPENAI_API_KEY")):
+            self.model = os.environ.get("AURA_LOCAL_LLM", "qwen2.5-vl:3b")
+        else:
+            self.model = "gpt-4.1-mini"
         self.use_vision = use_vision
         self.max_evidence_frames = max_evidence_frames
         self.request_timeout = request_timeout
@@ -165,11 +175,15 @@ class ExplanationAgent:
     def _draft_report(self, state: ExplanationState) -> None:
         client = self._get_client()
         payload = {
-            "alert": {"severity": state.alert.severity,
-                      "event_type": state.alert.event_type,
-                      "confidence": state.alert.confidence,
-                      "zone": state.alert.zone,
-                      "sensors": state.alert.sensors},
+            "alert": {
+                "severity": state.alert.severity,
+                "event_type": state.alert.event_type,
+                "contributing_types": getattr(state.alert, "contributing_types", [state.alert.event_type]),
+                "confidence": state.alert.confidence,
+                "zone": state.alert.zone,
+                "sensors": state.alert.sensors,
+                "entity_id": getattr(state.hypothesis, "global_entity_id", None),
+            },
             "events": [{"id": e.event_id, "type": e.event_type,
                         "modality": e.modality, "confidence": e.confidence,
                         "sensor": e.sensor_id} for e in state.hypothesis.events],
@@ -211,7 +225,9 @@ class ExplanationAgent:
     def _fallback(self, state: ExplanationState) -> str:
         a, h = state.alert, state.hypothesis
         mods = "/".join(sorted({e.modality for e in h.events}))
-        return (f"[{a.severity}] {a.event_type.replace('_', ' ')} in zone "
+        types = ", ".join(getattr(a, "contributing_types", [a.event_type]))
+        entity_note = f" (Subject {h.global_entity_id})" if getattr(h, "global_entity_id", None) else ""
+        return (f"[{a.severity}] {types.replace('_', ' ')}{entity_note} in zone "
                 f"'{a.zone or 'site'}' (confidence {a.confidence:.2f}); "
                 f"{len(h.events)} corroborating event(s) from "
                 f"{len(a.sensors)} sensor(s) ({mods}). "
@@ -222,8 +238,15 @@ class ExplanationAgent:
         if self._client is None:
             import instructor
             from openai import OpenAI
-            self._client = instructor.from_openai(OpenAI(timeout=self.request_timeout))
-            # uses OPENAI_API_KEY / OPENAI_API_BASE
+            if self.provider == "ollama" or (self.provider == "auto" and not os.environ.get("OPENAI_API_KEY")):
+                raw_client = OpenAI(
+                    base_url=self.ollama_base_url,
+                    api_key="ollama",
+                    timeout=self.request_timeout,
+                )
+            else:
+                raw_client = OpenAI(timeout=self.request_timeout)
+            self._client = instructor.from_openai(raw_client)
         return self._client
 
     def _span_llm_attrs(self, prefix: str, latency_ms: float, usage) -> None:

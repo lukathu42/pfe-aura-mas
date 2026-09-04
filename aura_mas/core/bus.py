@@ -57,6 +57,7 @@ class Event:
     zone: Optional[str] = None
     track_id: Optional[int] = None
     evidence_path: Optional[str] = None
+    scene_time_seconds: Optional[float] = None
     extra: Dict[str, Any] = field(default_factory=dict)
 
     def to_json(self) -> str:
@@ -69,7 +70,7 @@ class Event:
 
 @dataclass
 class Alert:
-    """Final alert produced by the PolicyAgent, durable in Redis Streams."""
+    """Final alert produced by the PolicyAgent, durable in Redis Streams and SQLite."""
     alert_id: str
     timestamp: float
     severity: str            # INFO | WARNING | CRITICAL
@@ -79,15 +80,24 @@ class Alert:
     sensors: List[str]
     evidence: List[str]
     fused_events: List[str]
+    scene_time_seconds: Optional[float] = None
     explanation: Optional[str] = None
     status: str = "OPEN"     # OPEN | ACKNOWLEDGED | DISMISSED
+    contributing_types: List[str] = field(default_factory=list)
+
+    def __post_init__(self) -> None:
+        if not self.contributing_types:
+            self.contributing_types = [self.event_type]
 
     def to_json(self) -> str:
         return json.dumps(asdict(self))
 
     @staticmethod
     def from_json(s: str) -> "Alert":
-        return Alert(**json.loads(s))
+        data = json.loads(s)
+        if "contributing_types" not in data:
+            data["contributing_types"] = [data.get("event_type", "unknown")]
+        return Alert(**data)
 
 
 # ---------------------------------------------------------------------------
@@ -199,12 +209,20 @@ class MqttBus(BaseBus):
 
 
 class AlertStore:
-    """Durable alert log. Redis Streams if available, else JSONL file."""
+    """Durable alert log. Redis Streams + SQLite database + JSONL file."""
 
     def __init__(self, redis_url: Optional[str] = "redis://localhost:6379",
-                 jsonl_path: str = "data/alerts.jsonl") -> None:
+                 jsonl_path: str = "data/alerts.jsonl",
+                 db_path: Optional[str] = "data/aura_surveillance.db") -> None:
         self._redis = None
         self._jsonl_path = jsonl_path
+        self._db = None
+        if db_path:
+            try:
+                from .db import AuraDatabase
+                self._db = AuraDatabase(db_path)
+            except Exception:  # noqa: BLE001
+                log.warning("SQLite DB unavailable; continuing without relational store")
         if redis_url:
             try:
                 import redis
@@ -216,6 +234,11 @@ class AlertStore:
                 log.warning("Redis unavailable; falling back to JSONL %s", jsonl_path)
 
     def append(self, alert: Alert) -> None:
+        if self._db is not None:
+            try:
+                self._db.save_alert(json.loads(alert.to_json()))
+            except Exception:  # noqa: BLE001
+                log.exception("Failed writing alert to SQLite DB")
         if self._redis is not None:
             self._redis.xadd(ALERT_STREAM, {"json": alert.to_json()})
         else:
@@ -224,6 +247,17 @@ class AlertStore:
 
     def audit(self, entry: Dict[str, Any]) -> None:
         entry = {"timestamp": now_ts(), **entry}
+        if self._db is not None:
+            try:
+                self._db.log_audit(
+                    actor=entry.get("actor", "system"),
+                    action=entry.get("action", "unknown"),
+                    alert_id=entry.get("alert_id"),
+                    hypothesis_id=entry.get("hypothesis_id"),
+                    details=entry
+                )
+            except Exception:  # noqa: BLE001
+                pass
         if self._redis is not None:
             self._redis.xadd(AUDIT_STREAM, {"json": json.dumps(entry)})
         else:
@@ -232,6 +266,13 @@ class AlertStore:
                 f.write(json.dumps(entry) + "\n")
 
     def read_alerts(self, count: int = 100) -> List[Alert]:
+        if self._db is not None:
+            try:
+                rows = self._db.query_alerts(limit=count)
+                if rows:
+                    return [Alert(**r) for r in rows]
+            except Exception:  # noqa: BLE001
+                pass
         if self._redis is not None:
             rows = self._redis.xrevrange(ALERT_STREAM, count=count)
             return [Alert.from_json(v[b"json"].decode()) for _, v in rows]

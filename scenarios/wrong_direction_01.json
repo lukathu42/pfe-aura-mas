@@ -1,0 +1,11 @@
+{
+  "name": "wrong_direction_01",
+  "duration_seconds": 16,
+  "fov_overlap": {"one_way_shop_exit": {"cam_01": 0.9, "cam_02": 0.9}},
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips_real/caviar/OneLeaveShopReenter1cor.mp4", "loiter_seconds": 999.0, "min_flow_px": 60.0, "zones": [{"name": "one_way_shop_exit", "type": "entry", "flow_direction": [-1, 0], "polygon": [[0, 0], [384, 0], [384, 288], [0, 288]]}]},
+    {"type": "camera", "id": "cam_02", "source": "data/clips_real/caviar/OneLeaveShopReenter1front.mp4", "detection_conf": 0.15, "loiter_seconds": 999.0, "min_flow_px": 40.0, "zones": [{"name": "one_way_shop_exit", "type": "entry", "flow_direction": [0, -1], "polygon": [[0, 0], [384, 0], [384, 288], [0, 288]]}]}
+  ],
+  "ground_truth": [{"event_type": "wrong_direction", "zone": "one_way_shop_exit", "t_start": 6.0, "t_end": 11.5}],
+  "notes": "Two synchronized CAVIAR OneLeaveShopReenter1 views. Camera-specific image axes encode the same site-level permitted direction; the deterministic rule projects cumulative displacement from zone entry onto the normalized axis and fires for sufficiently negative movement. It is a transparent geometric rule over YOLO11+ByteTrack trajectories, not a learned action classifier. Dataset: EC-funded CAVIAR project IST 2001 37540, CC BY-SA."
+}

@@ -18,4 +18,10 @@ EVENT_FAMILIES = {
     "audio_gunshot": "violence_or_hazard", "audio_alarm": "hazard",
     "audio_explosion": "hazard", "audio_breaking": "security",
     "audio_anomaly": "violence_or_hazard",
+    # `zone_occupancy` is deliberately NOT `security`: FusionAgent keys
+    # hypotheses on (family, zone), so filing overcrowding under `security`
+    # would merge it with an `intrusion` in the same zone and let
+    # `dominant_type()` discard whichever scored lower.
+    "zone_occupancy": "hazard", "wrong_direction": "security",
+    "person_down": "violence_or_hazard", "rapid_movement": "security",
 }

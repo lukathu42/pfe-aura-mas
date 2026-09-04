@@ -1,0 +1,48 @@
+{
+  "name": "rapid_movement_03",
+  "duration_seconds": 18,
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/Fight_Chase.mp4",
+      "rapid_window_seconds": 1.2,
+      "rapid_min_duration": 0.0,
+      "detection_conf": 0.15,
+      "zones": [
+        {
+          "name": "monitored_area",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ],
+          "max_speed_zone_lengths_per_second": 0.02
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "rapid_movement",
+      "zone": "monitored_area",
+      "t_start": 1.0,
+      "t_end": 17.0
+    }
+  ],
+  "notes": "Real research footage; declared detector settings and event window must be confirmed by the exact pipeline before defence use."
+}

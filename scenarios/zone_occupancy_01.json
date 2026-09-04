@@ -1,0 +1,11 @@
+{
+  "name": "zone_occupancy_01",
+  "duration_seconds": 67,
+  "fov_overlap": {"retail_corridor": {"cam_01": 0.9, "cam_02": 0.9}},
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips_real/caviar/ThreePastShop1cor.mp4", "loiter_seconds": 999.0, "zones": [{"name": "retail_corridor", "type": "entry", "max_occupancy": 2, "polygon": [[0, 120], [384, 120], [384, 210], [0, 210]]}]},
+    {"type": "camera", "id": "cam_02", "source": "data/clips_real/caviar/ThreePastShop1front.mp4", "detection_conf": 0.15, "loiter_seconds": 999.0, "zones": [{"name": "retail_corridor", "type": "entry", "max_occupancy": 2, "polygon": [[0, 120], [384, 120], [384, 210], [0, 210]]}]}
+  ],
+  "ground_truth": [{"event_type": "zone_occupancy", "zone": "retail_corridor", "t_start": 31.5, "t_end": 43.0}],
+  "notes": "Synchronized CAVIAR ThreePastShop1 views. Official XML identifies the three-person corridor sequence; the deterministic rule counts unique ByteTrack person IDs whose foot points lie inside a declared polygon and fires above max_occupancy=2. It does not claim to reproduce a learned crowd-counting model. Detection/tracking foundation: Ultralytics YOLO11 software (Jocher and Qiu, 2024) and Zhang et al., ByteTrack, ECCV 2022, arXiv:2110.06864. Dataset: EC-funded CAVIAR project IST 2001 37540, CC BY-SA."
+}
