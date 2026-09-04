@@ -106,7 +106,7 @@ class OperatorCopilot:
             messages = [{"role": "system", "content": COPILOT_SYSTEM_PROMPT}]
             if history:
                 messages.extend(history[-6:])
-            
+
             user_prompt = (
                 f"CURRENT SYSTEM STATUS:\n{json.dumps(context_payload, indent=2)}\n\n"
                 f"OPERATOR QUERY: {user_message}"
