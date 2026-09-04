@@ -1,0 +1,82 @@
+{
+  "name": "loitering_multizone_03",
+  "duration_seconds": 67,
+  "fov_overlap": {
+    "shop_forecourt": {
+      "cam_01": 0.9,
+      "cam_02": 0.9
+    }
+  },
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/OneStopMoveNoEnter1cor.mp4",
+      "loiter_seconds": 8.0,
+      "zones": [
+        {
+          "name": "shop_forecourt",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "type": "camera",
+      "id": "cam_02",
+      "source": "data/clips_real/caviar/OneStopMoveNoEnter1front.mp4",
+      "detection_conf": 0.15,
+      "loiter_seconds": 8.0,
+      "zones": [
+        {
+          "name": "shop_forecourt",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "loitering",
+      "zone": "shop_forecourt",
+      "t_start": 12.0,
+      "t_end": 66.0
+    }
+  ],
+  "notes": "Official synchronized CAVIAR views and XML annotations; candidate thresholds are accepted only after an exact pipeline probe produces the declared event."
+}

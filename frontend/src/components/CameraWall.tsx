@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Camera, Mic } from "lucide-react";
 import { mediaUrl } from "@/lib/media";
 import type { ScenarioSensor } from "@/lib/types";
@@ -14,20 +15,53 @@ function gridColsClass(n: number): string {
   return "grid-cols-4";
 }
 
-function CameraTile({ sensor }: { sensor: ScenarioSensor }) {
-  const { recentEventFor } = useAuraData();
+function CameraTile({ sensor, primary }: { sensor: ScenarioSensor; primary: boolean }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const {
+    recentEventFor,
+    replay,
+    currentTime,
+    playing,
+    playbackRate,
+    setPlaying,
+    updatePrimaryTime,
+  } = useAuraData();
   const event = recentEventFor(sensor.id);
   const zoneName = sensor.zones?.[0]?.name ?? "site";
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = playbackRate;
+    // The primary video owns the running clock. Seeking it back to a slightly
+    // stale React value on every timeupdate can trap short/high-rate clips at
+    // one timestamp; only secondaries chase the clock during playback.
+    if ((!primary || !playing) && Math.abs(video.currentTime - currentTime) > 0.35) {
+      video.currentTime = currentTime;
+    }
+    if (playing) {
+      void video.play().catch(() => setPlaying(false));
+    } else {
+      video.pause();
+    }
+  }, [currentTime, playing, playbackRate, primary, setPlaying]);
 
   return (
     <div className="corner-frame relative w-full min-h-0 aspect-video lg:aspect-auto lg:h-full overflow-hidden rounded-lg border border-[var(--border-primary)] bg-black">
       <video
+        ref={videoRef}
         className="h-full w-full object-cover opacity-90"
         src={mediaUrl(sensor.source)}
-        autoPlay
-        loop
         muted
         playsInline
+        preload="auto"
+        loop={!replay}
+        onTimeUpdate={(event) => {
+          if (primary) updatePrimaryTime(event.currentTarget.currentTime);
+        }}
+        onEnded={() => {
+          if (primary) setPlaying(false);
+        }}
       />
       <div className="tactical-grid absolute inset-0 pointer-events-none opacity-10" />
 
@@ -97,8 +131,8 @@ export function CameraWall() {
         </div>
       ) : (
         <div className={`grid ${gridColsClass(cameras.length)} gap-3 lg:flex-1 lg:min-h-0 lg:auto-rows-fr`}>
-          {cameras.map((sensor) => (
-            <CameraTile key={sensor.id} sensor={sensor} />
+          {cameras.map((sensor, index) => (
+            <CameraTile key={sensor.id} sensor={sensor} primary={index === 0} />
           ))}
         </div>
       )}

@@ -1,0 +1,20 @@
+{
+  "name": "audio_distress_01",
+  "duration_seconds": 22,
+  "sensors": [
+    {
+      "type": "audio",
+      "id": "mic_01",
+      "source": "data/clips_real/audio/distress/fsd50k_9429_with_baseline.wav"
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "audio_scream",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 20.0
+    }
+  ],
+  "notes": "FSD50K 9429 by thanvannispen, CC BY 3.0; observable scream only, no cause inferred."
+}

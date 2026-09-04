@@ -22,10 +22,12 @@ from aura_mas.core.bus import Alert, AlertStore, new_id, now_ts
 SEVERITY_MAP = {
     "audio_gunshot": "CRITICAL", "audio_explosion": "CRITICAL",
     "intrusion": "CRITICAL", "anomaly": "WARNING",
-    "audio_scream": "WARNING", "audio_glass_break": "WARNING",
+    "audio_scream": "CRITICAL", "audio_glass_break": "WARNING",
     "abandoned_object": "WARNING", "loitering": "INFO",
     "audio_alarm": "WARNING", "audio_breaking": "WARNING",
     "audio_anomaly": "INFO",
+    "zone_occupancy": "WARNING", "wrong_direction": "WARNING",
+    "person_down": "WARNING", "rapid_movement": "WARNING",
 }
 
 ALERT_THRESHOLDS = {"CRITICAL": 0.45, "WARNING": 0.55, "INFO": 0.70}
@@ -61,7 +63,10 @@ class PolicyAgent(Agent):
                     confidence = min(1.0, confidence + 0.15)
                     self.metrics["verified_up"] += 1
                 else:
-                    confidence = max(0.0, confidence - 0.20)
+                    # A failed re-check is weak negative evidence (the target
+                    # may be occluded or already have moved), not proof the
+                    # source event was false. Keep the adjustment symmetric.
+                    confidence = max(0.0, confidence - 0.15)
                     self.metrics["verified_down"] += 1
 
         # 2. threshold decision ------------------------------------------------
@@ -98,6 +103,8 @@ class PolicyAgent(Agent):
             zone=hyp.zone, sensors=sorted(hyp.sensors),
             evidence=[e.evidence_path for e in hyp.events if e.evidence_path],
             fused_events=[e.event_id for e in hyp.events],
+            scene_time_seconds=getattr(hyp, "scene_time_seconds", None),
+            contributing_types=getattr(hyp, "contributing_types", [event_type]),
         )
 
         # 6. agentic explanation (downstream, non-blocking for the decision) --

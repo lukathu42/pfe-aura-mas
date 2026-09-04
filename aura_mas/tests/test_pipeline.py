@@ -93,6 +93,15 @@ def test_auction_selects_best_bidder():
     assert result and result["verified"]
 
 
+def test_single_camera_does_not_self_verify_gray_zone():
+    coord = CoordinatorAgent("coord", LocalBus(), mode="auction",
+                             camera_ids=["cam_01"])
+    assert coord.needs_verification(0.63) is False
+    multicam = CoordinatorAgent("coord", LocalBus(), mode="auction",
+                                camera_ids=["cam_01", "cam_02"])
+    assert multicam.needs_verification(0.63) is True
+
+
 def test_policy_thresholds_and_cooldown(tmp_path):
     bus = LocalBus()
     store = AlertStore(redis_url=None, jsonl_path=str(tmp_path / "alerts.jsonl"))

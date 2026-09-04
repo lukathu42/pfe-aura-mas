@@ -1,0 +1,92 @@
+{
+  "name": "wrong_direction_03",
+  "duration_seconds": 90,
+  "fov_overlap": {
+    "one_way_shop_exit": {
+      "cam_01": 0.9,
+      "cam_02": 0.9
+    }
+  },
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/clips_real/caviar/OneStopMoveEnter2cor.mp4",
+      "loiter_seconds": 999.0,
+      "min_flow_px": 30.0,
+      "zones": [
+        {
+          "name": "one_way_shop_exit",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ],
+          "flow_direction": [
+            -1,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "type": "camera",
+      "id": "cam_02",
+      "source": "data/clips_real/caviar/OneStopMoveEnter2front.mp4",
+      "detection_conf": 0.15,
+      "loiter_seconds": 999.0,
+      "min_flow_px": 30.0,
+      "zones": [
+        {
+          "name": "one_way_shop_exit",
+          "type": "entry",
+          "polygon": [
+            [
+              0,
+              0
+            ],
+            [
+              384,
+              0
+            ],
+            [
+              384,
+              288
+            ],
+            [
+              0,
+              288
+            ]
+          ],
+          "flow_direction": [
+            -1,
+            0
+          ]
+        }
+      ]
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "wrong_direction",
+      "zone": "one_way_shop_exit",
+      "t_start": 1.0,
+      "t_end": 89.0
+    }
+  ],
+  "notes": "Official synchronized CAVIAR views and XML annotations; candidate thresholds are accepted only after an exact pipeline probe produces the declared event."
+}

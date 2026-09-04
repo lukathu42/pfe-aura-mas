@@ -1,0 +1,11 @@
+{
+  "name": "perimeter_chain_01",
+  "duration_seconds": 16,
+  "fov_overlap": {"restricted_shop_boundary": {"cam_01": 0.9, "cam_02": 0.9}},
+  "sensors": [
+    {"type": "camera", "id": "cam_01", "source": "data/clips_real/caviar/EnterExitCrossingPaths1cor.mp4", "loiter_seconds": 999.0, "zones": [{"name": "restricted_shop_boundary", "type": "restricted", "polygon": [[0, 120], [110, 120], [110, 220], [0, 220]]}]},
+    {"type": "camera", "id": "cam_02", "source": "data/clips_real/caviar/EnterExitCrossingPaths1front.mp4", "detection_conf": 0.15, "loiter_seconds": 999.0, "zones": [{"name": "restricted_shop_boundary", "type": "restricted", "polygon": [[190, 115], [290, 115], [290, 150], [190, 150]]}]}
+  ],
+  "ground_truth": [{"event_type": "intrusion", "zone": "restricted_shop_boundary", "t_start": 5.5, "t_end": 8.5}],
+  "notes": "Synchronized CAVIAR EnterExitCrossingPaths1 views with camera-specific polygons representing one physical shop boundary. The existing point-in-polygon intrusion rule follows the virtual-fence framing of Kim, Lim and Kim, Intelligent intrusion detection system featuring a virtual fence, Annals of Nuclear Energy 112 (2018), doi:10.1016/j.anucene.2017.11.026. Dataset: EC-funded CAVIAR project IST 2001 37540, CC BY-SA."
+}

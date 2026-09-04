@@ -29,11 +29,14 @@ function applyOverlay(alert: Alert, overlay: Map<string, "ACKNOWLEDGED" | "DISMI
 // first and falling back to globbing those JSONL files
 // (aura_mas/dashboard/app.py:32-43); this mirrors that exactly so alerts
 // actually show up when the console is pointed at a real replay run.
-async function readJsonlAlerts(): Promise<Alert[]> {
+const SCENARIO_RE = /^[a-zA-Z0-9_-]+$/;
+
+async function readJsonlAlerts(scenario: string | null): Promise<Alert[]> {
   let files: string[];
   try {
+    const prefix = scenario ? `alerts_${scenario}_` : "alerts_";
     files = (await fs.readdir(DATA_ROOT)).filter(
-      (f) => f.startsWith("alerts_") && f.endsWith(".jsonl"),
+      (f) => f.startsWith(prefix) && f.endsWith(".jsonl"),
     );
   } catch {
     return [];
@@ -66,24 +69,30 @@ export async function GET(request: NextRequest) {
   const countParam = request.nextUrl.searchParams.get("count");
   const count = Math.min(Math.max(parseInt(countParam ?? "200", 10) || 200, 1), 500);
   const overlay = getAlertOverlay();
+  const scenario = request.nextUrl.searchParams.get("scenario");
+  if (scenario && !SCENARIO_RE.test(scenario)) {
+    return NextResponse.json({ error: "invalid scenario name" }, { status: 400 });
+  }
 
   const redisAlerts: Alert[] = [];
   let redisReachable = false;
-  try {
-    const redis = getRedis();
-    const rows = await redis.xrevrange(ALERT_STREAM, "+", "-", "COUNT", count);
-    redisReachable = true;
-    for (const [, fields] of rows) {
-      const raw = fieldsToMap(fields).json;
-      if (!raw) continue;
-      try {
-        redisAlerts.push(JSON.parse(raw) as Alert);
-      } catch {
-        // skip malformed entry
+  if (!scenario) {
+    try {
+      const redis = getRedis();
+      const rows = await redis.xrevrange(ALERT_STREAM, "+", "-", "COUNT", count);
+      redisReachable = true;
+      for (const [, fields] of rows) {
+        const raw = fieldsToMap(fields).json;
+        if (!raw) continue;
+        try {
+          redisAlerts.push(JSON.parse(raw) as Alert);
+        } catch {
+          // skip malformed entry
+        }
       }
+    } catch {
+      redisReachable = false;
     }
-  } catch {
-    redisReachable = false;
   }
 
   if (redisAlerts.length > 0) {
@@ -93,7 +102,7 @@ export async function GET(request: NextRequest) {
     });
   }
 
-  const jsonlAlerts = await readJsonlAlerts();
+  const jsonlAlerts = await readJsonlAlerts(scenario);
   if (jsonlAlerts.length > 0) {
     return NextResponse.json({
       alerts: jsonlAlerts.slice(0, count).map((a) => applyOverlay(a, overlay)),
@@ -101,9 +110,10 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  const emptyIsValid = Boolean(scenario) || redisReachable;
   return NextResponse.json(
-    { alerts: [] as Alert[], source: redisReachable ? "empty" : "offline" },
-    { status: redisReachable ? 200 : 503 },
+    { alerts: [] as Alert[], source: emptyIsValid ? "empty" : "offline" },
+    { status: emptyIsValid ? 200 : 503 },
   );
 }
 

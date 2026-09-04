@@ -7,6 +7,9 @@ import path from "node:path";
 export const REPO_ROOT = path.resolve(process.cwd(), "..");
 export const SCENARIOS_DIR = path.join(REPO_ROOT, "scenarios");
 export const DATA_ROOT = path.join(REPO_ROOT, "data");
+export const PREPARED_REPLAYS_DIR = path.join(REPO_ROOT, "results", "prepared_replays");
+export const SEARCH_DOCUMENTS_PATH = path.join(REPO_ROOT, "results", "search_documents.jsonl");
+export const LIVE_CAMERA_HEALTH_PATH = path.join(REPO_ROOT, "results", "live_camera_health.json");
 
 /**
  * Resolve a catch-all route path (already split on "/") against the repo's

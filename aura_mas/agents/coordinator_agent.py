@@ -34,22 +34,28 @@ class CoordinatorAgent(Agent):
                  bid_window: float = 1.0,
                  gray_zone: tuple = (0.35, 0.75),
                  bandit_path: Optional[str] = None,
-                 bandit_alpha: float = 1.0) -> None:
+                 bandit_alpha: float = 1.0,
+                 fov_overlap: Optional[Dict[str, Dict[str, float]]] = None) -> None:
         super().__init__(agent_id, bus)
         assert mode in ("auction", "roundrobin", "off", "auction-bandit")
         self.mode = mode
         self.camera_ids = camera_ids or []
         self.bid_window = bid_window
         self.gray_zone = gray_zone
+        # {zone_name: {camera_id: overlap}}; consumed by CameraAgent._view_score,
+        # which falls back to 0.5 for any camera absent from the announced map.
+        self.fov_overlap = fov_overlap or {}
         self._bids: Dict[str, List[Dict]] = {}
         self._verifications: Dict[str, Dict] = {}
         self._rr_index = 0
         self._lock = threading.Lock()
         self.metrics = {"tasks": 0, "bids": 0, "awards": 0,
                         "verifications": 0, "messages": 0,
-                        "allocation_ms": [], "bandit_decisions": 0}
+                        "allocation_ms": [], "bandit_decisions": 0,
+                        "feedback_updates": 0}
         self._bandit: Optional[LinUCBBidder] = None
-        self._bandit_ctx: Dict[str, "object"] = {}
+        self._task_history: Dict[str, Dict[str, Any]] = {}  # task_id -> {winner, ctx, hypothesis_id}
+        self._hyp_to_task: Dict[str, str] = {}  # hypothesis_id -> task_id
         if self.mode == "auction-bandit":
             import os
             if bandit_path and os.path.exists(bandit_path):
@@ -62,11 +68,14 @@ class CoordinatorAgent(Agent):
     def setup(self) -> None:
         self.bus.subscribe(TOPIC_BIDS, self._on_bid)
         self.bus.subscribe(TOPIC_VERIFICATIONS, self._on_verification)
+        self.bus.subscribe("site/feedback", self._on_feedback)
 
     # ------------------------------------------------------------- public API
     def needs_verification(self, confidence: float) -> bool:
         lo, hi = self.gray_zone
-        return self.mode != "off" and lo <= confidence < hi
+        # Self-verification is not independent evidence and can suppress a
+        # valid single-camera event merely because a later frame changed.
+        return self.mode != "off" and len(self.camera_ids) > 1 and lo <= confidence < hi
 
     def request_verification(self, hypothesis) -> Optional[Dict]:
         """Blocking verification round; returns verification result or None."""
@@ -76,6 +85,8 @@ class CoordinatorAgent(Agent):
                 "event_type": hypothesis.dominant_type(),
                 "zone": hypothesis.zone,
                 "origin_sensor": next(iter(hypothesis.sensors)),
+                "scene_time_seconds": getattr(hypothesis, "scene_time_seconds", None),
+                "fov_overlap": self.fov_overlap.get(hypothesis.zone or "site", {}),
                 "timestamp": now_ts()}
         self.metrics["tasks"] += 1
         t0 = time.time()
@@ -91,6 +102,13 @@ class CoordinatorAgent(Agent):
             return None
 
         award = {"task_id": task_id, "winner": winner, "timestamp": now_ts()}
+        self._task_history[task_id] = {
+            "winner": winner,
+            "ctx": bandit_ctx,
+            "hypothesis_id": hypothesis.hypothesis_id,
+            "timestamp": now_ts(),
+        }
+        self._hyp_to_task[hypothesis.hypothesis_id] = task_id
         self.bus.publish(TOPIC_AWARDS, json.dumps(award), qos=1)
         self.metrics["awards"] += 1
         self.metrics["messages"] += 1
@@ -101,8 +119,7 @@ class CoordinatorAgent(Agent):
             # Reward proxy: did the awarded camera confirm the event on
             # re-check? No external ground truth is available inside the
             # coordinator, so this in-process verification signal is the
-            # only reward source -- see docs/ai-enhancement-research.md
-            # Section 4.2 for why this is framed as illustrative only.
+            # default reward source. Operator feedback will further refine this.
             reward = 1.0 if (result and result.get("verified")) else 0.0
             self._bandit.update(winner, bandit_ctx, reward)
         if result:
@@ -111,6 +128,25 @@ class CoordinatorAgent(Agent):
                           winner, result["verified"],
                           result["verification_score"])
         return result
+
+    def _on_feedback(self, topic: str, payload: str) -> None:
+        """Reinforcement Learning from Operator Feedback (RLOF)."""
+        try:
+            data = json.loads(payload)
+            action = data.get("action", "").upper()
+            reward = float(data.get("reward", 1.0 if action == "ACKNOWLEDGE" else -1.0))
+            task_id = data.get("task_id")
+            if not task_id and "hypothesis_id" in data:
+                task_id = self._hyp_to_task.get(data["hypothesis_id"])
+            if task_id and task_id in self._task_history:
+                entry = self._task_history[task_id]
+                winner, ctx = entry["winner"], entry["ctx"]
+                if self.mode == "auction-bandit" and self._bandit is not None and ctx is not None:
+                    self._bandit.update(winner, ctx, reward)
+                    self.metrics["feedback_updates"] += 1
+                    self.log.info("RLOF update for camera %s with reward %.2f", winner, reward)
+        except Exception:  # noqa: BLE001
+            self.log.exception("Error processing operator feedback in coordinator")
 
     def save_bandit(self, path: str) -> None:
         if self._bandit is not None:

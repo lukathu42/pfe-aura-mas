@@ -1,0 +1,20 @@
+{
+  "name": "audio_gunshot_01",
+  "duration_seconds": 18,
+  "sensors": [
+    {
+      "type": "audio",
+      "id": "mic_01",
+      "source": "data/clips_real/audio/gunshot/urbansound8k_fold6_111048-6-0-0_with_baseline.wav"
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "audio_gunshot",
+      "zone": null,
+      "t_start": 15.0,
+      "t_end": 16.6
+    }
+  ],
+  "notes": "UrbanSound8K fold 6 / Freesound 111048 by GaryQ, CC0; audio-class label only."
+}

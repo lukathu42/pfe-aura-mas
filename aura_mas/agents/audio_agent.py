@@ -157,14 +157,23 @@ class AudioAgent(Agent):
         audio, sr = librosa.load(self.source, sr=16000, mono=True)
         n = int(sr * self.chunk_seconds)
         half = n // 2
-        for i in range(0, len(audio) - n, n):
+        # Include the trailing partial chunk. Short transient clips are often
+        # appended after a baseline and the former ``len(audio) - n`` bound
+        # silently discarded their final second. Pad only the DSP chunk;
+        # YAMNet accepts the natural lookback window length.
+        for i in range(0, len(audio), n):
             chunk = audio[i:i + n]
+            if len(chunk) < n // 4:
+                break
+            if len(chunk) < n:
+                chunk = np.pad(chunk, (0, n - len(chunk)))
             # YAMNet is scored over a lookback-extended window (chunk plus the
             # trailing half of the previous chunk), not the bare 1s chunk --
             # see _process_chunk docstring for why. DSP scoring is unaffected,
             # it still only ever sees `chunk`.
-            yamnet_window = audio[max(0, i - half):i + n]
-            self._process_chunk(chunk, sr, yamnet_window=yamnet_window)
+            yamnet_window = audio[max(0, i - half):min(len(audio), i + n)]
+            self._process_chunk(chunk, sr, yamnet_window=yamnet_window,
+                                scene_time_seconds=i / sr)
             self.metrics["chunks"] += 1
             if max_chunks and self.metrics["chunks"] >= max_chunks:
                 break
@@ -173,7 +182,8 @@ class AudioAgent(Agent):
         return self.metrics
 
     def _process_chunk(self, chunk: np.ndarray, sr: int,
-                       yamnet_window: Optional[np.ndarray] = None) -> None:
+                       yamnet_window: Optional[np.ndarray] = None,
+                       scene_time_seconds: Optional[float] = None) -> None:
         """yamnet_window, max-pooling: independently re-windowing YAMNet on
         each non-overlapping 1s chunk resets its internal 0.96s/0.48s-hop
         frame boundaries every call, so a short transient (e.g. a ~0.5s glass
@@ -208,16 +218,19 @@ class AudioAgent(Agent):
                 self._emit(event_type, conf, ts, {
                     "yamnet_class": cls, "yamnet_rank": rank,
                     "n_candidates": len(candidates),
-                })
+                }, scene_time_seconds)
         else:
             score = self._dsp.score(chunk, sr)
             if score >= self.anomaly_threshold:
-                self._emit("audio_anomaly", score, ts, {"method": "dsp_zscore"})
+                self._emit("audio_anomaly", score, ts, {"method": "dsp_zscore"},
+                           scene_time_seconds)
 
-    def _emit(self, event_type: str, conf: float, ts: float, extra: Dict) -> None:
+    def _emit(self, event_type: str, conf: float, ts: float, extra: Dict,
+              scene_time_seconds: Optional[float] = None) -> None:
         ev = Event(event_id=new_id("ev"), sensor_id=self.agent_id, timestamp=ts,
                    event_type=event_type, confidence=round(conf, 3),
-                   modality="audio", zone=self.zone, extra=extra)
+                   modality="audio", zone=self.zone, extra=extra,
+                   scene_time_seconds=scene_time_seconds)
         self.metrics["events"] += 1
         self.log.info("AUDIO EVENT %s conf=%.2f", event_type, conf)
         self.bus.publish(TOPIC_EVENTS, ev.to_json(), qos=1)
