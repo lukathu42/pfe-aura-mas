@@ -1,7 +1,7 @@
 # Live Monitoring and Defensible Demonstration Specification
 
-**Status:** software design accepted; hardware prerequisites Q27–Q29 parked  
-**Date:** 2026-08-28  
+**Status:** software design accepted; hardware prerequisites Q27–Q29 parked
+**Date:** 2026-08-28
 **Scope:** upgrade AURA-MAS from a replay-led prototype into a hybrid live and reproducible demonstration without overstating production readiness or research evidence
 
 ## 1. Outcome

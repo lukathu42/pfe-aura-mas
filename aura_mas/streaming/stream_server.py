@@ -58,7 +58,7 @@ class MJPEGHandler(BaseHTTPRequestHandler):
         if self.path.startswith("/stream/"):
             cam_id = self.path.replace("/stream/", "").split("?")[0]
             registry = StreamRegistry.get_instance()
-            
+
             # Send multipart MJPEG stream header
             self.send_response(200)
             self.send_header("Content-type", "multipart/x-mixed-replace; boundary=--frame")
