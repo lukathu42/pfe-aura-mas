@@ -52,6 +52,12 @@ export function IncidentDetail() {
       <div className="flex-1 min-h-0 overflow-y-auto styled-scrollbar p-4 flex flex-col gap-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
           <HudRow label="Confidence" value={alert.confidence.toFixed(2)} />
+          {alert.priority_score != null && (
+            <HudRow label="Priority" value={`${alert.priority_label ?? "ML"} ${(alert.priority_score * 100).toFixed(0)}%`} />
+          )}
+          {alert.false_positive_risk != null && (
+            <HudRow label="False positive risk" value={`${(alert.false_positive_risk * 100).toFixed(0)}%`} />
+          )}
           <HudRow label="Zone" value={alert.zone ?? "site"} />
           <HudRow label="Sensors" value={alert.sensors.join(", ") || "—"} />
           <HudRow label="Time" value={formatLocalTime(alert.timestamp)} />

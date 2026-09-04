@@ -22,6 +22,15 @@ function applyOverlay(alert: Alert, overlay: Map<string, "ACKNOWLEDGED" | "DISMI
   return overridden ? { ...alert, status: overridden } : alert;
 }
 
+function sortAlerts(alerts: Alert[]): Alert[] {
+  return [...alerts].sort((a, b) => {
+    const aPriority = a.priority_score ?? -1;
+    const bPriority = b.priority_score ?? -1;
+    if (aPriority !== bPriority) return bPriority - aPriority;
+    return b.timestamp - a.timestamp;
+  });
+}
+
 // aura_mas.scenarios.replay (the CLI everything in this repo actually runs
 // through) constructs its AlertStore with redis_url=None — every alert from
 // a replay run lands in data/alerts_<scenario>_<mode>.jsonl, never in Redis
@@ -57,8 +66,7 @@ async function readJsonlAlerts(scenario: string | null): Promise<Alert[]> {
       // skip unreadable file
     }
   }
-  alerts.sort((a, b) => b.timestamp - a.timestamp);
-  return alerts;
+  return sortAlerts(alerts);
 }
 
 // GET: prefers the real Redis stream AlertStore.append() writes to when
@@ -97,7 +105,7 @@ export async function GET(request: NextRequest) {
 
   if (redisAlerts.length > 0) {
     return NextResponse.json({
-      alerts: redisAlerts.slice(0, count).map((a) => applyOverlay(a, overlay)),
+      alerts: sortAlerts(redisAlerts).slice(0, count).map((a) => applyOverlay(a, overlay)),
       source: "redis" as const,
     });
   }
