@@ -68,7 +68,8 @@ def test_new_scenarios_are_multicamera_aligned_and_registered():
 
 def test_real_media_provenance_covers_demo_sources_and_citations():
     manifest_path = ROOT / "data" / "clips_real" / "manifest.json"
-    if not manifest_path.is_file():
+    report_path = ROOT / "research" / "reports" / "anomaly_type_survey_multizone.md"
+    if not manifest_path.is_file() or not report_path.is_file():
         pytest.skip("optional real-media provenance manifest is not installed")
     provenance = json.loads(manifest_path.read_text())
     serialized = json.dumps(provenance)
@@ -76,7 +77,7 @@ def test_real_media_provenance_covers_demo_sources_and_citations():
     assert "Creative Commons BY-SA" in serialized
     assert "10.1016/j.dib.2020.106587" in serialized
     assert "ABODA" in serialized
-    report = (ROOT / "research" / "reports" / "anomaly_type_survey_multizone.md").read_text()
+    report = report_path.read_text()
     for citation in (
         "ultralytics.com/models/yolo11",
         "2110.06864",
