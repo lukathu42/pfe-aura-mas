@@ -16,7 +16,14 @@ export function IncidentRail() {
   const [filter, setFilter] = useState<Severity[]>(SEVERITIES);
 
   const openCount = alerts.filter((a) => a.status === "OPEN").length;
-  const filtered = alerts.filter((a) => filter.includes(a.severity));
+  const filtered = alerts
+    .filter((a) => filter.includes(a.severity))
+    .sort((a, b) => {
+      const aPriority = a.priority_score ?? -1;
+      const bPriority = b.priority_score ?? -1;
+      if (aPriority !== bPriority) return bPriority - aPriority;
+      return b.timestamp - a.timestamp;
+    });
 
   const toggleFilter = (sev: Severity) => {
     setFilter((f) => (f.includes(sev) ? f.filter((s) => s !== sev) : [...f, sev]));
@@ -87,7 +94,11 @@ export function IncidentRail() {
                       : formatLocalTime(alert.timestamp)}{" "}
                     · {alert.zone ?? "site"}
                   </span>
-                  <span>{alert.status}</span>
+                  <span>
+                    {alert.priority_score != null
+                      ? `${alert.priority_label ?? "ML"} ${(alert.priority_score * 100).toFixed(0)}%`
+                      : alert.status}
+                  </span>
                 </div>
               </button>
             ))}

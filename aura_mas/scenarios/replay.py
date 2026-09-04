@@ -74,6 +74,7 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
                  audio_backend: str = "auto",
                  rep: int | None = None,
                  bandit_path: str | None = None,
+                 priority_model_path: str | None = None,
                  stream: bool = False,
                  stream_port: int = 8080,
                  prepared_out_path: str | None = None) -> Dict:
@@ -168,7 +169,8 @@ def run_scenario(manifest_path: str, mode: str = "mas-auction",
         configure_tracing()
         explainer = ExplanationAgent()
     policy = PolicyAgent("policy", bus, store, coordinator=coordinator,
-                         explainer=explainer)
+                         explainer=explainer,
+                         priority_model_path=priority_model_path)
     fusion = FusionAgent("fusion", bus, on_hypothesis=policy.on_hypothesis)
 
     alerts_log: List[Dict] = []
@@ -379,6 +381,9 @@ def main() -> None:
     p.add_argument("--bandit-path", default=None,
                    help="load/save LinUCB weights for --mode mas-auction-bandit "
                         "(default: results/auction_bandit_weights.json)")
+    p.add_argument("--priority-model", default=None,
+                   help="optional alert-priority model JSON produced by "
+                        "aura_mas.scripts.train_alert_priority")
     args = p.parse_args()
     bandit_path = args.bandit_path
     if args.mode == "mas-auction-bandit" and bandit_path is None:
@@ -388,7 +393,8 @@ def main() -> None:
                  audio_backend=args.audio_backend, rep=args.rep,
                  stream=args.stream, stream_port=args.stream_port,
                  prepared_out_path=args.prepared_out,
-                 out_path=args.out, bandit_path=bandit_path)
+                 out_path=args.out, bandit_path=bandit_path,
+                 priority_model_path=args.priority_model)
 
 
 if __name__ == "__main__":
