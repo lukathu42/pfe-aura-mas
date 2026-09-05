@@ -84,6 +84,10 @@ class Alert:
     explanation: Optional[str] = None
     status: str = "OPEN"     # OPEN | ACKNOWLEDGED | DISMISSED
     contributing_types: List[str] = field(default_factory=list)
+    priority_score: Optional[float] = None
+    false_positive_risk: Optional[float] = None
+    priority_label: Optional[str] = None
+    priority_model_version: Optional[str] = None
 
     def __post_init__(self) -> None:
         if not self.contributing_types:

@@ -1,0 +1,93 @@
+{
+  "name": "avenue_test_01",
+  "dataset": "CUHK Avenue",
+  "dataset_url": "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/Avenue_Dataset.zip",
+  "ground_truth_url": "https://www.cse.cuhk.edu.hk/~leojia/projects/detectabnormal/ground_truth_demo.zip",
+  "split": "test",
+  "clip_id": "01",
+  "sensors": [
+    {
+      "type": "camera",
+      "id": "cam_01",
+      "source": "data/avenue/Avenue Dataset/testing_videos/01.avi",
+      "zones": [],
+      "enable_clip": true
+    }
+  ],
+  "ground_truth": [
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 3.08,
+      "t_end": 3.32
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 3.76,
+      "t_end": 3.96
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 4.32,
+      "t_end": 4.4
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 4.6,
+      "t_end": 4.8
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 15.64,
+      "t_end": 15.96
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 16.28,
+      "t_end": 16.36
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 16.6,
+      "t_end": 16.88
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 20.08,
+      "t_end": 26.64
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 34.68,
+      "t_end": 35.0
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 35.08,
+      "t_end": 35.88
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 35.96,
+      "t_end": 36.4
+    },
+    {
+      "event_type": "anomaly",
+      "zone": null,
+      "t_start": 37.24,
+      "t_end": 44.04
+    }
+  ],
+  "notes": "CUHK Avenue clip. Test intervals are derived from the official volLabel mask at the declared source FPS; training clips are normal controls with no anomaly ground truth.",
+  "duration_seconds": 57.56
+}
