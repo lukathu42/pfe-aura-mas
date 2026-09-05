@@ -13,6 +13,7 @@ export function ReplayToolbar({ onSearch, onLive }: { onSearch: () => void; onLi
   const router = useRouter();
   const {
     catalogue,
+    scenario,
     replay,
     currentTime,
     duration,
@@ -23,7 +24,8 @@ export function ReplayToolbar({ onSearch, onLive }: { onSearch: () => void; onLi
     setPlaybackRate,
   } = useAuraData();
   const replayReady = Boolean(replay);
-  const anomalyKey = replay?.metadata.anomaly_key ?? "";
+  const selectedItem = catalogue.find((item) => item.scenario === scenario?.name);
+  const anomalyKey = replay?.metadata.anomaly_key ?? selectedItem?.anomaly_key ?? "";
   const anomalyGroups = [...new Map(catalogue.map((item) => [
     item.anomaly_key ?? "unknown", item.title,
   ])).entries()];
@@ -44,12 +46,12 @@ export function ReplayToolbar({ onSearch, onLive }: { onSearch: () => void; onLi
           }}
           className="min-w-0 flex-1 rounded border border-[var(--border-primary)] bg-[var(--bg-panel-solid)] px-2 py-1 hud-text text-[10px] text-[var(--text-primary)]"
         >
-          {!replay && <option value="">Loading anomaly families…</option>}
+          {!catalogue.length && <option value="">Loading anomaly families…</option>}
           {anomalyGroups.map(([key, label]) => <option key={key} value={key}>{label}</option>)}
         </select>
         <select
-          aria-label="Prepared example"
-          value={replay?.scenario ?? ""}
+          aria-label="Scenario example"
+          value={scenario?.name ?? ""}
           onChange={(event) => {
             setPlaying(false);
             router.push(`/?scenario=${encodeURIComponent(event.target.value)}`, { scroll: false });
@@ -58,7 +60,7 @@ export function ReplayToolbar({ onSearch, onLive }: { onSearch: () => void; onLi
         >
           {examples.map((item) => (
             <option key={item.scenario} value={item.scenario}>
-              {item.sample_label ?? item.scenario}
+              {item.sample_label ?? item.scenario}{item.replay_available ? "" : " · video only"}
             </option>
           ))}
         </select>
@@ -122,15 +124,19 @@ export function ReplayToolbar({ onSearch, onLive }: { onSearch: () => void; onLi
         title={replay?.metadata.attribution}
       >
         <div className="truncate hud-text text-[10px] text-[var(--gold-primary)]">
-          {replay?.metadata.title ?? "Prepared replay"}
+          {replay?.metadata.title ?? selectedItem?.title ?? "Scenario"}
         </div>
         <div className="truncate hud-label">
           {replay
             ? `${replay.metadata.dataset} · ${replay.metadata.attribution}`
-            : "Loading scenario timeline…"}
+            : selectedItem
+              ? `${selectedItem.dataset} · video available; replay not prepared`
+              : "Loading scenario…"}
         </div>
       </div>
-      <span className="severity-tag severity-tag--resolved shrink-0">PREPARED REPLAY</span>
+      <span className="severity-tag severity-tag--resolved shrink-0">
+        {replayReady ? "PREPARED REPLAY" : "SCENARIO ONLY"}
+      </span>
     </div>
   );
 }

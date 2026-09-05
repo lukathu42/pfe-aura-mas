@@ -97,6 +97,9 @@ export interface ScenarioSensor {
 export interface ScenarioManifest {
   name: string;
   duration_seconds: number;
+  dataset?: string;
+  split?: string;
+  clip_id?: string;
   sensors: ScenarioSensor[];
   ground_truth?: Array<{
     event_type: string;
@@ -195,6 +198,7 @@ export interface ReplayCatalogItem extends ReplayMetadata {
   scenario: string;
   mode: string;
   duration_seconds: number;
+  replay_available: boolean;
 }
 
 /** One in-flight or resolved auction sequence, assembled client-side from
