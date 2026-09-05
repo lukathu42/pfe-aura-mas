@@ -8,10 +8,12 @@ import os
 import re
 import threading
 import time
+from collections import deque
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Optional
 from urllib.parse import urlsplit, urlunsplit
+from urllib.request import Request, urlopen
 
 import cv2
 
@@ -59,6 +61,7 @@ def load_camera_config(path: Path, environ: Optional[Dict[str, str]] = None) -> 
             "id": camera_id,
             "label": str(item.get("label") or camera_id),
             "source": source,
+            "physical_zone_id": item.get("physical_zone_id"),
             "stale_after_seconds": max(0.5, float(item.get("stale_after_seconds", 5))),
             "initial_backoff_seconds": max(0.05, float(item.get("initial_backoff_seconds", 0.5))),
             "max_backoff_seconds": max(0.1, float(item.get("max_backoff_seconds", 30))),
@@ -76,6 +79,44 @@ class CameraHealth:
     reconnect_attempts: int = 0
 
 
+@dataclass(frozen=True)
+class BufferedFrame:
+    sequence: int
+    captured_at: float
+    jpeg: bytes
+
+
+class FrameRingBuffer:
+    """Thirty seconds bounds private non-event footage retained in memory."""
+
+    def __init__(self, retention_seconds: float = 30, max_frames: int = 450) -> None:
+        if retention_seconds <= 0 or max_frames <= 0:
+            raise ValueError("ring buffer bounds must be positive")
+        self.retention_seconds = retention_seconds
+        self._frames: deque[BufferedFrame] = deque(maxlen=max_frames)
+        self._lock = threading.Lock()
+
+    def append(self, sequence: int, captured_at: float, jpeg: bytes) -> None:
+        with self._lock:
+            self._frames.append(BufferedFrame(sequence, captured_at, jpeg))
+            cutoff = captured_at - self.retention_seconds
+            while self._frames and self._frames[0].captured_at < cutoff:
+                self._frames.popleft()
+
+    def snapshot(self) -> list[BufferedFrame]:
+        with self._lock:
+            return list(self._frames)
+
+    def incident_clip(
+        self, first_event_at: float, last_event_at: float,
+        pre_event_seconds: float = 15, post_event_seconds: float = 15,
+    ) -> list[BufferedFrame]:
+        start = first_event_at - pre_event_seconds
+        end = last_event_at + post_event_seconds
+        with self._lock:
+            return [frame for frame in self._frames if start <= frame.captured_at <= end]
+
+
 class LiveCameraWorker:
     """Read one OpenCV source, reconnecting with bounded exponential backoff."""
 
@@ -85,7 +126,9 @@ class LiveCameraWorker:
         self.spec, self.capture_factory = spec, capture_factory
         self.clock, self.sleeper = clock, sleeper
         self.health = CameraHealth(spec["id"], spec["label"])
+        self.frames = FrameRingBuffer()
         self._jpeg: Optional[bytes] = None
+        self._sequence = 0
         self._lock = threading.Lock()
         self._stop = threading.Event()
 
@@ -126,11 +169,16 @@ class LiveCameraWorker:
                     if not ok:
                         self._failure("frame encoding failed")
                         break
+                    captured_at = self.clock()
+                    jpeg = encoded.tobytes()
                     with self._lock:
-                        self._jpeg = encoded.tobytes()
-                        self.health.last_frame_at = self.clock()
+                        self._jpeg = jpeg
+                        self.health.last_frame_at = captured_at
                         self.health.last_error = None
                         self.health.state = "ONLINE"
+                        self._sequence += 1
+                        sequence = self._sequence
+                    self.frames.append(sequence, captured_at, jpeg)
             finally:
                 capture.release()
             if not self._stop.is_set():
@@ -160,12 +208,35 @@ def write_health(path: Path, workers: Iterable[LiveCameraWorker], stream_port: i
     temporary.replace(path)
 
 
+def publish_health(operations_url: str, session_id: str, worker: LiveCameraWorker) -> None:
+    health = worker.public_health("")
+    payload = json.dumps({
+        "session_id": session_id,
+        "camera_id": worker.spec["id"],
+        "physical_zone_id": worker.spec.get("physical_zone_id"),
+        "state": health["state"],
+        "reason": health["last_error"],
+        "recorded_at": time.time(),
+    }).encode()
+    request = Request(
+        f"{operations_url.rstrip('/')}/v1/camera-health", data=payload,
+        headers={"Content-Type": "application/json"}, method="POST",
+    )
+    try:
+        with urlopen(request, timeout=1):  # noqa: S310 - URL is an operator CLI setting
+            pass
+    except OSError as error:
+        log.warning("operational health publish failed for %s: %s", worker.spec["id"], error)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run configured RTSP/MJPEG cameras")
     parser.add_argument("--config", default="config/live_cameras.json")
     parser.add_argument("--health", default="results/live_camera_health.json")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8080)
+    parser.add_argument("--session-id", help="active Monitoring Session receiving health records")
+    parser.add_argument("--operations-url", default="http://127.0.0.1:8090")
     args = parser.parse_args()
     workers = [LiveCameraWorker(spec) for spec in load_camera_config(Path(args.config))]
     registry = StreamRegistry.get_instance()
@@ -180,6 +251,9 @@ def main() -> None:
             threads.append(thread)
         while True:
             write_health(Path(args.health), workers, args.port)
+            if args.session_id:
+                for worker in workers:
+                    publish_health(args.operations_url, args.session_id, worker)
             time.sleep(1)
     except KeyboardInterrupt:
         pass

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { PREPARED_REPLAYS_DIR } from "@/lib/paths";
-import type { PreparedReplay, ReplayCatalogItem } from "@/lib/types";
+import { PREPARED_REPLAYS_DIR, SCENARIOS_DIR } from "@/lib/paths";
+import type { PreparedReplay, ReplayCatalogItem, ScenarioManifest } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -18,6 +18,39 @@ async function readReplay(name: string): Promise<PreparedReplay | null> {
   } catch {
     return null;
   }
+}
+
+async function readManifest(name: string): Promise<ScenarioManifest | null> {
+  try {
+    const raw = await fs.readFile(path.join(SCENARIOS_DIR, `${name}.json`), "utf-8");
+    const manifest = JSON.parse(raw) as ScenarioManifest;
+    return manifest.name === name ? manifest : null;
+  } catch {
+    return null;
+  }
+}
+
+function manifestCatalogItem(manifest: ScenarioManifest): ReplayCatalogItem {
+  const dataset = manifest.dataset ?? "Scenario manifest";
+  const anomalyKey = manifest.dataset
+    ? manifest.dataset.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "")
+    : manifest.name;
+  return {
+    title: manifest.dataset ?? "Scenario manifest",
+    anomaly_type: "scenario",
+    anomaly_key: anomalyKey,
+    sample_id: manifest.clip_id,
+    sample_label: manifest.name,
+    description: manifest.notes ?? `Scenario manifest for ${manifest.name}.`,
+    dataset,
+    attribution: "",
+    tags: ["scenario manifest", ...(manifest.split ? [manifest.split] : [])],
+    camera_count: manifest.sensors.filter((sensor) => sensor.type === "camera").length,
+    scenario: manifest.name,
+    mode: "manifest",
+    duration_seconds: manifest.duration_seconds,
+    replay_available: false,
+  };
 }
 
 export async function GET(request: NextRequest) {
@@ -39,18 +72,35 @@ export async function GET(request: NextRequest) {
       .filter((file) => file.endsWith(".json"))
       .sort();
   } catch {
-    return NextResponse.json({ scenarios: [] as ReplayCatalogItem[] });
+    // The scenario manifest catalogue is still useful when no replay directory exists.
   }
-  const scenarios: ReplayCatalogItem[] = [];
+  const scenarios = new Map<string, ReplayCatalogItem>();
   for (const file of files) {
     const replay = await readReplay(file.replace(/\.json$/, ""));
     if (!replay) continue;
-    scenarios.push({
+    scenarios.set(replay.scenario, {
       scenario: replay.scenario,
       mode: replay.mode,
       duration_seconds: replay.duration_seconds,
+      replay_available: true,
       ...replay.metadata,
     });
   }
-  return NextResponse.json({ scenarios });
+
+  try {
+    const manifestFiles = (await fs.readdir(SCENARIOS_DIR))
+      .filter((file) => file.endsWith(".json"))
+      .sort();
+    for (const file of manifestFiles) {
+      const name = file.replace(/\.json$/, "");
+      if (!scenarios.has(name)) {
+        const manifest = await readManifest(name);
+        if (manifest) scenarios.set(name, manifestCatalogItem(manifest));
+      }
+    }
+  } catch {
+    // Prepared replays remain available when scenario manifests cannot be read.
+  }
+
+  return NextResponse.json({ scenarios: [...scenarios.values()] });
 }

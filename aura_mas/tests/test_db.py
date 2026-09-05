@@ -58,19 +58,21 @@ def test_query_alerts_filtering(temp_db):
     assert crit_alerts[0]["alert_id"] == "alt_2"
 
 
-def test_record_feedback_and_status(temp_db):
+def test_acknowledgement_is_not_feedback_and_verdict_is_durable(temp_db):
     temp_db.save_alert({
         "alert_id": "alt_fb", "timestamp": 10.0, "severity": "WARNING",
         "event_type": "loitering", "confidence": 0.6, "zone": "entry_gate",
         "status": "OPEN"
     })
 
-    reward = temp_db.record_feedback("alt_fb", action="ACKNOWLEDGE", notes="True positive confirmed")
-    assert reward == 1.0
+    assert temp_db.acknowledge_alert("alt_fb") is True
     updated = temp_db.get_alert("alt_fb")
     assert updated["status"] == "ACKNOWLEDGED"
+    assert temp_db.query_feedback("alt_fb") == []
 
-    reward_dismiss = temp_db.record_feedback("alt_fb", action="DISMISS")
-    assert reward_dismiss == -1.0
-    updated_dismiss = temp_db.get_alert("alt_fb")
-    assert updated_dismiss["status"] == "DISMISSED"
+    reward = temp_db.record_feedback("alt_fb", verdict="FALSE_ALARM", notes="verified clear")
+    assert reward == -1.0
+    assert temp_db.query_feedback("alt_fb")[0]["verdict"] == "FALSE_ALARM"
+
+    with pytest.raises(ValueError, match="verdict"):
+        temp_db.record_feedback("alt_fb", verdict="ACKNOWLEDGE")
